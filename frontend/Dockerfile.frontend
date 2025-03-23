@@ -1,5 +1,5 @@
 ## Stage Development
-FROM node:20-alpine AS development
+FROM node:20-slim AS development
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY frontend/ .
 CMD ["npm", "run", "dev"]
 
 ## Stage Build
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ COPY frontend/ .
 RUN npm run build
 
 ## Stage Deploy
-FROM node:20-alpine AS deploy
+FROM node:20-slim AS deploy
 
 WORKDIR /app
 

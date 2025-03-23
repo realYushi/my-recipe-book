@@ -9,13 +9,14 @@ services:
     ports:
       - "3001:3000"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - .:/workspace:cached
+      - /workspace/frontend/node_modules
     depends_on:
       - backend
     environment:
       - NODE_ENV=development
       - REACT_APP_API_URL=http://backend:5000/api
+    user: root
 
   backend:
     build:
@@ -25,13 +26,14 @@ services:
     ports:
       - "5001:5000"
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - .:/workspace:cached
+      - /workspace/backend/node_modules
     depends_on:
       - database
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://database:27017/recipe-book
+    user: root
 
   database:
     image: mongo:latest
@@ -44,3 +46,4 @@ services:
 
 volumes:
   mongodb_data:
+ 

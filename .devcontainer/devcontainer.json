@@ -1,0 +1,45 @@
+{
+  "name": "MERN Stack Development",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "mongodb.mongodb-vscode",
+        "christian-kohler.npm-intellisense",
+        "mikestead.dotenv",
+        "gruntfuggly.todo-tree",
+        "github.copilot"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true
+      }
+    }
+  },
+  "forwardPorts": [3000, 5000, 27017],
+  "remoteUser": "node",
+  "postCreateCommand": "cd /app && npm install",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder}/frontend,target=/app,type=bind",
+    "source=${localWorkspaceFolder}/.git,target=/app/.git,type=bind"
+  ]
+}

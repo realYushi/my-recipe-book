@@ -114,3 +114,126 @@ classDiagram
     User "1" --> "many" Recipe : creates
     Recipe "1" --> "many" Ingredient : contains
 ```
+
+```mermaid
+graph TD
+    %% Frontend
+    subgraph Frontend["Frontend"]
+        style Frontend fill:#e1f5fe,stroke:#01579b
+        
+        subgraph Views["Views"]
+            style Views fill:#bbdefb,stroke:#1976d2
+            RecipeListView["RecipeListView"]
+            RecipeDetailView["RecipeDetailView"]
+            RecipeFormView["RecipeFormView"]
+            SearchView["SearchView"]
+            LoginView["LoginView"]
+            RegisterView["RegisterView"]
+            NavigationView["NavigationView"]
+            
+            style RecipeListView fill:#e3f2fd,stroke:#2196f3
+            style RecipeDetailView fill:#e3f2fd,stroke:#2196f3
+            style RecipeFormView fill:#e3f2fd,stroke:#2196f3
+            style SearchView fill:#e3f2fd,stroke:#2196f3
+            style LoginView fill:#e3f2fd,stroke:#2196f3
+            style RegisterView fill:#e3f2fd,stroke:#2196f3
+            style NavigationView fill:#e3f2fd,stroke:#2196f3
+        end
+        
+        subgraph ViewModels["ViewModels"]
+            style ViewModels fill:#b3e5fc,stroke:#0288d1
+            RecipeListViewModel["RecipeListViewModel"]
+            RecipeDetailViewModel["RecipeDetailViewModel"]
+            RecipeFormViewModel["RecipeFormViewModel"]
+            SearchViewModel["SearchViewModel"]
+            AuthViewModel["AuthViewModel"]
+            
+            style RecipeListViewModel fill:#e1f5fe,stroke:#03a9f4
+            style RecipeDetailViewModel fill:#e1f5fe,stroke:#03a9f4
+            style RecipeFormViewModel fill:#e1f5fe,stroke:#03a9f4
+            style SearchViewModel fill:#e1f5fe,stroke:#03a9f4
+            style AuthViewModel fill:#e1f5fe,stroke:#03a9f4
+        end
+        
+        subgraph Services["Services"]
+            style Services fill:#b2ebf2,stroke:#0097a7
+            RecipeService["RecipeService"]
+            AuthService["AuthService"]
+            UserService["UserService"]
+            
+            style RecipeService fill:#e0f7fa,stroke:#00bcd4
+            style AuthService fill:#e0f7fa,stroke:#00bcd4
+            style UserService fill:#e0f7fa,stroke:#00bcd4
+        end
+    end
+    
+    %% Backend
+    subgraph Backend["Backend"]
+        style Backend fill:#f3e5f5,stroke:#4a148c
+        
+        subgraph APIControllers["API Controllers"]
+            style APIControllers fill:#e1bee7,stroke:#7b1fa2
+            RecipeController["RecipeController"]
+            AuthController["AuthController"]
+            UserController["UserController"]
+            
+            style RecipeController fill:#f3e5f5,stroke:#9c27b0
+            style AuthController fill:#f3e5f5,stroke:#9c27b0
+            style UserController fill:#f3e5f5,stroke:#9c27b0
+        end
+        
+        subgraph Models["Models"]
+            style Models fill:#d1c4e9,stroke:#512da8
+            RecipeModel["RecipeModel"]
+            UserModel["UserModel"]
+            IngredientModel["IngredientModel"]
+            
+            style RecipeModel fill:#ede7f6,stroke:#673ab7
+            style UserModel fill:#ede7f6,stroke:#673ab7
+            style IngredientModel fill:#ede7f6,stroke:#673ab7
+        end
+        
+        subgraph Database["Database"]
+            style Database fill:#ffcdd2,stroke:#b71c1c
+            RecipesCollection[(RecipesCollection)]
+            UsersCollection[(UsersCollection)]
+            
+            style RecipesCollection fill:#ffebee,stroke:#f44336
+            style UsersCollection fill:#ffebee,stroke:#f44336
+        end
+    end
+    
+    %% View to ViewModel bindings
+    RecipeListView -->|binds to| RecipeListViewModel
+    RecipeDetailView -->|binds to| RecipeDetailViewModel
+    RecipeFormView -->|binds to| RecipeFormViewModel
+    SearchView -->|binds to| SearchViewModel
+    LoginView -->|binds to| AuthViewModel
+    RegisterView -->|binds to| AuthViewModel
+    
+    %% ViewModel to Service interactions
+    RecipeListViewModel -->|uses| RecipeService
+    RecipeDetailViewModel -->|uses| RecipeService
+    RecipeFormViewModel -->|uses| RecipeService
+    SearchViewModel -->|uses| RecipeService
+    AuthViewModel -->|uses| AuthService
+    AuthViewModel -->|uses| UserService
+    
+    %% Service to API communication
+    RecipeService -.->|HTTP requests| RecipeController
+    AuthService -.->|HTTP requests| AuthController
+    UserService -.->|HTTP requests| UserController
+    
+    %% Backend connections
+    RecipeController -->|uses| RecipeModel
+    RecipeController -->|uses| IngredientModel
+    AuthController -->|uses| UserModel
+    UserController -->|uses| UserModel
+    
+    %% Database persistence
+    RecipeModel -->|persists to| RecipesCollection
+    UserModel -->|persists to| UsersCollection
+
+    %% Edge styling
+    linkStyle default stroke:#666,stroke-width:2px;
+```

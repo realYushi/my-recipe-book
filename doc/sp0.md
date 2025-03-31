@@ -114,7 +114,7 @@ classDiagram
     User "1" --> "many" Recipe : creates
     Recipe "1" --> "many" Ingredient : contains
 ```
-
+### Component Diagram
 ```mermaid
 graph TD
     %% Frontend
@@ -236,4 +236,65 @@ graph TD
 
     %% Edge styling
     linkStyle default stroke:#666,stroke-width:2px;
+```
+## Sequence Diagram
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Frontend UI
+    participant VM as ViewModels
+    participant SVC as Services
+    participant API as API Controllers
+    participant DB as Database
+    
+    %% User Login Flow
+    User->>UI: Enter Login Credentials
+    UI->>VM: Call AuthViewModel.login()
+    VM->>SVC: AuthService.login(credentials)
+    SVC->>API: POST /api/auth/login
+    API->>DB: Find User by email
+    DB-->>API: Return User data
+    API->>API: Validate password
+    API-->>SVC: Return JWT Token
+    SVC-->>VM: Store token
+    VM-->>UI: Update UI state (login successful)
+    UI-->>User: Display Home Page
+    
+    %% View Recipes Flow
+    User->>UI: Navigate to Recipes List
+    UI->>VM: Call RecipeListViewModel.loadRecipes()
+    VM->>SVC: RecipeService.getRecipes()
+    SVC->>API: GET /api/recipes
+    API->>DB: Query recipes collection
+    DB-->>API: Return recipes data
+    API-->>SVC: Return recipes
+    SVC-->>VM: Update recipes list
+    VM-->>UI: Bind recipes data to view
+    UI-->>User: Display Recipes List
+    
+    %% View Recipe Detail Flow
+    User->>UI: Select Recipe
+    UI->>VM: Call RecipeDetailViewModel.loadRecipe(id)
+    VM->>SVC: RecipeService.getRecipe(id)
+    SVC->>API: GET /api/recipes/:id
+    API->>DB: Query recipe by id
+    DB-->>API: Return recipe data
+    API-->>SVC: Return recipe detail
+    SVC-->>VM: Update current recipe
+    VM-->>UI: Bind recipe data to view
+    UI-->>User: Display Recipe Details
+    
+    %% Create New Recipe Flow
+    User->>UI: Create New Recipe
+    UI->>VM: Navigate to RecipeFormViewModel
+    User->>UI: Fill Recipe Form
+    UI->>VM: Call RecipeFormViewModel.saveRecipe(recipeData)
+    VM->>SVC: RecipeService.createRecipe(recipeData)
+    SVC->>API: POST /api/recipes
+    API->>DB: Insert new recipe
+    DB-->>API: Confirm creation
+    API-->>SVC: Return created recipe
+    SVC-->>VM: Update state with new recipe
+    VM-->>UI: Navigate to Recipe Detail
+    UI-->>User: Display New Recipe
 ```

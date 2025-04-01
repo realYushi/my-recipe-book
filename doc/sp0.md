@@ -73,46 +73,69 @@ Relationships: belongs to a Recipe
 ```mermaid
 classDiagram
     class User {
-        +String id
-        +String email
-        +String password
-        +String name
-        +Date createdAt
-        +register()
+        +id: String
+        +name: String
+        +email: String
+        +passwordHash: String
+        +role: String
+    }
+
+    class Admin {
+        +manageUsers()
+    }
+
+    class Recipe {
+        +id: String
+        +title: String
+        +ingredients: List
+        +calories: int
+        +dietaryTags: List
+        +sourceAPI: String
+    }
+
+    class Ingredient {
+        +id: String
+        +name: String
+        +price: float
+        +store: String
+        +zipCode: String
+    }
+
+    class ShoppingList {
+        +id: String
+        +userId: String
+        +ingredients: List
+        +totalCost: float
+    }
+
+    class AuthenticationService {
         +login()
         +logout()
     }
-    
-    class Recipe {
-        +String id
-        +String title
-        +String description
-        +String instructions
-        +Number cookingTime
-        +Number servingSize
-        +User createdBy
-        +Date createdAt
-        +Date updatedAt
-        +create()
-        +read()
-        +update()
-        +delete()
-        +search()
+
+    class RecipeService {
+        +fetchRecipes()
+        +applyFilters()
     }
-    
-    class Ingredient {
-        +String id
-        +String name
-        +Number quantity
-        +String unit
-        +Recipe recipeId
-        +add()
-        +remove()
-        +update()
+
+    class WebScraper {
+        +updateIngredientPrices()
     }
-    
-    User "1" --> "many" Recipe : creates
-    Recipe "1" --> "many" Ingredient : contains
+
+    class Database {
+        +storeUserData()
+        +storeRecipes()
+        +storeShoppingLists()
+    }
+
+    User "1" -- "*" Recipe : "favorites"
+    User "1" -- "1" ShoppingList
+    Recipe "1" -- "*" Ingredient
+    WebScraper "1" -- "*" Ingredient : "updates prices"
+    AuthenticationService "1" -- "*" User : "validates"
+    RecipeService "1" -- "*" Recipe : "fetches & filters"
+    Admin --|> User
+
 ```
 ### Component Diagram
 ```mermaid

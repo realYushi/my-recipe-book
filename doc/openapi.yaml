@@ -1,0 +1,552 @@
+openapi: 3.1.0
+# https://editor-next.swagger.io/
+info:
+  title: My Recipe Book API
+  version: 0.0.1
+components:
+  securitySchemes:
+    firebaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Firebase Authentication JWT Token
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the user
+          readOnly: true
+          examples:
+            - "123e4567-e89b-12d3-a456-426614174000"
+        username:
+          type: string
+          description: The username for the user
+          examples:
+            - "john_doe"
+            - "jane_smith"
+        email:
+          type: string
+          format: email
+          description: The email for the user
+          examples:
+            - "john.doe@example.com"
+            - "jane.smith@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the user was created
+          readOnly: true
+          examples:
+            - "2021-01-01T00:00:00Z"
+      required:
+        - username
+        - email
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the ingredient
+          readOnly: true
+          examples:
+            - "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          description: The name of the ingredient
+          examples:
+            - "Chicken"
+            - "Tomatoes"
+        category:
+          type: string 
+          description: The category of the ingredient
+          enum:
+            - Meat
+            - Vegetables
+          examples:
+            - "Meat"
+            - "Vegetables"
+        price:
+          type: number 
+          format: double
+          minimum: 0
+          description: The price of the ingredient per unit
+          examples:
+            - 10.00
+            - 5.50
+        unit:
+          type: string
+          description: The unit of the ingredient
+          enum:
+            - kg
+            - g
+            - ml
+            - l
+          examples:
+            - "kg"
+            - "g"
+      required:
+        - name
+        - category
+        - price
+        - unit
+    RecipeIngredient:
+      type: object
+      properties:
+        ingredient:
+          $ref: "#/components/schemas/Ingredient"
+        quantity:
+          type: number
+          format: double
+          minimum: 0
+          description: The quantity of the ingredient
+          examples:
+            - 1.0
+        unit:
+          type: string
+          description: The unit of the ingredient
+          examples: 
+            - "kg"
+          enum:
+            - kg
+            - g
+            - ml
+            - l
+      required:
+        - ingredient
+        - quantity
+        - unit
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier for the recipe
+          readOnly: true
+          examples: 
+            - "123e4567-e89b-12d3-a456-426614174000"
+        name:
+          type: string
+          description: The name of the recipe
+          examples: 
+            - "Chicken Parmesan"
+        instructions:
+          type: string
+          description: The instructions for the recipe
+          examples: 
+            - "1. Preheat oven to 375 degrees F (190 degrees C). 2. In a large bowl, mix together egg, salt, and pepper. 3. Dip chicken breasts into egg mixture until coated. 4. Place chicken in a baking dish and bake in the preheated oven until no longer pink in the center and the juices run clear, about 20 minutes. 5. Remove from oven and top with parmesan cheese and marinara sauce."
+        ingredients:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeIngredient"
+        portions:
+          type: number
+          format: int32
+          minimum: 1
+          description: The number of portions the recipe makes
+          examples: 
+            - 4
+        preparationTime:
+          type: number
+          format: int32
+          minimum: 0
+          description: The preparation time of the recipe in minutes
+          examples: 
+            - 30
+        cookingTime:
+          type: number
+          format: int32
+          minimum: 0
+          description: The cooking time of the recipe in minutes
+          examples: 
+            - 20 
+        createdBy:
+          $ref: "#/components/schemas/User"
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the recipe was created
+          readOnly: true
+      required:
+        - name
+        - instructions
+        - ingredients
+        - portions
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          examples:
+            - 404
+            - 400
+            - 401
+        message:
+          type: string
+          description: Error message
+          examples:
+            - "Resource not found"
+            - "Invalid request parameters"
+            - "Unauthorized access"
+        details:
+          type: object
+          description: Additional error details
+      required:
+        - code
+        - message
+paths:
+  #TODO: Add paths
+  /recipes:
+    get:
+      summary: Get all recipes
+      responses:
+        "200":
+          description: A list of recipes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Resources not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a new recipe
+      responses:
+        "201":
+          description: Recipe created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "400":
+          description: Bad request - Invalid recipe data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Conflict - Recipe with this name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /ingredients:
+    get:
+      summary: Get all ingredients
+      responses:
+        "200":
+          description: A list of ingredients retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ingredient"
+        "404":
+          description: Resources not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a new ingredient
+      responses:
+        "201":
+          description: Ingredient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        "400":
+          description: Bad request - Invalid ingredient data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Conflict - Ingredient with this name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /ingredients/{id}:
+    get:
+      summary: Get an ingredient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the ingredient
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ingredient retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        "404":
+          description: Ingredient not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update an ingredient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the ingredient
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Ingredient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        "404":
+          description: Ingredient not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid ingredient data or ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete an ingredient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the ingredient
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Ingredient deleted successfully
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Ingredient not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        "200":
+          description: A list of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "404":
+          description: Resources not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a new user
+      security: []  # Override global security for this endpoint, don't need to be authenticated when creating a user
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request - Invalid user data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Conflict - User with this email or username already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid user data or ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: User deleted successfully
+        "401":
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "400":
+          description: Bad request - Invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+security:
+  - firebaseAuth: []

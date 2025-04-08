@@ -39,6 +39,12 @@ services:
       - mongodb_data:/data/db
     environment:
       - MONGO_INITDB_DATABASE=recipe-book
-
+  prism-mock:
+    image: stoplight/prism:4
+    ports:
+      - "4010:4010"
+    volumes:
+      - ./doc/openapi.yaml:/usr/src/api.yaml
+    command: mock -h 0.0.0.0 /usr/src/api.yaml
 volumes:
   mongodb_data:

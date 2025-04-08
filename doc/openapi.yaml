@@ -4,6 +4,12 @@ info:
   title: My Recipe Book API
   version: 0.0.1
 components:
+  securitySchemes:
+    firebaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Firebase Authentication JWT Token
   schemas:
     User:
       type: object
@@ -419,6 +425,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     post:
       summary: Create a new user
+      security: []  # Override global security for this endpoint, don't need to be authenticated when creating a user
       responses:
         "201":
           description: User created successfully
@@ -540,3 +547,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+security:
+  - firebaseAuth: []

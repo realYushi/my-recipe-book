@@ -26,6 +26,7 @@
     "ghcr.io/devcontainers/features/git:1": {}
   },
 
+  "postCreateCommand": "apt-get update && apt-get install -y ca-certificates",
   "remoteUser": "root",
   "mounts": [
     "source=${localWorkspaceFolder}/.git,target=/workspace/.git,type=bind"

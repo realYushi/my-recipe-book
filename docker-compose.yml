@@ -6,7 +6,7 @@ services:
       target: development
     volumes:
       - .:/workspace:cached
-      - /workspace/frontend/node_modules
+      - frontend_node_modules:/workspace/frontend/node_modules
     depends_on:
       - backend
     environment:
@@ -23,7 +23,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/workspace:cached
-      - /workspace/backend/node_modules
+      - backend_node_modules:/workspace/backend/node_modules
     depends_on:
       - database
     environment:
@@ -48,3 +48,5 @@ services:
     command: mock -h 0.0.0.0 /usr/src/api.yaml
 volumes:
   mongodb_data:
+  frontend_node_modules:
+  backend_node_modules:

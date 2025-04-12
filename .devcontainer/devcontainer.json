@@ -9,10 +9,13 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "dsznajder.es7-react-js-snippets",
-        "humao.rest-client"
+        "humao.rest-client",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
       ],
       "settings": {
         "editor.formatOnSave": true,
+        "editor.autoSave": "onFocusChange",
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit"
         },

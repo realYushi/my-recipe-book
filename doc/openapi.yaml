@@ -61,7 +61,7 @@ components:
             - "Chicken"
             - "Tomatoes"
         category:
-          type: string 
+          type: string
           description: The category of the ingredient
           enum:
             - Meat
@@ -70,7 +70,7 @@ components:
             - "Meat"
             - "Vegetables"
         price:
-          type: number 
+          type: number
           format: double
           minimum: 0
           description: The price of the ingredient per unit
@@ -108,7 +108,7 @@ components:
         unit:
           type: string
           description: The unit of the ingredient
-          examples: 
+          examples:
             - "kg"
           enum:
             - kg
@@ -127,17 +127,17 @@ components:
           format: uuid
           description: The unique identifier for the recipe
           readOnly: true
-          examples: 
+          examples:
             - "123e4567-e89b-12d3-a456-426614174000"
         name:
           type: string
           description: The name of the recipe
-          examples: 
+          examples:
             - "Chicken Parmesan"
         instructions:
           type: string
           description: The instructions for the recipe
-          examples: 
+          examples:
             - "1. Preheat oven to 375 degrees F (190 degrees C). 2. In a large bowl, mix together egg, salt, and pepper. 3. Dip chicken breasts into egg mixture until coated. 4. Place chicken in a baking dish and bake in the preheated oven until no longer pink in the center and the juices run clear, about 20 minutes. 5. Remove from oven and top with parmesan cheese and marinara sauce."
         ingredients:
           type: array
@@ -148,22 +148,22 @@ components:
           format: int32
           minimum: 1
           description: The number of portions the recipe makes
-          examples: 
+          examples:
             - 4
         preparationTime:
           type: number
           format: int32
           minimum: 0
           description: The preparation time of the recipe in minutes
-          examples: 
+          examples:
             - 30
         cookingTime:
           type: number
           format: int32
           minimum: 0
           description: The cooking time of the recipe in minutes
-          examples: 
-            - 20 
+          examples:
+            - 20
         createdBy:
           $ref: "#/components/schemas/User"
         createdAt:
@@ -227,6 +227,12 @@ paths:
                 $ref: "#/components/schemas/Error"
     post:
       summary: Create a new recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Recipe"
       responses:
         "201":
           description: Recipe created successfully
@@ -278,6 +284,12 @@ paths:
                 $ref: "#/components/schemas/Error"
     post:
       summary: Create a new ingredient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ingredient"
       responses:
         "201":
           description: Ingredient created successfully
@@ -343,6 +355,12 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ingredient"
       responses:
         "200":
           description: Ingredient updated successfully
@@ -426,6 +444,12 @@ paths:
     post:
       summary: Create a new user
       security: []  # Override global security for this endpoint, don't need to be authenticated when creating a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "201":
           description: User created successfully
@@ -491,6 +515,12 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: User updated successfully

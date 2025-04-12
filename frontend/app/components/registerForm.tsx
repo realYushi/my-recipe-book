@@ -69,22 +69,17 @@ export function RegisterForm({
     setLoading(true)
 
     try {
-      // Make the request exactly match what's in the OpenAPI spec
-      // Format request body to match exactly what's in your schema
       const userData = {
         username: formData.username,
         email: formData.email
-        // Don't include password if it's not defined in your User schema
       }
 
       console.log("Sending data:", userData)
 
-      // No Authorization header needed since /users POST has security: []
-      const response = await fetch('http://localhost:4010/users', {
+      const response = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer firebase_jwt_token'
         },
         body: JSON.stringify(userData)
       })
@@ -105,8 +100,7 @@ export function RegisterForm({
         }
       } else {
         console.log("Registration successful")
-        // Navigate to login or dashboard
-        // navigate('/auth/login')
+
       }
     } catch (error) {
       console.error("Fetch error:", error)
@@ -175,7 +169,7 @@ export function RegisterForm({
                   name="password"
                   type="password"
                   // value={formData.password}
-                  // onChange={handleChange}
+                  onChange={handleChange}
                   required
                   className={errors.password ? "border-red-500" : ""}
                 />
@@ -195,9 +189,7 @@ export function RegisterForm({
                 >
                   {loading ? "Creating account..." : "Register"}
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Sign up with Google
-                </Button>
+
               </div>
             </div>
             <div className="mt-4 text-center text-sm">

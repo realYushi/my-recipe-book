@@ -59,7 +59,7 @@ export function RegisterForm({
       });
 
       console.log("Registration successful");
-      navigate("/login");
+      navigate("/auth/login");
 
     } catch (error: any) {
       console.error("Registration error:", error);

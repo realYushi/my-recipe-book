@@ -8,6 +8,12 @@ class UserService {
             throw new Error(error);
         }
     }
+    async getUserById(id) {
+        try {
+            return await userRepository.getUserById(id);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
-
 module.exports = new UserService();

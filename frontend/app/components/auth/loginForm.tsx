@@ -9,57 +9,133 @@ import {
 } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
+import { useState } from "react"
+import { useNavigate } from "react-router"
+import { useForm, type SubmitHandler } from "react-hook-form"
+import { authService } from "~/service/authService"
+import { userService } from "~/service/userService"
+
+type FormInputs = {
+  email: string;
+  password: string;
+}
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<FormInputs>({
+    defaultValues: {
+      email: "",
+      password: ""
+    }
+  });
+
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    setServerError(null);
+
+    try {
+      console.log('Attempting login with email:', data.email);
+      const inputUser = await authService.login({
+        email: data.email,
+        password: data.password
+      });
+
+      console.log('Firebase login successful, user:', inputUser);
+      console.log('Attempting to fetch user details with ID:', inputUser.uid);
+
+      const user = await userService.getUser(inputUser.uid);
+
+      console.log('User details fetched successfully:', user);
+      console.log('Navigating to home page');
+
+
+
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setServerError(error.message || "An error occurred. Please try again.");
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Login</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your details below to login
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          {serverError && (
+            <div className="mb-4 rounded bg-red-50 p-3 text-sm text-red-600">
+              {serverError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^\S+@\S+\.\S+$/,
+                      message: "Please enter a valid email address"
+                    }
+                  })}
+                  placeholder="johndoe@example.com"
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
               </div>
+
               <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters"
+                    }
+                  })}
+                  placeholder="********"
+                  className={errors.password ? "border-red-500" : ""}
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                )}
               </div>
+
+
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Login with Google
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Logging in..." : "Login"}
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Sign up
+              Don't have an account?{" "}
+              <a href="/auth/register" className="underline underline-offset-4">
+                Register
               </a>
             </div>
           </form>
@@ -68,3 +144,5 @@ export function LoginForm({
     </div>
   )
 }
+
+export default LoginForm;

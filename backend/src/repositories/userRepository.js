@@ -11,6 +11,13 @@ class UserRepository {
         }
     }
 
+    async getUserById(id) {
+        try {
+            return await User.findOne({ id: id })
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
 
 module.exports = new UserRepository();

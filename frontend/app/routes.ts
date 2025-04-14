@@ -8,4 +8,5 @@ import {
 export default [
     route("/", "./pages/index.tsx"),
     route("/auth/register", "./pages/auth/register.tsx"),
+    route("/auth/login", "./pages/auth/login.tsx"),
 ] satisfies RouteConfig;

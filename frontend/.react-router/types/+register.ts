@@ -10,4 +10,5 @@ type Params = {
   "/": {};
   "/": {};
   "/auth/register": {};
+  "/auth/login": {};
 };

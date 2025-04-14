@@ -1,5 +1,4 @@
 const userService = require('../services/userService');
-const User = require('../models/userModel');
 
 class UserController {
     async createUser(req, res) {
@@ -18,7 +17,7 @@ class UserController {
     async getUserById(req, res) {
         try {
 
-            const user = await User.findOne({ id: req.params.id });
+            const user = await userService.getUserById(req.params.id);
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }

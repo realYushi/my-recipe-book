@@ -13,7 +13,6 @@ import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { authService } from "~/service/authService"
-import { userService } from "~/service/userService"
 
 type FormInputs = {
   email: string;
@@ -42,24 +41,21 @@ export function LoginForm({
     setServerError(null);
 
     try {
-      console.log('Attempting login with email:', data.email);
-      const inputUser = await authService.login({
-        email: data.email,
-        password: data.password
-      });
-
-      console.log('Firebase login successful, user:', inputUser);
-      console.log('Attempting to fetch user details with ID:', inputUser.uid);
-
-      const user = await userService.getUser(inputUser.uid);
-
-      console.log('User details fetched successfully:', user);
-      console.log('Navigating to home page');
-
-
-
+      const userExists = await authService.checkUserExists(data.email);
+      if (userExists) {
+        try {
+          await authService.login({
+            email: data.email,
+            password: data.password
+          });
+          navigate("/");
+        } catch (error: any) {
+          setServerError("Incorrect password. Please try again.");
+        }
+      } else {
+        setServerError("This email is not registered. Please sign up first.");
+      }
     } catch (error: any) {
-      console.error("Login error:", error);
       setServerError(error.message || "An error occurred. Please try again.");
     }
   };

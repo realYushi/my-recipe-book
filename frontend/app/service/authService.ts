@@ -1,5 +1,5 @@
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
 import auth from "~/config/firebaseConfig";
 
 export interface AuthCredentials {
@@ -22,6 +22,10 @@ export const authService = {
     },
     async logout() {
         await signOut(auth);
+    },
+    async checkUserExists(email: string): Promise<boolean> {
+        const response = await fetchSignInMethodsForEmail(auth, email);
+        return response.length > 0;
     },
     async getJwtToken() {
         const user = auth.currentUser;

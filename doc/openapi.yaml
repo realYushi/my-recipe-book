@@ -16,11 +16,10 @@ components:
       properties:
         id:
           type: string
-          format: uuid
-          description: The unique identifier for the user
+          description: The Firebase UID for the user
           readOnly: true
           examples:
-            - "123e4567-e89b-12d3-a456-426614174000"
+            - "q8KLm3P0fTXOp2VnRQZUG7I1jy42"
         username:
           type: string
           description: The username for the user
@@ -482,10 +481,9 @@ paths:
         - name: id
           in: path
           required: true
-          description: The unique identifier of the user
+          description: The Firebase UID of the user
           schema:
             type: string
-            format: uuid
       responses:
         "200":
           description: User retrieved successfully

@@ -5,6 +5,7 @@ class UserController {
     async createUser(req, res) {
         try {
             const userData = {
+                id: req.user.uid,
                 username: req.body.username,
                 email: req.body.email,
             }

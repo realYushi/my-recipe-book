@@ -11,6 +11,11 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { useState } from "react"
 import { useNavigate } from "react-router"
+import { initializeApp } from "firebase/app";
+import firebaseConfig from "~/config/firebaseConfig";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export function RegisterForm({
   className,
@@ -20,7 +25,7 @@ export function RegisterForm({
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    // password: ""
+    password: ""
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [loading, setLoading] = useState(false)
@@ -56,9 +61,9 @@ export function RegisterForm({
       validationErrors.email = "Please enter a valid email address"
     }
 
-    // if (!formData.password || formData.password.length < 8) {
-    //   validationErrors.password = "Password must be at least 8 characters"
-    // }
+    if (!formData.password || formData.password.length < 8) {
+      validationErrors.password = "Password must be at least 8 characters"
+    }
 
     setErrors(validationErrors)
 
@@ -69,22 +74,24 @@ export function RegisterForm({
     setLoading(true)
 
     try {
+
+
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+      const token = await userCredential.user.getIdToken();
       const userData = {
         username: formData.username,
-        email: formData.email
+        email: formData.email,
       }
-
-      console.log("Sending data:", userData)
-
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(userData)
       })
 
-      console.log("Response status:", response.status)
+      console.log("Response status:", response)
 
       if (!response.ok) {
         const errorText = await response.text()

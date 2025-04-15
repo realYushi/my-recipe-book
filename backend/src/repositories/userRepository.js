@@ -10,7 +10,9 @@ class UserRepository {
             throw new Error(error);
         }
     }
-
+    async deleteUser(userId) {
+        return await User.findOneAndDelete(userId);
+    }
 }
 
 module.exports = new UserRepository();

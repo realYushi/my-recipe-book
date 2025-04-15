@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### Delete User (Auth Required)
-DELETE {{baseUrl}}/users/{{testUserId}}
+DELETE {{baseUrl}}/users
 Authorization: Bearer {{mockToken}}
 
 ### 2. Recipe Endpoints (All Auth Required)

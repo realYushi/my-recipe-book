@@ -1,0 +1,21 @@
+const ingredientService = require('../services/ingredientService');
+
+class IngredientController {
+    async createIngredient(req, res) {
+        try {
+            const ingredientData = {
+                name: req.body.name,
+                category: req.body.category,
+                price: req.body.price,
+                unit: req.body.unit,
+            }
+            const ingredient = await ingredientService.createIngredient(ingredientData);
+            res.status(201).json(ingredient);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+}
+
+module.exports = new IngredientController();

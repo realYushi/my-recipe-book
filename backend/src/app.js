@@ -30,7 +30,7 @@ app.use(express.json());
 
 
 app.use('/api/users', verifyToken, userRouter);
-
+app.use('/api/ingredients', verifyToken, ingredientRouter);
 
 
 app.listen(PORT, () => {

@@ -22,7 +22,7 @@ const ingredientSchema = new mongoose.Schema({
         enum: ['kg', 'g', 'ml', 'l']
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true
     },

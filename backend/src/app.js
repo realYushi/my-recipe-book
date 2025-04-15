@@ -4,7 +4,7 @@ const userRouter = require('./routes/userRoutes');
 const verifyToken = require('./middleware/firebase-auth');
 const mongoose = require('mongoose');
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 connectDB()
     .then(() => console.log('Database connected successfully'))

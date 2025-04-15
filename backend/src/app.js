@@ -34,4 +34,5 @@ app.use('/api/users', verifyToken, userRouter);
 
 
 app.listen(PORT, () => {
+    console.log(`Server is running and listening on port ${PORT}`);
 });

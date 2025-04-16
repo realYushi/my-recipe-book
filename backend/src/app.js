@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const userRouter = require('./routes/userRoutes');
+const ingredientRouter = require('./routes/ingredientRoutes');
 const verifyToken = require('./middleware/firebase-auth');
 const mongoose = require('mongoose');
 const app = express();

@@ -31,7 +31,7 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, onChange }) => {
                 {imageSrc ? (
                     <AvatarImage src={imageSrc} alt={name} />
                 ) : (
-                    <AvatarFallback>{name?.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{name?.charAt(0) ?? "?"}</AvatarFallback>
                 )}
             </Avatar>
             <input

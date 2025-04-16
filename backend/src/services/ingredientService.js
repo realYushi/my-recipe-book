@@ -5,7 +5,7 @@ class IngredientService {
         try {
             return await ingredientRepository.createIngredient(ingredientData);
         } catch (error) {
-            throw new Error(error);
+            throw new Error('Failed to create ingredient: ' + error.message, { cause: error });
         }
     }
 }

@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+import User from '../models/userModel.js';
 
 class UserRepository {
 
@@ -20,5 +20,5 @@ class UserRepository {
     }
 }
 
-module.exports = new UserRepository();
+export default new UserRepository();
 

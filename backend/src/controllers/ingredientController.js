@@ -1,4 +1,4 @@
-const ingredientService = require('../services/ingredientService');
+import ingredientService from '../services/ingredientService.js';
 
 class IngredientController {
     async createIngredient(req, res) {
@@ -20,4 +20,4 @@ class IngredientController {
 
 }
 
-module.exports = new IngredientController();
+export default new IngredientController();

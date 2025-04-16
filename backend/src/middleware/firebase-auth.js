@@ -1,5 +1,7 @@
-require('dotenv').config();
-var admin = require("firebase-admin");
+import admin from "firebase-admin";
+import dotenv from 'dotenv';
+dotenv.config();
+
 const serviceAccount = {
     "type": "service_account",
     "project_id": "my-recipe-book-1e28c",
@@ -28,4 +30,4 @@ const verifyToken = async (req, res, next) => {
     next();
 }
 
-module.exports = verifyToken;
+export default verifyToken;

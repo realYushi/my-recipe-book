@@ -1,4 +1,4 @@
-const { Ingredient } = require('../models/ingredientModel');
+import { Ingredient } from '../models/ingredientModel.js';
 
 class IngredientRepository {
 
@@ -8,9 +8,11 @@ class IngredientRepository {
             return newIngredient;
         } catch (error) {
             throw new Error(`Failed to create ingredient: ${error.message}`);
+        }
+
     }
 
 }
 
-module.exports = new IngredientRepository();
+export default new IngredientRepository();
 

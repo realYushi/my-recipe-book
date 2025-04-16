@@ -1,4 +1,4 @@
-const ingredientRepository = require('../repositories/ingredientRepository');
+import ingredientRepository from '../repositories/ingredientRepository.js';
 
 class IngredientService {
     async createIngredient(ingredientData) {
@@ -9,4 +9,4 @@ class IngredientService {
         }
     }
 }
-module.exports = new IngredientService();
+export default new IngredientService();

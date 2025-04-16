@@ -7,8 +7,7 @@ class IngredientRepository {
             const newIngredient = await Ingredient.create(ingredientData);
             return newIngredient;
         } catch (error) {
-            throw new Error(error);
-        }
+            throw new Error(`Failed to create ingredient: ${error.message}`);
     }
 
 }

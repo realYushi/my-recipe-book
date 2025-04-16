@@ -1,5 +1,4 @@
-
-import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged } from "firebase/auth";
 import auth from "~/config/firebaseConfig";
 
 export interface AuthCredentials {
@@ -13,26 +12,54 @@ export interface RegisterCredentials extends AuthCredentials {
 
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<User> {
-        const response = await createUserWithEmailAndPassword(auth, credentials.email, credentials.password)
-        return response.user;
+        try {
+            const response = await createUserWithEmailAndPassword(auth, credentials.email, credentials.password)
+            return response.user;
+        } catch (error) {
+            throw new Error("Failed to register user");
+        }
     },
     async login(credentials: AuthCredentials): Promise<User> {
-        const response = await signInWithEmailAndPassword(auth, credentials.email, credentials.password)
-        return response.user;
+        try {
+            const response = await signInWithEmailAndPassword(auth, credentials.email, credentials.password)
+            return response.user;
+        } catch (error) {
+            throw new Error("Failed to login");
+        }
+    },
+    async getCurrentUser(): Promise<User | null> {
+        return new Promise((resolve) => {
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                unsubscribe();
+                resolve(user);
+            });
+        });
+    },
+    async isAuthenticated(): Promise<boolean> {
+        const user = await this.getCurrentUser();
+        return user !== null;
     },
     async logout() {
         await signOut(auth);
     },
     async checkUserExists(email: string): Promise<boolean> {
-        const response = await fetchSignInMethodsForEmail(auth, email);
-        return response.length > 0;
+        try {
+            const response = await fetchSignInMethodsForEmail(auth, email);
+            return response.length > 0;
+        } catch (error) {
+            throw new Error("Failed to check user exists");
+        }
     },
     async getJwtToken() {
         const user = auth.currentUser;
         if (!user) {
             throw new Error("User not found");
         }
-        return await user.getIdToken();
+        try {
+            return await user.getIdToken();
+        } catch (error) {
+            throw new Error("Failed to get JWT token");
+        }
     }
 
 }

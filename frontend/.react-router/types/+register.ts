@@ -11,4 +11,5 @@ type Params = {
   "/": {};
   "/auth/register": {};
   "/auth/login": {};
+  "/ingredients/create": {};
 };

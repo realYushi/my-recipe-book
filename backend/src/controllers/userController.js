@@ -1,6 +1,6 @@
-const userService = require('../services/userService');
+import userService from '../services/userService.js';
 
-class UserController {
+const UserController = {
     async createUser(req, res) {
         try {
             const userData = {
@@ -13,7 +13,7 @@ class UserController {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
-    }
+    },
     async getUserById(req, res) {
         try {
 
@@ -29,4 +29,4 @@ class UserController {
     }
 }
 
-module.exports = new UserController();
+export default UserController;

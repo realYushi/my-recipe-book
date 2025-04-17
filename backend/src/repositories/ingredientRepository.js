@@ -1,6 +1,6 @@
-const { Ingredient } = require('../models/ingredientModel');
+import { Ingredient } from '../models/ingredientModel.js';
 
-class IngredientRepository {
+const IngredientRepository = {
 
     async createIngredient(ingredientData) {
         try {
@@ -8,9 +8,20 @@ class IngredientRepository {
             return newIngredient;
         } catch (error) {
             throw new Error(`Failed to create ingredient: ${error.message}`);
+        }
+
+    },
+
+    async getIngredients(userId) {
+        try {
+            const ingredients = await Ingredient.find({ user: userId });
+            return ingredients;
+        } catch (error) {
+            throw new Error(`Failed to get ingredients: ${error.message}`);
+        }
     }
 
 }
 
-module.exports = new IngredientRepository();
+export default IngredientRepository;
 

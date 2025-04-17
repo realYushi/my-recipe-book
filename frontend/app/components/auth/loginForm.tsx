@@ -45,19 +45,15 @@ export function LoginForm({
       const userExists = await authService.checkUserExists(data.email);
       if (userExists) {
         try {
-          // Step 1: Authenticate with Firebase
           const user = await authService.login({
             email: data.email,
             password: data.password
           });
 
           try {
-            // Step 2: Check if user exists in your backend
             await userService.getUser(user.uid);
-            // User exists in backend, proceed with navigation
             navigate("/");
           } catch (error) {
-            // Step 3: User doesn't exist in backend, create them
             await userService.createUser({
               id: user.uid,
               email: user.email || "",

@@ -1,10 +1,12 @@
-const bypassAuth = (req, res, next) => {
+const testAuth = (req, res, next) => {
     req.user = {
         uid: 'test-user-123',
         email: 'test@example.com',
         name: 'Test User'
     };
-    next();
-}
+    console.log('Test user authenticated');
 
-export default bypassAuth;
+    next();
+};
+
+export default testAuth;

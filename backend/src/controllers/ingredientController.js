@@ -1,18 +1,25 @@
-const ingredientService = require('../services/ingredientService');
+import ingredientService from '../services/ingredientService.js';
 
-class IngredientController {
+const IngredientController = {
     async createIngredient(req, res) {
         try {
-            const userID = req.user.uid;
             const ingredientData = {
                 name: req.body.name,
                 category: req.body.category,
                 price: req.body.price,
                 unit: req.body.unit,
-                user: userID,
+                user: req.user.uid,
             }
             const ingredient = await ingredientService.createIngredient(ingredientData);
             res.status(201).json(ingredient);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+    async getIngredients(req, res) {
+        try {
+            const ingredients = await ingredientService.getIngredients(req.user.uid);
+            res.status(200).json(ingredients);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -20,4 +27,4 @@ class IngredientController {
 
 }
 
-module.exports = new IngredientController();
+export default IngredientController;

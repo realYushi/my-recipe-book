@@ -27,6 +27,8 @@ import {
     Dialog,
     DialogContent,
     DialogTrigger,
+    DialogTitle,
+    DialogDescription,
 } from "~/components/ui/dialog";
 
 // Custom Components
@@ -106,6 +108,21 @@ function CreateRecipe() {
         }
     }
 
+    // Refresh ingredients
+    const refreshIngredients = async () => {
+        try {
+            setLoadingIngredients(true);
+            const ingredients = await ingredientService.getIngredients();
+            setAvailableIngredients(ingredients);
+            // Close the dialog when successful
+            setIngredientDialogOpen(false);
+        } catch (error) {
+            console.error("Error fetching ingredients:", error);
+        } finally {
+            setLoadingIngredients(false);
+        }
+    };
+
     // Initialize editor and fetch ingredients
     useEffect(() => {
         // Initialize editor
@@ -114,27 +131,21 @@ function CreateRecipe() {
             instance = new Crepe({
                 root: editorRef.current,
                 defaultValue: "",
+                featureConfigs: {
+                    [CrepeFeature.ImageBlock]: {
+                        blockUploadButton: () => null
+                    }
+                }
             });
 
-
             instance.create().then(() => {
+                console.log("Crepe instance created");
                 setCrepeInstance(instance);
             });
         }
 
         // Fetch ingredients
-        const fetchIngredients = async () => {
-            try {
-                setLoadingIngredients(true);
-                const ingredients = await ingredientService.getIngredients();
-                setAvailableIngredients(ingredients);
-            } catch (error) {
-                console.error("Error fetching ingredients:", error);
-            } finally {
-                setLoadingIngredients(false);
-            }
-        }
-        fetchIngredients();
+        refreshIngredients();
 
         // Cleanup
         return () => {
@@ -180,8 +191,12 @@ function CreateRecipe() {
                                 <DialogTrigger asChild>
                                     <Button type="button" variant="default" className="mt-2">+ Create Ingredient</Button>
                                 </DialogTrigger>
-                                <DialogContent>
-                                    <CreateIngredient />
+                                <DialogContent className="max-w-md">
+                                    <DialogTitle>Create New Ingredient</DialogTitle>
+                                    <DialogDescription>Add a new ingredient to your collection</DialogDescription>
+                                    <div className="py-2">
+                                        <CreateIngredient onSuccess={refreshIngredients} hideHeader={true} />
+                                    </div>
                                 </DialogContent>
                             </Dialog>
 

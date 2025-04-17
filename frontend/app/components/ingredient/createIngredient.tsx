@@ -4,7 +4,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "../ui/card"
@@ -19,12 +18,10 @@ import {
 } from "../ui/select"
 import { useForm, Controller } from "react-hook-form"
 import { ingredientService } from "~/service/ingredientService"
-import { useNavigate } from "react-router"
 import { useState } from "react"
 import { Alert, AlertDescription } from "../ui/alert"
 
-export function CreateIngredient() {
-    const navigate = useNavigate();
+export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => void, hideHeader?: boolean }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -47,8 +44,10 @@ export function CreateIngredient() {
         setError(null);
 
         try {
-            await ingredientService.createIngredient(data);
-            navigate("/");
+            const newIngredient = await ingredientService.createIngredient(data);
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (error) {
             setError("Failed to create ingredient. Please try again.");
         } finally {
@@ -57,11 +56,13 @@ export function CreateIngredient() {
     };
 
     return (
-        <Card className="w-[350px]">
-            <CardHeader>
-                <CardTitle>Create New Ingredient</CardTitle>
-                <CardDescription>Add a new ingredient to your recipe.</CardDescription>
-            </CardHeader>
+        <Card className="w-[350px] border-0 shadow-none">
+            {!hideHeader && (
+                <CardHeader>
+                    <CardTitle>Create New Ingredient</CardTitle>
+                    <CardDescription>Add a new ingredient to your recipe.</CardDescription>
+                </CardHeader>
+            )}
             <CardContent>
                 {error && (
                     <Alert variant="destructive" className="mb-4">
@@ -159,7 +160,7 @@ export function CreateIngredient() {
                             )}
                         </div>
                         <div className="flex justify-between mt-4">
-                            <Button type="button" variant="outline" onClick={() => navigate("/ingredients")}>
+                            <Button type="button" variant="outline" onClick={() => onSuccess?.()}>
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={isLoading}>

@@ -30,7 +30,6 @@ mongoose.connection.once('open', () => {
 
 app.use(express.json());
 
-
 //bypass auth
 // app.use('/api/users', bypassAuth, userRouter);
 // app.use('/api/ingredients', bypassAuth, ingredientRouter);

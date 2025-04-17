@@ -1,7 +1,11 @@
-import { Crepe } from "@milkdown/crepe";
+import { Crepe, CrepeFeature } from "@milkdown/crepe";
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
-import { Button } from "~/components/ui/button"
+import { useEffect, useRef, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+
+// UI Components
+import { Button } from "~/components/ui/button";
 import {
     Card,
     CardContent,
@@ -9,40 +13,52 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "~/components/ui/card"
-import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
+} from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "~/components/ui/select"
+} from "~/components/ui/select";
 import {
     Dialog,
     DialogContent,
     DialogTrigger,
-} from "~/components/ui/dialog"
+} from "~/components/ui/dialog";
+
+// Custom Components
 import CreateIngredient from "../ingredient/createIngredient";
-import { useEffect, useRef, useState } from "react";
+
+// Types
 import type { Ingredient, RecipeIngredient } from "~/model/ingredient";
-import { useFieldArray, useForm } from "react-hook-form";
 import { IngredientCategory, IngredientUnit } from "~/model/ingredient";
 import type { Recipe } from "~/model/recipe";
+
+// Services
 import { ingredientService } from "~/service/ingredientService";
 import recipeService from "~/service/recipeSerive";
 
 function CreateRecipe() {
-    // editor
+    // Editor state
     const editorRef = useRef(null);
-    const [ingredientDialogOpen, setIngredientDialogOpen] = useState(false);
-    // ingredients
-    const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
-    const [loadingIngredients, setLoadingIngredients] = useState(false);
     const [crepeInstance, setCrepeInstance] = useState<any>(null);
 
-    // form
+    // Ingredient dialog state
+    const [ingredientDialogOpen, setIngredientDialogOpen] = useState(false);
+
+    // Ingredients state
+    const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
+    const [loadingIngredients, setLoadingIngredients] = useState(false);
+
+    // Recipe ingredient
+    const [recipeIngredient, setRecipeIngredient] = useState<string>("");
+    const [currentQuantity, setCurrentQuantity] = useState<number>(1);
+    const [currentUnit, setCurrentUnit] = useState<IngredientUnit>(IngredientUnit.G);
+
+    // Form setup
     const recipeForm = useForm<Recipe>({
         defaultValues: {
             name: "",
@@ -53,30 +69,29 @@ function CreateRecipe() {
             instructions: ""
         }
     });
+
     const { fields, append, remove } = useFieldArray({
         control: recipeForm.control,
         name: "ingredients"
     });
-    // recipe ingredients
-    const [currentIngredient, setCurrentIngredient] = useState<string>("");
-    const [currentQuantity, setCurrentQuantity] = useState<number>(1);
-    const [currentUnit, setCurrentUnit] = useState<IngredientUnit>(IngredientUnit.G);
 
+    // Add ingredient to recipe
     const addIngredientToRecipe = () => {
-        if (!currentIngredient) {
+        if (!recipeIngredient) {
             return;
         }
-        const ingredient = availableIngredients.find(i => i._id === currentIngredient);
-        if (!ingredient) {
+        const selectedIngredient = availableIngredients.find(i => i._id === recipeIngredient);
+        if (!selectedIngredient?._id) {
             return;
         }
-        append({ ingredient: currentIngredient, quantity: currentQuantity, unit: currentUnit });
-        setCurrentIngredient("");
+        append({ ingredient: selectedIngredient._id, quantity: currentQuantity, unit: currentUnit });
+        // Reset ingredient selection
+        setRecipeIngredient("");
         setCurrentQuantity(1);
         setCurrentUnit(IngredientUnit.G);
-        console.log(recipeForm.getValues("ingredients"));
     }
 
+    // Form submission
     const onSubmit = async (data: Recipe) => {
         if (crepeInstance) {
             const instructions = crepeInstance.getMarkdown();
@@ -91,20 +106,23 @@ function CreateRecipe() {
         }
     }
 
+    // Initialize editor and fetch ingredients
     useEffect(() => {
-        // editor
+        // Initialize editor
         let instance: any = null;
         if (editorRef.current) {
             instance = new Crepe({
                 root: editorRef.current,
-                defaultValue: "Add your cooking instructions here...",
+                defaultValue: "",
             });
+
+
             instance.create().then(() => {
-                // Store the instance in state after it's initialized
                 setCrepeInstance(instance);
             });
         }
-        //ingredients
+
+        // Fetch ingredients
         const fetchIngredients = async () => {
             try {
                 setLoadingIngredients(true);
@@ -117,6 +135,8 @@ function CreateRecipe() {
             }
         }
         fetchIngredients();
+
+        // Cleanup
         return () => {
             if (instance) {
                 instance.destroy();
@@ -190,7 +210,7 @@ function CreateRecipe() {
                             <div className="mt-2 space-y-2">
                                 <div className="grid grid-cols-12 gap-2">
                                     <div className="col-span-6">
-                                        <Select onValueChange={(value) => setCurrentIngredient(value)} value={currentIngredient}>
+                                        <Select onValueChange={(value) => setRecipeIngredient(value)} value={recipeIngredient}>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select ingredient" />
                                             </SelectTrigger>

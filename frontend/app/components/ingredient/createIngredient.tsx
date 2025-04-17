@@ -1,5 +1,13 @@
 import { IngredientCategory, IngredientUnit, type Ingredient } from "~/model/ingredient"
 import { Button } from "../ui/button"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import {
@@ -11,17 +19,12 @@ import {
 } from "../ui/select"
 import { useForm, Controller } from "react-hook-form"
 import { ingredientService } from "~/service/ingredientService"
+import { useNavigate } from "react-router"
 import { useState } from "react"
 import { Alert, AlertDescription } from "../ui/alert"
-import {
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-} from "../ui/dialog"
 
-// Add onSuccess prop to allow notifying parent component
-export function CreateIngredient({ onSuccess }: { onSuccess?: () => void }) {
+export function CreateIngredient() {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -45,9 +48,7 @@ export function CreateIngredient({ onSuccess }: { onSuccess?: () => void }) {
 
         try {
             await ingredientService.createIngredient(data);
-            if (onSuccess) {
-                onSuccess();
-            }
+            navigate("/");
         } catch (error) {
             setError("Failed to create ingredient. Please try again.");
         } finally {
@@ -56,12 +57,12 @@ export function CreateIngredient({ onSuccess }: { onSuccess?: () => void }) {
     };
 
     return (
-        <>
-            <DialogHeader className="p-5">
-                <DialogTitle>Create New Ingredient</DialogTitle>
-                <DialogDescription>Add a new ingredient to your recipe.</DialogDescription>
-            </DialogHeader>
-            <div className="p-4 pt-0">
+        <Card className="w-[350px]">
+            <CardHeader>
+                <CardTitle>Create New Ingredient</CardTitle>
+                <CardDescription>Add a new ingredient to your recipe.</CardDescription>
+            </CardHeader>
+            <CardContent>
                 {error && (
                     <Alert variant="destructive" className="mb-4">
                         <AlertDescription>{error}</AlertDescription>
@@ -157,18 +158,18 @@ export function CreateIngredient({ onSuccess }: { onSuccess?: () => void }) {
                                 <p className="text-sm text-red-500">{errors.unit.message}</p>
                             )}
                         </div>
+                        <div className="flex justify-between mt-4">
+                            <Button type="button" variant="outline" onClick={() => navigate("/ingredients")}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isLoading}>
+                                {isLoading ? "Creating..." : "Create"}
+                            </Button>
+                        </div>
                     </div>
-                    <DialogFooter className="mt-6">
-                        <Button type="button" variant="outline" onClick={onSuccess}>
-                            Cancel
-                        </Button>
-                        <Button type="submit" disabled={isLoading}>
-                            {isLoading ? "Creating..." : "Create"}
-                        </Button>
-                    </DialogFooter>
                 </form>
-            </div>
-        </>
+            </CardContent>
+        </Card>
     )
 }
 

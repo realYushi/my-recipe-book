@@ -12,3 +12,11 @@ export interface Recipe {
     updatedAt?: Date;
 }
 
+export interface RecipeFormData {
+    name: string;
+    portions: number;
+    prepTime: number;
+    cookTime: number;
+    ingredients: RecipeIngredient[];
+    instructions: string;
+}

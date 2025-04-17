@@ -10,6 +10,15 @@ const IngredientRepository = {
             throw new Error(`Failed to create ingredient: ${error.message}`);
         }
 
+    },
+
+    async getIngredients(userId) {
+        try {
+            const ingredients = await Ingredient.find({ user: userId });
+            return ingredients;
+        } catch (error) {
+            throw new Error(`Failed to get ingredients: ${error.message}`);
+        }
     }
 
 }

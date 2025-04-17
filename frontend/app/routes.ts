@@ -9,8 +9,8 @@ export default [
     route("/", "./pages/index.tsx"),
     route("/auth/register", "./pages/auth/register.tsx"),
     route("/auth/login", "./pages/auth/login.tsx"),
-    route("/recipes/create", "./pages/recipes/create-recipe.tsx"),
     layout("./components/ProtectedRoute.tsx", [
+        route("/recipes/create", "./pages/recipes/create-recipe.tsx"),
         route("/ingredients/create", "./pages/ingredients/createIngredient.tsx"),
     ] satisfies RouteConfig)
 ] satisfies RouteConfig;

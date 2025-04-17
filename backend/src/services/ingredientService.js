@@ -7,6 +7,13 @@ const IngredientService = {
         } catch (error) {
             throw new Error('Failed to create ingredient: ' + error.message, { cause: error });
         }
+    },
+    async getIngredients(userId) {
+        try {
+            return await ingredientRepository.getIngredients(userId);
+        } catch (error) {
+            throw new Error('Failed to get ingredients: ' + error.message, { cause: error });
+        }
     }
 }
 export default IngredientService;

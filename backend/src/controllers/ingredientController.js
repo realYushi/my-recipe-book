@@ -15,6 +15,14 @@ const IngredientController = {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    },
+    async getIngredients(req, res) {
+        try {
+            const ingredients = await ingredientService.getIngredients(req.user.uid);
+            res.status(200).json(ingredients);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
 
 }

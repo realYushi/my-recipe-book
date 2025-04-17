@@ -10,10 +10,14 @@ class UserRepository {
             throw new Error(error);
         }
     }
+
     async deleteUser(userId) {
-        return await User.findOneAndDelete(userId);
+        try {
+            return await User.findOneAndDelete({ id: userId });
+        } catch (error) {
+            throw new Error(`Failed to delete user: ${error.message}`);
+        }
     }
 }
-
 module.exports = new UserRepository();
 

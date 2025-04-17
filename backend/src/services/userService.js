@@ -11,13 +11,16 @@ class UserService {
     }
 
     async deleteUser(userId) {
-        await recipeRepository.deleteRecipesByUser(userId);
-        const deletedUser = await userRepository.deleteUser(userId);
-        if (!deletedUser) {
-            throw new Error('User not found');
+        try {
+            await recipeRepository.deleteRecipesByUser(userId);
+            const deletedUser = await userRepository.deleteUser(userId);
+            if (!deletedUser) {
+                throw new Error('User not found');
+            }
+            return deletedUser;
+        } catch (error) {
+            throw new Error(error.message || 'Failed to delete user');
         }
-
-        return deletedUser;
     }
 }
 

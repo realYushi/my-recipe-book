@@ -1,9 +1,12 @@
 const Recipe = require('../models/recipeModel');
 
 class RecipeRepository {
-
     async deleteRecipesByUser(userId) {
-        return await Recipe.deleteMany({ createdBy: userId });
+        try {
+            return await Recipe.deleteMany({ createdBy: userId });
+        } catch (error) {
+            throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
+        }
     }
 }
 

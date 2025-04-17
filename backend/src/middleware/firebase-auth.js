@@ -21,12 +21,6 @@ admin.initializeApp({
 const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization?.split('Bearer ')[1];
 
-    // Allow mock token for testing
-    if (token === 'mock-firebase-token-for-testing') {
-        req.user = { uid: 'mockUserId' }; // Mock user data
-        return next();
-    }
-
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }

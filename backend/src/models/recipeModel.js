@@ -16,11 +16,13 @@ const recipeSchema = new mongoose.Schema({
             unit: { type: String, required: true },
         },
     ],
-    portions: { type: Number, required: true },
-    preparationTime: { type: Number, required: true },
-    cookingTime: { type: Number, required: true },
-    createdBy: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
+    metadata: {
+        portions: { type: Number, required: true },
+        preparationTime: { type: Number, required: true },
+        cookingTime: { type: Number, required: true },
+        createdBy: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
+    },
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

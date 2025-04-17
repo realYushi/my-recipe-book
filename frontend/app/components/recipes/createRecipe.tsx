@@ -99,6 +99,9 @@ function CreateRecipe() {
     const [formError, setFormError] = useState<string | null>(null);
     const [showValidationSummary, setShowValidationSummary] = useState(false);
 
+    // Success message state
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
     // Form setup
     const {
         register,
@@ -142,6 +145,7 @@ function CreateRecipe() {
     // Form submission
     const onSubmit = async (data: RecipeFormValues) => {
         setFormError(null);
+        setSuccessMessage(null);
         setShowValidationSummary(false);
 
         if (crepeInstance) {
@@ -155,8 +159,8 @@ function CreateRecipe() {
         }
 
         try {
-            const response = await recipeService.createRecipe(data as Recipe);
-            console.log(response);
+            await recipeService.createRecipe(data as Recipe);
+            setSuccessMessage("Recipe created successfully!");
         } catch (error) {
             console.error("Error creating recipe:", error);
             setFormError("Failed to create recipe. Please try again.");
@@ -234,6 +238,12 @@ function CreateRecipe() {
                     <CardDescription>Share your culinary masterpiece with the world</CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {successMessage && (
+                        <Alert className="mb-4 bg-green-50 border-green-400 text-green-800">
+                            <AlertDescription>{successMessage}</AlertDescription>
+                        </Alert>
+                    )}
+
                     {formError && (
                         <Alert variant="destructive" className="mb-4">
                             <AlertDescription>{formError}</AlertDescription>

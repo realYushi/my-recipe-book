@@ -4,6 +4,8 @@ import userRouter from './routes/userRoutes.js';
 import ingredientRouter from './routes/ingredientRoutes.js';
 import verifyToken from './middleware/firebase-auth.js';
 import mongoose from 'mongoose';
+import recipeRouter from './routes/recipeRoutes.js';
+import testAuth from './middleware/test-auth.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -29,9 +31,12 @@ mongoose.connection.once('open', () => {
 app.use(express.json());
 
 
+// Test routes
+// app.use('/api/users', testAuth, userRouter);
 
 app.use('/api/users', verifyToken, userRouter);
 app.use('/api/ingredients', verifyToken, ingredientRouter);
+app.use('/api/recipes', verifyToken, recipeRouter);
 
 
 app.listen(PORT, () => {

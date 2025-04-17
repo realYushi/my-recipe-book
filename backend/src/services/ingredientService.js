@@ -1,6 +1,6 @@
 import ingredientRepository from '../repositories/ingredientRepository.js';
 
-class IngredientService {
+const IngredientService = {
     async createIngredient(ingredientData) {
         try {
             return await ingredientRepository.createIngredient(ingredientData);
@@ -9,4 +9,4 @@ class IngredientService {
         }
     }
 }
-export default new IngredientService();
+export default IngredientService;

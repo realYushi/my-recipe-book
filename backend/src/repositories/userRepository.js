@@ -1,6 +1,6 @@
 import User from '../models/userModel.js';
 
-class UserRepository {
+const UserRepository = {
 
     async createUser(userData) {
         try {
@@ -9,7 +9,7 @@ class UserRepository {
         } catch (error) {
             throw new Error(error);
         }
-    }
+    },
 
     async getUserById(id) {
         try {
@@ -20,5 +20,5 @@ class UserRepository {
     }
 }
 
-export default new UserRepository();
+export default UserRepository;
 

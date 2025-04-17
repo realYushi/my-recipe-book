@@ -1,6 +1,6 @@
 import { Ingredient } from '../models/ingredientModel.js';
 
-class IngredientRepository {
+const IngredientRepository = {
 
     async createIngredient(ingredientData) {
         try {
@@ -14,5 +14,5 @@ class IngredientRepository {
 
 }
 
-export default new IngredientRepository();
+export default IngredientRepository;
 

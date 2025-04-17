@@ -1,6 +1,6 @@
 import ingredientService from '../services/ingredientService.js';
 
-class IngredientController {
+const IngredientController = {
     async createIngredient(req, res) {
         try {
             const userID = req.user.uid;
@@ -20,4 +20,4 @@ class IngredientController {
 
 }
 
-export default new IngredientController();
+export default IngredientController;

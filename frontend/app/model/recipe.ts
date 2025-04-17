@@ -3,8 +3,8 @@ export interface Recipe {
     id?: string;
     name: string;
     portions: number;
-    prepTime: number;
-    cookTime: number;
+    preparationTime: number;
+    cookingTime: number;
     ingredients: RecipeIngredient[];
     instructions: string;
     user?: string;
@@ -15,8 +15,8 @@ export interface Recipe {
 export interface RecipeFormData {
     name: string;
     portions: number;
-    prepTime: number;
-    cookTime: number;
+    preparationTime: number;
+    cookingTime: number;
     ingredients: RecipeIngredient[];
     instructions: string;
 }

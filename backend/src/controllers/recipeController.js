@@ -9,12 +9,12 @@ const RecipeController = {
                 portions: req.body.portions,
                 preparationTime: req.body.preparationTime,
                 cookingTime: req.body.cookingTime,
-                user: req.user.uid
+                user: req.user.user_id
             }
             const recipe = await recipeService.createRecipe(recipeData);
             res.status(201).json(recipe);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: "Failed to create recipe" });
         }
     },
 };

@@ -35,6 +35,7 @@ export const authService = {
             });
         });
     },
+
     async isAuthenticated(): Promise<boolean> {
         const user = await this.getCurrentUser();
         return user !== null;

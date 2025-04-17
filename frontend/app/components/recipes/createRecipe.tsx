@@ -31,6 +31,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { IngredientCategory, IngredientUnit } from "~/model/ingredient";
 import type { Recipe } from "~/model/recipe";
 import { ingredientService } from "~/service/ingredientService";
+import recipeService from "~/service/recipeSerive";
 
 function CreateRecipe() {
     // editor
@@ -39,15 +40,15 @@ function CreateRecipe() {
     // ingredients
     const [availableIngredients, setAvailableIngredients] = useState<Ingredient[]>([]);
     const [loadingIngredients, setLoadingIngredients] = useState(false);
-
+    const [crepeInstance, setCrepeInstance] = useState<any>(null);
 
     // form
     const recipeForm = useForm<Recipe>({
         defaultValues: {
             name: "",
-            portions: 0,
-            prepTime: 0,
-            cookTime: 0,
+            portions: 1,
+            preparationTime: 0,
+            cookingTime: 0,
             ingredients: [],
             instructions: ""
         }
@@ -69,26 +70,39 @@ function CreateRecipe() {
         if (!ingredient) {
             return;
         }
-        append({ ingredient: ingredient, quantity: currentQuantity, unit: currentUnit });
+        append({ ingredient: currentIngredient, quantity: currentQuantity, unit: currentUnit });
         setCurrentIngredient("");
         setCurrentQuantity(1);
         setCurrentUnit(IngredientUnit.G);
         console.log(recipeForm.getValues("ingredients"));
     }
 
-    const onSubmit = (data: Recipe) => {
-        console.log(data);
+    const onSubmit = async (data: Recipe) => {
+        if (crepeInstance) {
+            const instructions = crepeInstance.getMarkdown();
+            data.instructions = instructions;
+        }
+
+        try {
+            const response = await recipeService.createRecipe(data);
+            console.log(response);
+        } catch (error) {
+            console.error("Error creating recipe:", error);
+        }
     }
 
     useEffect(() => {
         // editor
-        let crepeInstance = null;
+        let instance: any = null;
         if (editorRef.current) {
-            crepeInstance = new Crepe({
+            instance = new Crepe({
                 root: editorRef.current,
                 defaultValue: "Add your cooking instructions here...",
             });
-            crepeInstance.create();
+            instance.create().then(() => {
+                // Store the instance in state after it's initialized
+                setCrepeInstance(instance);
+            });
         }
         //ingredients
         const fetchIngredients = async () => {
@@ -104,8 +118,8 @@ function CreateRecipe() {
         }
         fetchIngredients();
         return () => {
-            if (crepeInstance) {
-                crepeInstance.destroy();
+            if (instance) {
+                instance.destroy();
             }
         };
     }, []);
@@ -127,15 +141,15 @@ function CreateRecipe() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="portions">Portions</Label>
-                                <Input id="portions" type="number" min="1" placeholder="Number of servings" {...recipeForm.register("portions")} />
+                                <Input id="portions" type="number" min="1" placeholder="Number of servings" {...recipeForm.register("portions", { valueAsNumber: true })} />
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="prepTime">Preparation Time (min)</Label>
-                                <Input id="prepTime" type="number" min="0" placeholder="Prep time" {...recipeForm.register("prepTime")} />
+                                <Label htmlFor="preparationTime">Preparation Time (min)</Label>
+                                <Input id="preparationTime" type="number" min="0" placeholder="Prep time" {...recipeForm.register("preparationTime", { valueAsNumber: true })} />
                             </div>
                             <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="cookTime">Cooking Time (min)</Label>
-                                <Input id="cookTime" type="number" min="0" placeholder="Cook time" {...recipeForm.register("cookTime")} />
+                                <Label htmlFor="cookingTime">Cooking Time (min)</Label>
+                                <Input id="cookingTime" type="number" min="0" placeholder="Cook time" {...recipeForm.register("cookingTime", { valueAsNumber: true })} />
                             </div>
                         </div>
 
@@ -150,6 +164,29 @@ function CreateRecipe() {
                                     <CreateIngredient />
                                 </DialogContent>
                             </Dialog>
+
+                            {/* Display added ingredients */}
+                            {fields.length > 0 && (
+                                <div className="mt-4 mb-4 border rounded-md p-3 bg-gray-50">
+                                    <h3 className="text-sm font-medium mb-2">Added Ingredients:</h3>
+                                    {fields.map((field, index) => (
+                                        <div key={field.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
+                                            <span className="font-medium">{availableIngredients.find(i => i._id === field.ingredient)?.name}</span>
+                                            <span>{field.quantity} {field.unit}</span>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => remove(index)}
+                                            >
+                                                ✕
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Ingredient selection controls */}
                             <div className="mt-2 space-y-2">
                                 <div className="grid grid-cols-12 gap-2">
                                     <div className="col-span-6">
@@ -200,7 +237,7 @@ function CreateRecipe() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                     <Button variant="outline">Cancel</Button>
-                    <Button>Save Recipe</Button>
+                    <Button onClick={recipeForm.handleSubmit(onSubmit)}>Save Recipe</Button>
                 </CardFooter>
             </Card>
         </div>

@@ -7,8 +7,8 @@ interface EditableAvatarProps {
     onChange?: (imageDataUrl: string) => void;
 }
 
-const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, onChange }) => {
-    const [imageSrc, setImageSrc] = useState<string | null>(null);
+const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, avatar, onChange }) => {
+    const [imageSrc, setImageSrc] = useState<string | null>(avatar || null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,9 +16,10 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, onChange }) => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImageSrc(reader.result as string);
+                const result = reader.result as string;
+                setImageSrc(result );
                 if (onChange) {
-                    onChange(reader.result as string);
+                    onChange(result);
                 }
             };
             reader.readAsDataURL(file);
@@ -27,7 +28,8 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, onChange }) => {
 
     return (
         <div className="relative">
-            <Avatar className="w-24 h-24 mb-4 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+            <Avatar className="w-24 h-24 mb-4 cursor-pointer border-2 border-white shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out" 
+            onClick={() => fileInputRef.current?.click()}>
                 {imageSrc ? (
                     <AvatarImage src={imageSrc} alt={name} />
                 ) : (

@@ -35,23 +35,5 @@ export const userService = {
             throw new Error("Failed to fetch user");
         }
     },
-    async getUserProfile(id: string) {
-        try {
-            const jwtToken = await authService.getJwtToken();
-            const response = await fetch(`/api/users/${id}/profile`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${jwtToken}`
-                },
-            })
-            if (!response.ok) {
-                throw new Error("Failed to fetch user profile");
-            }
-            return response.json();
-        }
-        catch (error) {
-            throw new Error("Failed to fetch user profile");
-        }
-    },
 }
 

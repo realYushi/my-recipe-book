@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -12,11 +12,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const EditProfileButton: React.FC = () => {
+interface EditProfileButtonProps {
+    onAvatarChange?: (newAvatar: string) => void;
+}
+
+const EditProfileButton: React.FC<EditProfileButtonProps> = ({onAvatarChange}) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+
+    const handleSave = () => {
+        console.log('Profile updated:', { name, email });
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className = "mt-4">
                     Edit Profile
                 </Button>
             </DialogTrigger>
@@ -29,12 +40,27 @@ const EditProfileButton: React.FC = () => {
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Name</Label>
-                        <Input id="name" placeholder="Your Name" className="col-span-3" />
+                        <Label htmlFor="name" className="text-right">
+                            Name
+                        </Label>
+                        <Input id="name" value="name" 
+                        onChange={(e) => setName(e.target.value)} 
+                        placeholder = "Your Name"
+                        className="col-span-3" />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="email" className="text-right">
+                            Email
+                        </Label>
+                        <Input id="email" 
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)} 
+                        placeholder = "Your Email"
+                        className="col-span-3" />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="button" onClick = {handleSave}>Save changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

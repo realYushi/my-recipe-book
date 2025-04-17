@@ -7,4 +7,4 @@ const bypassAuth = (req, res, next) => {
     next();
 }
 
-module.exports = bypassAuth;
+export default bypassAuth;

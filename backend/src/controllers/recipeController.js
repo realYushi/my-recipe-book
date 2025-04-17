@@ -9,7 +9,7 @@ const RecipeController = {
                 portions: req.body.portions,
                 preparationTime: req.body.preparationTime,
                 cookingTime: req.body.cookingTime,
-                user: req.user.user_id
+                user: req.user.uid
             }
             const recipe = await recipeService.createRecipe(recipeData);
             res.status(201).json(recipe);

@@ -19,11 +19,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "~/components/ui/select"
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "~/components/ui/dialog"
 import CreateIngredient from "../ingredient/createIngredient";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function CreateRecipe() {
     const editorRef = useRef(null);
+    const [ingredientDialogOpen, setIngredientDialogOpen] = useState(false);
 
     useEffect(() => {
         let crepeInstance = null;
@@ -70,7 +76,6 @@ function CreateRecipe() {
                             </div>
                         </div>
 
-
                         <div>
                             <Label className="text-lg font-medium">Ingredients</Label>
                             <div className="mt-2 space-y-2">
@@ -93,15 +98,21 @@ function CreateRecipe() {
                                                 <SelectValue placeholder="Unit" />
                                             </SelectTrigger>
                                             <SelectContent>
-
                                             </SelectContent>
                                         </Select>
                                     </div>
                                 </div>
                             </div>
-                            <Button type="button" variant="outline" className="mt-2">+ Add Ingredient</Button>
-                        </div>
 
+                            <Dialog open={ingredientDialogOpen} onOpenChange={setIngredientDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button type="button" variant="outline" className="mt-2">+ Add Ingredient</Button>
+                                </DialogTrigger>
+                                <DialogContent className="p-0 w-[350px] h-[500px]">
+                                    <CreateIngredient onSuccess={() => setIngredientDialogOpen(false)} />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
 
                         <div>
                             <Label className="text-lg font-medium">Cooking Instructions</Label>

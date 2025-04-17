@@ -13,21 +13,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface EditProfileButtonProps {
-    onAvatarChange?: (newAvatar: string) => void;
+    onAvatarChange: (newAvatar: string) => void;
+    onNameChange: (newName: string) => void;
 }
 
-const EditProfileButton: React.FC<EditProfileButtonProps> = ({onAvatarChange}) => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+const EditProfileButton: React.FC<EditProfileButtonProps> = ({onAvatarChange,onNameChange,}) => {
+    const [name, setName] = useState("");
 
     const handleSave = () => {
-        console.log('Profile updated:', { name, email });
+        onNameChange(name);
     }
 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className = "mt-4">
+                <Button variant="outline" className = "ml-auto">
                     Edit Profile
                 </Button>
             </DialogTrigger>
@@ -35,7 +35,7 @@ const EditProfileButton: React.FC<EditProfileButtonProps> = ({onAvatarChange}) =
                 <DialogHeader>
                     <DialogTitle>Edit Profile</DialogTitle>
                     <DialogDescription>
-                        Make changes to your profile. Click save when you're done.
+                        Make changes to your profile.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
@@ -43,19 +43,9 @@ const EditProfileButton: React.FC<EditProfileButtonProps> = ({onAvatarChange}) =
                         <Label htmlFor="name" className="text-right">
                             Name
                         </Label>
-                        <Input id="name" value="name" 
+                        <Input id="name" value={name}
                         onChange={(e) => setName(e.target.value)} 
                         placeholder = "Your Name"
-                        className="col-span-3" />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="email" className="text-right">
-                            Email
-                        </Label>
-                        <Input id="email" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)} 
-                        placeholder = "Your Email"
                         className="col-span-3" />
                     </div>
                 </div>

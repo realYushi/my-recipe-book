@@ -35,5 +35,20 @@ export const userService = {
             throw new Error("Failed to fetch user");
         }
     },
+    async updateUser(id: string, user: Partial<User>) {
+        const jwtToken = await authService.getJwtToken();
+        const response = await fetch(`/api/users/${id}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+        if (!response.ok) {
+            throw new Error("Failed to update user");
+        }
+        return response.json();
+    }
 }
 

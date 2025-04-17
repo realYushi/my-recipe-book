@@ -2,12 +2,11 @@ import React, { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface EditableAvatarProps {
-    name?: string;
     avatar?: string;
     onChange?: (imageDataUrl: string) => void;
 }
 
-const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, avatar, onChange }) => {
+const EditableAvatar: React.FC<EditableAvatarProps> = ({ avatar, onChange }) => {
     const [imageSrc, setImageSrc] = useState<string | null>(avatar || null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -28,12 +27,12 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ name, avatar, onChange 
 
     return (
         <div className="relative">
-            <Avatar className="w-24 h-24 mb-4 cursor-pointer border-2 border-white shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out" 
+            <Avatar className="w-24 h-24 cursor-pointer border-2 border-gray-300 shadow-md" 
             onClick={() => fileInputRef.current?.click()}>
                 {imageSrc ? (
-                    <AvatarImage src={imageSrc} alt={name} />
+                    <AvatarImage src={imageSrc} alt="Avatar" />
                 ) : (
-                    <AvatarFallback>{name?.charAt(0) ?? "?"}</AvatarFallback>
+                    <AvatarFallback>?</AvatarFallback>
                 )}
             </Avatar>
             <input

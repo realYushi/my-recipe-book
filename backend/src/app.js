@@ -3,6 +3,7 @@ const connectDB = require('./config/db');
 const userRouter = require('./routes/userRoutes');
 const ingredientRouter = require('./routes/ingredientRoutes');
 const verifyToken = require('./middleware/firebase-auth');
+const bypassAuth = require('./middleware/bypass-auth');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,7 +30,9 @@ mongoose.connection.once('open', () => {
 app.use(express.json());
 
 
-
+//bypass auth
+// app.use('/api/users', bypassAuth, userRouter);
+// app.use('/api/ingredients', bypassAuth, ingredientRouter);
 app.use('/api/users', verifyToken, userRouter);
 app.use('/api/ingredients', verifyToken, ingredientRouter);
 

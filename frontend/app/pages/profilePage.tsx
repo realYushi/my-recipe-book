@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import ProfileCard from "~/components/profile/profileCard";
 import EditProfileButton from "~/components/profile/editProfileButton";
 import { userService } from "~/service/userService";
+import { authService } from "~/service/authService";
 
 const ProfilePage: React.FC = () => {
     const [user, setUser] =useState ({
+        id : "",
         name : "",
         email : "",
         avatar : "",
@@ -13,8 +15,13 @@ const ProfilePage: React.FC = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userData = await userService.getUser("currentUserId"); 
+                const jwtToken = await authService.getJwtToken();
+                const decodedToken = JSON.parse(atob(jwtToken.split(".")[1]));
+                const userId = decodedToken.user_Id;
+
+                const userData = await userService.getUser(userId); 
                 setUser({
+                    id: userId,
                     name: userData.username,
                     email: userData.email,
                     avatar: userData.avatar || "https://via.placeholder.com/150", 
@@ -30,9 +37,9 @@ const ProfilePage: React.FC = () => {
 
     const handleNameChange = async (newName: string) => {
         try {
-            const updattedUser = { ...user, name: newName };
-            await userService.updateUser("currentUserId", updattedUser);
-            setUser(updattedUser);
+            const updatedUser = { ...user, name: newName };
+            await userService.updateUser(user.id, updatedUser);
+            setUser(updatedUser);
         } catch (error) {
             console.error("Error updating user data:", error);
         }
@@ -41,7 +48,7 @@ const ProfilePage: React.FC = () => {
     const handleAvatarChange = async (newAvatar: string) => {
         try {
             const updatedUser = { ...user, avatar: newAvatar };
-            await userService.updateUser("currentUserId", updatedUser);
+            await userService.updateUser(user.id, updatedUser);
             setUser(updatedUser);
         } catch (error) {
             console.error("Error updating user data:", error);

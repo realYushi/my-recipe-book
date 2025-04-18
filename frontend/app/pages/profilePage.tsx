@@ -3,10 +3,8 @@ import ProfileCard from "~/components/profile/profileCard";
 import EditProfileButton from "~/components/profile/editProfileButton";
 import { userService } from "~/service/userService";
 import { authService } from "~/service/authService";
-import { useNavigate } from "react-router";
 
 const ProfilePage: React.FC = () => {
-    const navigate = useNavigate();
     const [user, setUser] =useState ({
         id : "",
         name : "",
@@ -18,10 +16,6 @@ const ProfilePage: React.FC = () => {
         const fetchUser = async () => {
             try {
                 const jwtToken = await authService.getJwtToken();
-                if (!jwtToken) {
-                    navigate("/auth/login"); 
-                    return;
-                }
                 const decodedToken = JSON.parse(atob(jwtToken.split(".")[1]));
                 const userId = decodedToken.user_Id;
 
@@ -34,7 +28,6 @@ const ProfilePage: React.FC = () => {
                 });
             } catch (error) {
                 console.error("Error fetching user data:", error);
-                navigate("/auth/login");
             }
         };
 
@@ -43,10 +36,6 @@ const ProfilePage: React.FC = () => {
     , []);
 
     const handleNameChange = async (newName: string) => {
-        if(!user.id){
-            console.error("User ID is missing. Cannot update name.");
-            return;
-        }
         try {
             const updatedUser = { ...user, name: newName };
             await userService.updateUser(user.id, updatedUser);

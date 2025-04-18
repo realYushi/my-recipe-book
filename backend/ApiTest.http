@@ -81,7 +81,7 @@ Content-Type: application/json
 
 {
   "name": "Tomatoes",
-  "category": "Vegetables",
+  "category": "Vegetable",
   "price": 5.50,
   "unit": "kg"
 }
@@ -97,7 +97,7 @@ Content-Type: application/json
 
 {
   "name": "Tomatoes",
-  "category": "Vegetables",
+  "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"
 }

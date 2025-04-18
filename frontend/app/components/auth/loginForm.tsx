@@ -13,6 +13,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { authService } from "~/service/authService"
+import { userService } from "~/service/userService"
 
 type FormInputs = {
   email: string;
@@ -44,11 +45,22 @@ export function LoginForm({
       const userExists = await authService.checkUserExists(data.email);
       if (userExists) {
         try {
-          await authService.login({
+          const user = await authService.login({
             email: data.email,
             password: data.password
           });
-          navigate("/");
+
+          try {
+            await userService.getUser(user.uid);
+            navigate("/");
+          } catch (error) {
+            await userService.createUser({
+              id: user.uid,
+              email: user.email || "",
+              username: user.email?.split('@')[0] || ""
+            });
+            navigate("/");
+          }
         } catch (error: any) {
           setServerError("Incorrect password. Please try again.");
         }

@@ -17,7 +17,7 @@ const ProfilePage: React.FC = () => {
             try {
                 const jwtToken = await authService.getJwtToken();
                 const decodedToken = JSON.parse(atob(jwtToken.split(".")[1]));
-                const userId = decodedToken.user_Id;
+                const userId = decodedToken.uid;
 
                 const userData = await userService.getUser(userId); 
                 setUser({

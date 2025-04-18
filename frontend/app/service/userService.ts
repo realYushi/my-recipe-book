@@ -5,7 +5,8 @@ interface User {
     username: string;
     email: string;
 }
-export const userService = {
+export const 
+userService = {
     async createUser(user: User) {
         const jwtToken = await authService.getJwtToken();
         const response = await fetch("/api/users", {

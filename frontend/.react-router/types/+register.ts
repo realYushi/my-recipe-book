@@ -10,7 +10,7 @@ type Params = {
   "/": {};
   "/auth/register": {};
   "/auth/login": {};
+  "/profile": {};
   "/recipes/create": {};
   "/ingredients/create": {};
-  "/profile": {};
 };

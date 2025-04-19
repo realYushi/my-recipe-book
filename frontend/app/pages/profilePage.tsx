@@ -5,26 +5,26 @@ import { userService } from "~/service/userService";
 import { authService } from "~/service/authService";
 
 const ProfilePage: React.FC = () => {
-    const [user, setUser] =useState ({
-        id : "",
-        name : "",
-        email : "",
-        avatar : "",
+    const [user, setUser] = useState({
+        id: "",
+        name: "",
+        email: "",
+        avatar: "",
     });
-    
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const jwtToken = await authService.getJwtToken();
                 const decodedToken = JSON.parse(atob(jwtToken.split(".")[1]));
-                const userId = decodedToken.user_Id;
+                const userId = decodedToken.user_id;
 
-                const userData = await userService.getUser(userId); 
+                const userData = await userService.getUser(userId);
                 setUser({
                     id: userId,
                     name: userData.username,
                     email: userData.email,
-                    avatar: userData.avatar || "https://via.placeholder.com/150", 
+                    avatar: userData.avatar || "https://via.placeholder.com/150",
                 });
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -33,7 +33,7 @@ const ProfilePage: React.FC = () => {
 
         fetchUser();
     }
-    , []);
+        , []);
 
     const handleNameChange = async (newName: string) => {
         try {
@@ -63,14 +63,14 @@ const ProfilePage: React.FC = () => {
                     email={user.email}
                     avatar={user.avatar}
                 />
-                <EditProfileButton 
-                    onAvatarChange={handleAvatarChange} 
-                    onNameChange={handleNameChange} 
+                <EditProfileButton
+                    onAvatarChange={handleAvatarChange}
+                    onNameChange={handleNameChange}
                 />
             </div>
         </div>
     );
 }
-            
+
 
 export default ProfilePage;

@@ -15,7 +15,8 @@ class UserService {
       throw new Error(error);
     }
   }
-  async updateUserProfile(userId, updateData) {
+  async updateUser(userId, updateData) {
+    const User = require("../models/userModel");
     const user = await User.findOne({ id: userId });
     if (!user) throw new Error("User not found");
 
@@ -23,6 +24,7 @@ class UserService {
     if (updateData.email) user.email = updateData.email;
 
     await user.save();
+    console.log("user after update = ", user);
     return user;
   }
 }

@@ -17,12 +17,14 @@ class UserRepository {
       throw new Error(error);
     }
   }
-  async updateUserProfile(userId, profileData) {
+  async updateUser(userId, profileData) {
     return await User.findOneAndUpdate(
       { id: userId },
       { $set: profileData },
       { new: true }
     );
+    console.log("user after update = ", user);
+    return user;
   }
 }
 

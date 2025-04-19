@@ -4,6 +4,7 @@ const bypassAuth = (req, res, next) => {
     email: "john.doe@example.com",
     name: "john_doe",
   };
+  console.log("Bypassing authentication for testing purposes");
   next();
 };
 

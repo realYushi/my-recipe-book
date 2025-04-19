@@ -26,12 +26,12 @@ class UserController {
       res.status(500).json({ error: error.message });
     }
   }
-  async updateUserProfile(req, res) {
+  async updateUser(req, res) {
     try {
       const userId = req.user.uid;
       const { username, email } = req.body;
 
-      const updatedUser = await userService.updateUserProfile(userId, {
+      const updatedUser = await userService.updateUser(userId, {
         username,
         email,
       });

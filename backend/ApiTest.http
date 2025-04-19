@@ -96,7 +96,7 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "name": "Tomatoes",
+  "name": "Broccoli",
   "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"

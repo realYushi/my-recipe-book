@@ -33,10 +33,10 @@ mongoose.connection.once("open", () => {
 app.use(express.json());
 
 //bypass auth
-app.use("/api/users", bypassAuth, userRouter);
-app.use("/api/ingredients", bypassAuth, ingredientRouter);
-//app.use('/api/users', verifyToken, userRouter);
-//app.use('/api/ingredients', verifyToken, ingredientRouter);
+//app.use("/api/users", bypassAuth, userRouter);
+//app.use("/api/ingredients", bypassAuth, ingredientRouter);
+app.use("/api/users", verifyToken, userRouter);
+app.use("/api/ingredients", verifyToken, ingredientRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running and listening on port ${PORT}`);

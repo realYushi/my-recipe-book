@@ -9,6 +9,14 @@ const recipeRepository = {
             throw new Error('Failed to create recipe');
         }
     },
+    getRecipeById: async (id) => {
+        try {
+            const recipe = await Recipe.findById(id);
+            return recipe;
+        } catch (error) {
+            throw new Error('Failed to get recipe by ID');
+        }
+    }
 };
 
 export default recipeRepository;

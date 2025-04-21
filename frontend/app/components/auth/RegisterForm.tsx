@@ -40,6 +40,7 @@ export function RegisterForm({
     }
   });
 
+
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     setServerError(null);
 

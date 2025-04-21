@@ -28,8 +28,8 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "username": "john_doe_updated",
-  "email": "john.updated@example.com"
+  "username": "john_doe_updated1",
+  "email": "john.updated1@example.com"
 }
 
 ### Delete User (Auth Required)
@@ -96,7 +96,7 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "name": "Tomatoes",
+  "name": "Broccoli",
   "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"

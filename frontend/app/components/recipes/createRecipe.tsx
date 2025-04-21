@@ -206,11 +206,6 @@ function CreateRecipe() {
             instance = new Crepe({
                 root: editorRef.current,
                 defaultValue: "",
-                featureConfigs: {
-                    [CrepeFeature.ImageBlock]: {
-                        blockUploadButton: () => null
-                    }
-                }
             });
 
             instance.create().then(() => {

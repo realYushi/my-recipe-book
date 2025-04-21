@@ -1,10 +1,6 @@
 import { authService } from "./authService";
+import type { User } from "~/model/user";
 
-interface User {
-    id: string;
-    username: string;
-    email: string;
-}
 export const 
 userService = {
     async createUser(user: User) {

@@ -80,7 +80,8 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "name": "Tomatoes",
+  "_id": "01",
+  "name": "Carrots",
   "category": "Vegetable",
   "price": 5.50,
   "unit": "kg"
@@ -96,7 +97,11 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
+<<<<<<< HEAD
   "name": "Broccoli",
+=======
+  "name": "Onion",
+>>>>>>> feature/ingredient-update
   "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"

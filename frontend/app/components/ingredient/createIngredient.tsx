@@ -40,9 +40,15 @@ const ingredientSchema = z.object({
 });
 
 // Type inference from the schema
+type CreateIngredientProps = {
+    onSuccess?: () => void;
+    hideHeader?: boolean;
+    isUpdate?: boolean;
+    ingredientData?: Ingredient;
+}
 type IngredientFormValues = z.infer<typeof ingredientSchema>;
 
-export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => void, hideHeader?: boolean }) {
+export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientData }: CreateIngredientProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showValidationSummary, setShowValidationSummary] = useState(false);
@@ -54,7 +60,12 @@ export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => 
         formState: { errors, isSubmitted }
     } = useForm<IngredientFormValues>({
         resolver: zodResolver(ingredientSchema),
-        defaultValues: {
+        defaultValues: isUpdate ? {
+            name: ingredientData?.name || "",
+            category: ingredientData?.category,
+            price: ingredientData?.price,
+            unit: ingredientData?.unit
+        } : {
             name: "",
             category: undefined,
             price: 0,
@@ -69,12 +80,18 @@ export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => 
         setShowValidationSummary(false);
 
         try {
-            const newIngredient = await ingredientService.createIngredient(data as Ingredient);
+            if (isUpdate) {
+                await ingredientService.updateIngredient(ingredientData?.id as string, data as Ingredient);
+            } else {
+                await ingredientService.createIngredient(data as Ingredient);
+            }
             if (onSuccess) {
                 onSuccess();
             }
         } catch (error) {
-            setError("Failed to create ingredient. Please try again.");
+            setError(isUpdate
+                ? "Failed to update ingredient. Please try again."
+                : "Failed to create ingredient. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -94,8 +111,10 @@ export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => 
         <Card className="w-[350px] border-0 shadow-none">
             {!hideHeader && (
                 <CardHeader>
-                    <CardTitle>Create New Ingredient</CardTitle>
-                    <CardDescription>Add a new ingredient to your recipe.</CardDescription>
+                    <CardTitle>{isUpdate ? "Update Ingredient" : "Create New Ingredient"}</CardTitle>
+                    <CardDescription>
+                        {isUpdate ? "Update your ingredient details." : "Add a new ingredient to your recipe."}
+                    </CardDescription>
                 </CardHeader>
             )}
             <CardContent>
@@ -226,7 +245,9 @@ export function CreateIngredient({ onSuccess, hideHeader }: { onSuccess?: () => 
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={isLoading}>
-                                {isLoading ? "Creating..." : "Create"}
+                                {isLoading
+                                    ? (isUpdate ? "Updating..." : "Creating...")
+                                    : (isUpdate ? "Update" : "Create")}
                             </Button>
                         </div>
                     </div>

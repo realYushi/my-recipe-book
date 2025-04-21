@@ -1,15 +1,14 @@
-import User from '../models/userModel.js';
+import User from "../models/userModel.js";
 
 const UserRepository = {
-
-    async createUser(userData) {
-        try {
-            const newUser = new User(userData);
-            return await newUser.save();
-        } catch (error) {
-            throw new Error(error);
-        }
-    },
+  async createUser(userData) {
+    try {
+      const newUser = new User(userData);
+      return await newUser.save();
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 
   async getUserById(id) {
     try {
@@ -17,7 +16,7 @@ const UserRepository = {
     } catch (error) {
       throw new Error(error);
     }
-  }
+  },
   async updateUser(userId, profileData) {
     return await User.findOneAndUpdate(
       { id: userId },
@@ -26,8 +25,7 @@ const UserRepository = {
     );
     console.log("user after update = ", user);
     return user;
-  }
-}
+  },
+};
 
 export default UserRepository;
-

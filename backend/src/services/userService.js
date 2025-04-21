@@ -15,5 +15,12 @@ const UserService = {
       throw new Error(error);
     }
   },
+  async updateUser(id, userData) {
+    try {
+      return await userRepository.updateUser(id, userData);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 };
 export default UserService;

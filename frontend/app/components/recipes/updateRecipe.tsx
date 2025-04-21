@@ -1,12 +1,13 @@
-import { useParams } from "react-router";
 import CreateRecipe from "./createRecipe";
 import recipeService from "~/service/recipeSerive";
 import type { Recipe } from "~/model/recipe";
 import { useEffect } from "react";
 import { useState } from "react";
 
-function UpdateRecipe() {
-    const { id } = useParams();
+interface UpdateRecipeProps {
+    id: string;
+}
+function UpdateRecipe({ id }: UpdateRecipeProps) {
     const [recipeData, setRecipeData] = useState<Recipe | undefined>(undefined);
     const [isLoading, setIsLoading] = useState(true);
 

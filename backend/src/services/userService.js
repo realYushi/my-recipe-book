@@ -22,6 +22,14 @@ class UserService {
             throw new Error(error.message || 'Failed to delete user');
         }
     }
+
+    async getUserById(userId) {
+        try {
+            return await userRepository.getUserById(userId);
+        } catch (error) {
+            throw new Error(error.message || 'Failed to fetch user');
+        }
+    }
 }
 
 module.exports = new UserService();

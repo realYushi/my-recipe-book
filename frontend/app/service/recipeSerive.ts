@@ -34,6 +34,21 @@ const recipeService = {
             console.error("Error updating recipe:", error);
             throw error;
         }
+    },
+    getRecipeById: async (id: string): Promise<Recipe> => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch(`/api/recipes/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            return response.json();
+        } catch (error) {
+            console.error("Error getting recipe by ID:", error);
+            throw error;
+        }
     }
 }
 

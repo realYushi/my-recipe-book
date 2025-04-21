@@ -17,6 +17,23 @@ const recipeService = {
             console.error("Error creating recipe:", error);
             throw error;
         }
+    },
+    updateRecipe: async (id: string, recipe: Recipe) => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch(`/api/recipes/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(recipe)
+            });
+            return response.json();
+        } catch (error) {
+            console.error("Error updating recipe:", error);
+            throw error;
+        }
     }
 }
 

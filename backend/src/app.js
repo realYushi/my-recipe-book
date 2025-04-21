@@ -6,14 +6,6 @@ import recipeRouter from "./routes/recipeRoutes.js";
 //import verifyToken from "./middleware/firebase-auth.js";
 import bypassAuth from "./middleware/bypass-auth.js";
 import mongoose from "mongoose";
-import express from "express";
-import { connectDB } from "./config/db.js";
-import userRouter from "./routes/userRoutes.js";
-import ingredientRouter from "./routes/ingredientRoutes.js";
-import recipeRouter from "./routes/recipeRoutes.js";
-//import verifyToken from "./middleware/firebase-auth.js";
-import bypassAuth from "./middleware/bypass-auth.js";
-import mongoose from "mongoose";
 const app = express();
 const PORT = process.env.PORT || 5000;
 

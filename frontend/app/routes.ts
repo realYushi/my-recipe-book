@@ -12,5 +12,6 @@ export default [
     layout("./components/ProtectedRoute.tsx", [
         route("/recipes/create", "./pages/recipes/create-recipe.tsx"),
         route("/ingredients/create", "./pages/ingredients/createIngredient.tsx"),
+        route("/profile", "./pages/profilePage.tsx"),
     ] satisfies RouteConfig)
 ] satisfies RouteConfig;

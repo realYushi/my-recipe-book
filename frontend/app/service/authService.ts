@@ -52,7 +52,7 @@ export const authService = {
         }
     },
     async getJwtToken() {
-        const user = auth.currentUser;
+        const user = await this.getCurrentUser();
         if (!user) {
             throw new Error("User not found");
         }

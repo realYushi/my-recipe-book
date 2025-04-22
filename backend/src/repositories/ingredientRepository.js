@@ -13,10 +13,17 @@ const IngredientRepository = {
   async getIngredients(userId) {
     try {
       const ingredients = await Ingredient.find({ user: userId });
-      const ingredientIds = ingredients.map((ingredient) => ingredient._id);
       return ingredients;
     } catch (error) {
       throw new Error(`Failed to get ingredients: ${error.message}`);
+    }
+  },
+  async getIngredientById(ingredientId) {
+    try {
+      const ingredient = await Ingredient.findById(ingredientId);
+      return ingredient;
+    } catch (error) {
+      throw new Error(`Failed to get ingredient: ${error.message}`);
     }
   },
   async updateIngredient(ingredientId, ingredientData) {

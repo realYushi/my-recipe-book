@@ -1,19 +1,26 @@
-import userRepository from '../repositories/userRepository.js';
+import userRepository from "../repositories/userRepository.js";
 
 const UserService = {
-    async createUser(userData) {
-        try {
-            return await userRepository.createUser(userData);
-        } catch (error) {
-            throw new Error(error);
-        }
-    },
-    async getUserById(id) {
-        try {
-            return await userRepository.getUserById(id);
-        } catch (error) {
-            throw new Error(error);
-        }
+  async createUser(userData) {
+    try {
+      return await userRepository.createUser(userData);
+    } catch (error) {
+      throw new Error(error);
     }
-}
+  },
+  async getUserById(id) {
+    try {
+      return await userRepository.getUserById(id);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  async updateUser(id, userData) {
+    try {
+      return await userRepository.updateUser(id, userData);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+};
 export default UserService;

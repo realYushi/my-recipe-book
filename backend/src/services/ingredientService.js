@@ -31,5 +31,20 @@ const IngredientService = {
       });
     }
   },
+  async getIngredientById(ingredientId) {
+    try {
+      const ingredient = await ingredientRepository.getIngredientById(
+        ingredientId
+      );
+      if (!ingredient) {
+        throw new Error("Ingredient not found");
+      }
+      return ingredient;
+    } catch (error) {
+      throw new Error("Failed to get ingredient: " + error.message, {
+        cause: error,
+      });
+    }
+  },
 };
 export default IngredientService;

@@ -4,7 +4,6 @@ const IngredientController = {
   async createIngredient(req, res) {
     try {
       const ingredientData = {
-        _id: req.body._id,
         name: req.body.name,
         category: req.body.category,
         price: req.body.price,
@@ -14,7 +13,6 @@ const IngredientController = {
       const ingredient = await ingredientService.createIngredient(
         ingredientData
       );
-      console.log("Ingredient ID: ", ingredientId);
       res.status(201).json(ingredient);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -30,8 +28,9 @@ const IngredientController = {
   },
   async updateIngredient(req, res) {
     try {
+
       const ingredientId = req.params.id;
-      //console.log("ingredientId:", ingredientId);
+      console.log("ingredientId:", ingredientId);
       const ingredientData = {
         name: req.body.name,
         category: req.body.category,
@@ -46,6 +45,18 @@ const IngredientController = {
         return res.status(404).json({ message: "Ingredient not found" });
       }
       res.status(200).json(updatedIngredient);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+  async getIngredientById(req, res) {
+    try {
+      const ingredientId = req.params.id;
+      const ingredient = await ingredientService.getIngredientById(ingredientId);
+      if (!ingredient) {
+        return res.status(404).json({ message: "Ingredient not found" });
+      }
+      res.status(200).json(ingredient);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

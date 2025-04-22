@@ -31,7 +31,6 @@ function UpdateIngredient({ id }: UpdateIngredientProps) {
     return (
         <div>
             {isLoading && <div>Loading...</div>}
-            {error && <div>{error}</div>}
             {ingredient && <CreateIngredient ingredientData={ingredient} isUpdate={true} />}
         </div>
     )

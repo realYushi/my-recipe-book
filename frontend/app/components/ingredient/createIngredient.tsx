@@ -81,7 +81,7 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
 
         try {
             if (isUpdate) {
-                await ingredientService.updateIngredient(ingredientData?.id as string, data as Ingredient);
+                await ingredientService.updateIngredient(ingredientData?._id as string, data as Ingredient);
             } else {
                 await ingredientService.createIngredient(data as Ingredient);
             }

@@ -19,6 +19,14 @@ const IngredientRepository = {
       throw new Error(`Failed to get ingredients: ${error.message}`);
     }
   },
+  async getIngredientById(ingredientId) {
+    try {
+      const ingredient = await Ingredient.findById(ingredientId);
+      return ingredient;
+    } catch (error) {
+      throw new Error(`Failed to get ingredient: ${error.message}`);
+    }
+  },
   async updateIngredient(ingredientId, ingredientData) {
     try {
       const updatedIngredient = await Ingredient.findByIdAndUpdate(

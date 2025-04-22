@@ -18,13 +18,16 @@ const UserRepository = {
     }
   },
   async updateUser(userId, profileData) {
-    return await User.findOneAndUpdate(
-      { id: userId },
-      { $set: profileData },
-      { new: true }
-    );
-    console.log("user after update = ", user);
-    return user;
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { id: userId },
+        { $set: profileData },
+        { new: true }
+      );
+      return updatedUser;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
 };
 

@@ -22,6 +22,7 @@ admin.initializeApp({
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization?.split('Bearer ')[1];
+
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
@@ -33,6 +34,5 @@ const verifyToken = async (req, res, next) => {
         console.error("Error verifying token:", error);
         return res.status(401).json({ message: "Unauthorized" });
     }
-}
 
-export default verifyToken;
+    export default verifyToken;

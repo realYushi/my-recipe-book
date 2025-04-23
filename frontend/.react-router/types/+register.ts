@@ -14,7 +14,5 @@ type Params = {
   "/recipes/create": {};
   "/ingredients/create": {};
   "/profile": {};
-
   "/test": {};
-
 };

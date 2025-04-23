@@ -1,14 +1,40 @@
-import Recipe from '../models/recipeModel.js';
+import Recipe from "../models/recipeModel.js";
 const recipeRepository = {
-    createRecipe: async (recipeData) => {
-        try {
-            const recipe = new Recipe(recipeData);
-            await recipe.save();
-            return recipe;
-        } catch (error) {
-            throw new Error('Failed to create recipe');
-        }
-    },
+  async createRecipe(recipeData) {
+    try {
+      const recipe = new Recipe(recipeData);
+      await recipe.save();
+      return recipe;
+    } catch (error) {
+      throw new Error("Failed to create recipe");
+    }
+  },
+  async getRecipeById(id) {
+    try {
+      const recipe = await Recipe.findById(id);
+      return recipe;
+    } catch (error) {
+      throw new Error("Failed to get recipe by ID");
+    }
+  },
+  async getAllRecipes() {
+    try {
+      const recipes = await Recipe.find();
+      return recipes;
+    } catch (error) {
+      throw new Error("Failed to get all recipes");
+    }
+  },
+  async updateRecipe(id, recipeData) {
+    try {
+      const recipe = await Recipe.findByIdAndUpdate(id, recipeData, {
+        new: true,
+      });
+      return recipe;
+    } catch (error) {
+      throw new Error("Failed to update recipe");
+    }
+  },
 };
 
 export default recipeRepository;

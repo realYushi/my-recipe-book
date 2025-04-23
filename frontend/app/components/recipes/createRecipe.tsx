@@ -77,8 +77,11 @@ const recipeSchema = z.object({
 
 // Type inference from the schema
 type RecipeFormValues = z.infer<typeof recipeSchema>;
-
-function CreateRecipe() {
+type CreateRecipeProps = {
+    initialData?: Recipe;
+    isEditing?: boolean;
+}
+function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
     // Editor state
     const editorRef = useRef(null);
     const [crepeInstance, setCrepeInstance] = useState<any>(null);
@@ -110,7 +113,14 @@ function CreateRecipe() {
         formState: { errors, isSubmitting }
     } = useForm<RecipeFormValues>({
         resolver: zodResolver(recipeSchema),
-        defaultValues: {
+        defaultValues: initialData ? {
+            name: initialData.name,
+            portions: initialData.portions,
+            preparationTime: initialData.preparationTime,
+            cookingTime: initialData.cookingTime,
+            ingredients: initialData.ingredients,
+            instructions: initialData.instructions
+        } : {
             name: "",
             portions: 1,
             preparationTime: 0,
@@ -150,6 +160,7 @@ function CreateRecipe() {
 
         if (crepeInstance) {
             const instructions = crepeInstance.getMarkdown();
+            console.log(instructions);
             if (instructions.trim() === "" || instructions == "<br />\n") {
                 setFormError("Cooking instructions are required");
                 setShowValidationSummary(true);
@@ -159,11 +170,16 @@ function CreateRecipe() {
         }
 
         try {
-            await recipeService.createRecipe(data as Recipe);
-            setSuccessMessage("Recipe created successfully!");
+            if (isEditing && initialData?._id) {
+                await recipeService.updateRecipe(initialData._id, data as Recipe);
+                setSuccessMessage("Recipe updated successfully!");
+            } else {
+                await recipeService.createRecipe(data as Recipe);
+                setSuccessMessage("Recipe created successfully!");
+            }
         } catch (error) {
-            console.error("Error creating recipe:", error);
-            setFormError("Failed to create recipe. Please try again.");
+            console.error(`Error ${isEditing ? "updating" : "creating"} recipe:`, error);
+            setFormError(`Failed to ${isEditing ? "update" : "create"} recipe. Please try again.`);
         }
     }
 
@@ -205,18 +221,10 @@ function CreateRecipe() {
         if (editorRef.current) {
             instance = new Crepe({
                 root: editorRef.current,
-                defaultValue: "",
-                featureConfigs: {
-                    [CrepeFeature.ImageBlock]: {
-                        blockUploadButton: () => null
-                    }
-                }
+                defaultValue: initialData?.instructions || "",
             });
-
-            instance.create().then(() => {
-                console.log("Crepe instance created");
-                setCrepeInstance(instance);
-            });
+            instance.create();
+            setCrepeInstance(instance);
         }
 
         // Fetch ingredients
@@ -235,7 +243,9 @@ function CreateRecipe() {
             <Card className="w-full max-w-4xl mx-auto">
                 <CardHeader>
                     <CardTitle>Create New Recipe</CardTitle>
-                    <CardDescription>Share your culinary masterpiece with the world</CardDescription>
+                    <CardDescription>{isEditing
+                        ? "Update your culinary masterpiece"
+                        : "Share your culinary masterpiece with the world"}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     {successMessage && (
@@ -447,7 +457,7 @@ function CreateRecipe() {
                         onClick={handleSubmit(onSubmit, onError)}
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Saving..." : "Save Recipe"}
+                        {isSubmitting ? "Saving..." : isEditing ? "Update Recipe" : "Save Recipe"}
                     </Button>
                 </CardFooter>
             </Card>

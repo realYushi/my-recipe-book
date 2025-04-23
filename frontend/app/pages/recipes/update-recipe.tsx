@@ -1,10 +1,9 @@
 
 import UpdateRecipe from "~/components/recipes/updateRecipe";
 function updateRecipePage() {
-    const id = "68016e3c8c7908d1c02de15c";
     return (
         <div>
-            <UpdateRecipe id="68016e3c8c7908d1c02de15c" />
+            <UpdateRecipe id="68085475b24f5e5b280c968a" />
         </div>
     );
 }

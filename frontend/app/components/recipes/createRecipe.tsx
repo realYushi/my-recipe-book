@@ -160,6 +160,7 @@ function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
 
         if (crepeInstance) {
             const instructions = crepeInstance.getMarkdown();
+            console.log(instructions);
             if (instructions.trim() === "" || instructions == "<br />\n") {
                 setFormError("Cooking instructions are required");
                 setShowValidationSummary(true);
@@ -223,6 +224,7 @@ function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
                 defaultValue: initialData?.instructions || "",
             });
             instance.create();
+            setCrepeInstance(instance);
         }
 
         // Fetch ingredients

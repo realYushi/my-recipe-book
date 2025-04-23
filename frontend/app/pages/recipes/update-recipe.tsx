@@ -3,7 +3,7 @@ import UpdateRecipe from "~/components/recipes/updateRecipe";
 function updateRecipePage() {
     return (
         <div>
-            <UpdateRecipe id="68083d482748153e224ed840" />
+            <UpdateRecipe id="68086b8bd55d25d7f3f9eaad" />
         </div>
     );
 }

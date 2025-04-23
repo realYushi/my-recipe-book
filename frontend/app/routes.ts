@@ -15,4 +15,5 @@ export default [
         route("/profile", "./pages/profilePage.tsx"),
         route("/test", "./pages/recipes/update-recipe.tsx"),
     ] satisfies RouteConfig),
+
 ] satisfies RouteConfig;

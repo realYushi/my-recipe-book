@@ -36,13 +36,6 @@ const UserRepository = {
       throw new Error(`Failed to delete user: ${error.message}`);
     }
   },
-  async getUserById(userId) {
-    try {
-      return await User.findOne({ id: userId });
-    } catch (error) {
-      throw new Error(`Failed to fetch user: ${error.message}`);
-    }
-  }
 };
 
 export default UserRepository;

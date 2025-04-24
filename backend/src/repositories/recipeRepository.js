@@ -41,7 +41,5 @@ const recipeRepository = {
     } catch (error) {
       throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
     }
-  }
+  },
 };
-
-export default recipeRepository;

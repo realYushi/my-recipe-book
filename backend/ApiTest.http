@@ -28,8 +28,8 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "username": "john_doe_updated",
-  "email": "john.updated@example.com"
+  "username": "john_doe_updated1",
+  "email": "john.updated1@example.com"
 }
 
 ### Delete User (Auth Required)
@@ -84,8 +84,9 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "name": "Tomatoes",
-  "category": "Vegetables",
+  "_id": "01",
+  "name": "Carrots",
+  "category": "Vegetable",
   "price": 5.50,
   "unit": "kg"
 }
@@ -100,8 +101,12 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-  "name": "Tomatoes",
-  "category": "Vegetables",
+<<<<<<< HEAD
+  "name": "Broccoli",
+=======
+  "name": "Onion",
+>>>>>>> feature/ingredient-update
+  "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"
 }

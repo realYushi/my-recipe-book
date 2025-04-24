@@ -1,5 +1,5 @@
 import React from 'react';
-import { RecipeIngredient } from '~/model/ingredient';
+import type { RecipeIngredient } from '~/model/ingredient';
 
 interface ViewIngredientsProps{
     ingredients: RecipeIngredient[];
@@ -8,7 +8,7 @@ interface ViewIngredientsProps{
 const ViewIngredients: React.FC<ViewIngredientsProps> = ({ ingredients }) => {
     return (
         <div className="recipe-ingredients">
-            <h2 className= "text-ti font-bold mb-4">Ingredients</h2>
+            <h2 className= "text-xl font-bold mb-4">Ingredients</h2>
             <ul className = "list-disc pl-5">
                 {ingredients.map((ingredient, index) => (
                     <li key={index}>

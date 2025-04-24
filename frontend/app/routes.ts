@@ -14,5 +14,6 @@ export default [
         route("/ingredients/create", "./pages/ingredients/createIngredient.tsx"),
         route("/profile", "./pages/profilePage.tsx"),
         route("/test", "./pages/ingredients/updateIngredient.tsx"),
+        route("/recipes/:id", "./pages/recipes/view-recipe.tsx"),
     ] satisfies RouteConfig)
 ] satisfies RouteConfig;

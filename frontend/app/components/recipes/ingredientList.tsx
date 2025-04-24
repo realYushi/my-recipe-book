@@ -11,15 +11,14 @@ interface IngredientListProps {
 }
 
 const IngredientList: React.FC<IngredientListProps> = ({ ingredients }) => (
-    <div>
+    <div className="space-y-4">
         <h2 className="text-xl font-bold">Ingredients</h2>
-        <ul className= "list-disc pl-5">
-            {ingredients.map((item, index) => (
-                <li key={index}>
-                    {item.quantity} {item.unit} of {item.ingredient}
+        <ul className="space-y-2">
+            {ingredients.map((ingredient, index) => (
+                <li key={index} className="text-sm">{`${ingredient.quantity} ${ingredient.unit} ${ingredient.ingredient}`}
                 </li>
             ))}
-        </ul>          
+        </ul>
     </div>
 );  
 

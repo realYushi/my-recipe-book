@@ -5,9 +5,13 @@ interface InstructionsProps {
 }
 
 const Instructions: React.FC<InstructionsProps> = ({ instructions }) => (
-    <div>
+    <div className="space-y-4">
         <h2 className="text-xl font-bold">Instructions</h2>
-        <p className="whitespace-pre-line">{instructions}</p>
+        <ol className="space-y-2">
+            {instructions.split('\n').map((instruction, index) => (
+                <li key={index} className="text-sm">{instruction}</li>
+            ))}
+        </ol>
     </div>
 );
 

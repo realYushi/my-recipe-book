@@ -1,5 +1,5 @@
 import Recipe from "../models/recipeModel.js";
-const recipeRepository = {
+export const recipeRepository = {
   async createRecipe(recipeData) {
     try {
       const recipe = new Recipe(recipeData);

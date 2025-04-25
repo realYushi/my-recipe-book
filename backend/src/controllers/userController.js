@@ -1,4 +1,5 @@
 import userService from "../services/userService.js";
+import admin from "../config/firebase.js";
 
 const UserController = {
   async createUser(req, res) {
@@ -40,13 +41,13 @@ const UserController = {
   },
   async deleteUser(req, res) {
     try {
-      const userId = req.params.id;
+      const userId = req.user.id;
       await admin.auth().deleteUser(userId);
       await userService.deleteUser(userId);
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting user:", error);
-      res.status(404).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   },
   async getUserProfile(req, res) {

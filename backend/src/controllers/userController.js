@@ -41,9 +41,11 @@ const UserController = {
   async deleteUser(req, res) {
     try {
       const userId = req.params.id;
+      await admin.auth().deleteUser(userId);
       await userService.deleteUser(userId);
       res.status(204).send();
     } catch (error) {
+      console.error("Error deleting user:", error);
       res.status(404).json({ error: error.message });
     }
   },

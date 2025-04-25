@@ -24,7 +24,9 @@ const UserService = {
   },
   async deleteUser(userId) {
     try {
+      console.log("Deleting recipes with ID", userId)
       await recipeRepository.deleteRecipesByUser(userId);
+      console.log("Successfully deleted recipes", userId);
       const deletedUser = await userRepository.deleteUser(userId);
       if (!deletedUser) {
         throw new Error('User not found');

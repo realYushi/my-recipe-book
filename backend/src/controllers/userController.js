@@ -41,9 +41,17 @@ const UserController = {
   },
   async deleteUser(req, res) {
     try {
-      const userId = req.user.id;
+      const userId = req.user?.uid;
+      if (!userId || typeof userId !== "string" || userId.length > 128) {
+        return res.status(400).json({ error: "Invalid user ID" })
+      }
+      console.log("Deleting user with ID", userId);
       await admin.auth().deleteUser(userId);
-      await userService.deleteUser(userId);
+      const deletedUser = await userService.deleteUser(userId);
+      if (!deletedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting user:", error);

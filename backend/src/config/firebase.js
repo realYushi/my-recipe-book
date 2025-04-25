@@ -13,7 +13,7 @@ const serviceAccount = {
     token_uri: "https://oauth2.googleapis.com/token",
     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
     client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40my-recipe-book-1e28c.iam.gserviceaccount.com",
-    universe_domain: "googleapis.com"
+    //universe_domain: "googleapis.com"
 }
 
 if (!admin.apps.length) {

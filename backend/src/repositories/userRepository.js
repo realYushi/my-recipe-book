@@ -31,7 +31,10 @@ const UserRepository = {
   },
   async deleteUser(userId) {
     try {
-      return await User.findOneAndDelete({ id: userId });
+      console.log("Deleting user from MongoDB", userId);
+      const deletedUser = await User.findOneAndDelete({ id: userId });
+      console.log("Deleted user:", deletedUser);
+      return deletedUser;
     } catch (error) {
       throw new Error(`Failed to delete user: ${error.message}`);
     }

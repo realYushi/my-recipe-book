@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const DeleteAccountButton: React.FC = () => {
     const handleDeleteAccount = async () => {
@@ -26,12 +27,11 @@ const DeleteAccountButton: React.FC = () => {
     }
 
     return (
-        <button
-            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+        <Button variant="outline" className="ml-auto"
             onClick={handleDeleteAccount}
         >
             Delete Account
-        </button>
+        </Button>
     );
 }
 

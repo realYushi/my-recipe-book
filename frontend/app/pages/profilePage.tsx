@@ -6,6 +6,8 @@ import { authService } from "~/service/authService";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { User } from "~/model/user";
+import DeleteAccountButton from "~/components/profile/deleteAccountButton"; 
+
 const ProfilePage: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
@@ -59,6 +61,7 @@ const ProfilePage: React.FC = () => {
                             name={user?.name || ''}
                             email={user?.email || ''}
                         />
+                        <DeleteAccountButton/>
                     </CardFooter>
                 </Card>
             </div>

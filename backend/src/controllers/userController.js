@@ -41,21 +41,29 @@ const UserController = {
   },
   async deleteUser(req, res) {
     try {
-      const userId = req.user?.uid;
-      if (!userId || typeof userId !== "string" || userId.length > 128) {
-        return res.status(400).json({ error: "Invalid user ID" })
-      }
-      console.log("Deleting user with ID", userId);
-      await admin.auth().deleteUser(userId);
-      const deletedUser = await userService.deleteUser(userId);
-      if (!deletedUser) {
-        return res.status(404).json({ error: "User not found" });
-      }
+        const userId = req.params.id;
+        if (!userId || typeof userId !== "string" || userId.length > 128) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
 
-      res.status(204).send();
+        console.log("Deleting user with ID", userId);
+
+        try {
+            await admin.auth().deleteUser(userId);
+        } catch (firebaseError) {
+            console.error("Error deleting user from Firebase:", firebaseError);
+            return res.status(500).json({ error: "Failed to delete user from Firebase." });
+        }
+
+        const deletedUser = await userService.deleteUser(userId);
+        if (!deletedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(204).send();
     } catch (error) {
-      console.error("Error deleting user:", error);
-      res.status(500).json({ error: error.message });
+        console.error("Error deleting user:", error);
+        res.status(500).json({ error: error.message });
     }
   },
   async getUserProfile(req, res) {

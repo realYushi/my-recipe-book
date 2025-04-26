@@ -14,10 +14,17 @@ const DeleteAccountButton: React.FC = () => {
             }
 
             const idToken = await authService.getJwtToken();
-            const response = await fetch("/api/users/delete-account", {
+            const userId = (await authService.getCurrentUser())?.uid;
+            if (!userId) {
+                alert("Unable to retrieve user ID. Please try again.");
+                return;
+            }
+
+            const response = await fetch(`/api/users/${userId}`, {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json",                     "Authorization": `Bearer ${idToken}`,
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${idToken}`,
                 },
             });
             if (response.status === 204) {
@@ -25,8 +32,7 @@ const DeleteAccountButton: React.FC = () => {
                 await authService.logout();
                 window.location.href = "/login";
             }
-else {
-
+        else {
                 const errorData = await response.json();
                 console.error("Error:", errorData);
                 alert(`Error deleting account: ${errorData.error}`);
@@ -38,13 +44,11 @@ else {
     }
 
     return (
-        <Button             variant="outline"     
-className="ml-auto"
+        <Button variant="outline" className="ml-auto"
             onClick={handleDeleteAccount}
         >
             Delete Account
         </Button>
-    );
-}
+    );}
 
 export default DeleteAccountButton;

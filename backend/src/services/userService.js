@@ -1,4 +1,5 @@
 import userRepository from "../repositories/userRepository.js";
+import { recipeRepository } from "../repositories/recipeRepository.js";
 
 const UserService = {
   async createUser(userData) {

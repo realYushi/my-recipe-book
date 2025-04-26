@@ -7,19 +7,26 @@ const DeleteAccountButton: React.FC = () => {
         const confirmation = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
         if (!confirmation) return;
         try {
+            const isAuthenticated = await authService.isAuthenticated();
+            if (!isAuthenticated) {
+                alert("You are not authenticated. Please log in again.");
+                return;
+            }
+
             const idToken = await authService.getJwtToken();
             const response = await fetch("/api/users/delete-account", {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json", "Authorization": `Bearer ${idToken}`,
+                    "Content-Type": "application/json",                     "Authorization": `Bearer ${idToken}`,
                 },
             });
             if (response.status === 204) {
                 alert("Account deleted successfully.");
-                localStorage.removeItem("token");
+                await authService.logout();
                 window.location.href = "/login";
             }
-            else {
+else {
+
                 const errorData = await response.json();
                 console.error("Error:", errorData);
                 alert(`Error deleting account: ${errorData.error}`);
@@ -31,7 +38,8 @@ const DeleteAccountButton: React.FC = () => {
     }
 
     return (
-        <Button variant="outline" className="ml-auto"
+        <Button             variant="outline"     
+className="ml-auto"
             onClick={handleDeleteAccount}
         >
             Delete Account

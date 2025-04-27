@@ -97,11 +97,7 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
   "name": "Broccoli",
-=======
-  "name": "Onion",
->>>>>>> feature/ingredient-update
   "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"

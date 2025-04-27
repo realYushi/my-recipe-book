@@ -17,5 +17,17 @@ const RecipeController = {
             res.status(500).json({ error: "Failed to create recipe" });
         }
     },
+    getRecipeById: async (req, res) => {
+        try {
+            const recipeId = req.params.id;
+            const recipe = await recipeService.getRecipeById(recipeId);
+            if (!recipe) {
+                return res.status(404).json({ message: 'Recipe not found' });
+            }
+            res.status(200).json(recipe);
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to fetch recipe details' });
+        }
+    },
 };
 export default RecipeController;

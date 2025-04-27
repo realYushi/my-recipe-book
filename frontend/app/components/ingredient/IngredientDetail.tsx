@@ -1,15 +1,13 @@
 import { ArrowLeft, Edit, Trash2 } from "lucide-react"
-import { NavLink } from "react-router"
+import { Link, NavLink, useParams } from "react-router"
 
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Separator } from "~/components/ui/separator"
 
-interface IngredientDetailProps {
-    id: string
-}
 
-export function IngredientDetail({ id }: IngredientDetailProps) {
+export function IngredientDetail() {
+    const { id } = useParams();
     const ingredient = {
         id: "1",
         name: "Tomatoes",
@@ -25,10 +23,10 @@ export function IngredientDetail({ id }: IngredientDetailProps) {
             <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
-                        <NavLink to="/ingredients">
+                        <Link to="/ingredients">
                             <ArrowLeft className="h-4 w-4" />
                             <span className="sr-only">Back to ingredients</span>
-                        </NavLink>
+                        </Link>
                     </Button>
                     <h1 className="text-xl font-semibold">{ingredient.name}</h1>
                 </div>

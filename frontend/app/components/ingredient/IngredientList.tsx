@@ -1,7 +1,7 @@
 "use client"
 
 import { Plus, Search } from "lucide-react"
-import { NavLink } from "react-router"
+import { Link } from "react-router"
 
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
@@ -89,19 +89,19 @@ export function IngredientList() {
                         {ingredients.map((ingredient) => (
                             <TableRow key={ingredient.id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <NavLink to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
                                         {ingredient.name}
-                                    </NavLink>
+                                    </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <NavLink to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
                                         {ingredient.unit}
-                                    </NavLink>
+                                    </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <NavLink to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
                                         ${ingredient.price.toFixed(2)}
-                                    </NavLink>
+                                    </Link>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -112,3 +112,4 @@ export function IngredientList() {
     )
 }
 
+export default IngredientList;

@@ -13,4 +13,8 @@ type Params = {
   "/ingredients/:id": {
     "id": string;
   };
+  "/recipes": {};
+  "/recipes/:id": {
+    "id": string;
+  };
 };

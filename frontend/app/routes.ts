@@ -10,6 +10,8 @@ export default [
         layout("./pages/layout.tsx", [
             route("/ingredients", "./pages/ingredients/page.tsx"),
             route("/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
+            route("/recipes", "./pages/recipes/page.tsx"),
+            route("/recipes/:id", "./components/recipes/RecipeDetail.tsx"),
         ]),
     ] satisfies RouteConfig),
 

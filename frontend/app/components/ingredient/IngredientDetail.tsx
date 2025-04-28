@@ -4,12 +4,13 @@ import { Link, NavLink, useParams } from "react-router"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Separator } from "~/components/ui/separator"
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
+import UpdateIngredient from "./UpdateIngredient"
 
 export function IngredientDetail() {
     const { id } = useParams();
     const ingredient = {
-        id: "1",
+        id: "68085453b24f5e5b280c9687",
         name: "Tomatoes",
         unit: "kg",
         price: 2.99,
@@ -31,10 +32,16 @@ export function IngredientDetail() {
                     <h1 className="text-xl font-semibold">{ingredient.name}</h1>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon">
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit ingredient</span>
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" size="icon">
+                                <Edit className="h-4 w-4" />
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <UpdateIngredient id={id as string} />
+                        </DialogContent>
+                    </Dialog>
                     <Button variant="outline" size="icon" className="text-destructive">
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete ingredient</span>

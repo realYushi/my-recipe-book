@@ -7,11 +7,14 @@ import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { ScrollArea } from "~/components/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { DialogContent, DialogTrigger } from "../ui/dialog"
+import { Dialog } from "../ui/dialog"
+import CreateIngredient from "./createIngredient"
 
 // Sample ingredient data
 const ingredients = [
     {
-        id: "1",
+        id: "68085453b24f5e5b280c9687",
         name: "Tomatoes",
         unit: "kg",
         price: 2.99,
@@ -65,10 +68,17 @@ export function IngredientList() {
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">
                 <h1 className="text-xl font-semibold">Ingredients</h1>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Ingredient
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Ingredient
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <CreateIngredient />
+                    </DialogContent>
+                </Dialog>
             </div>
             <div className="px-4 pb-4">
                 <div className="relative">

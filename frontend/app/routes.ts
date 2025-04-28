@@ -12,4 +12,5 @@ export default [
             route("/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
         ]),
     ] satisfies RouteConfig),
+
 ] satisfies RouteConfig;

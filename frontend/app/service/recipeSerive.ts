@@ -37,7 +37,6 @@ const recipeService = {
     },
     getRecipeById: async (id: string): Promise<Recipe> => {
         try {
-            console.log("id", id);
             const token = await authService.getJwtToken();
             const response = await fetch(`/api/recipes/${id}`, {
                 headers: {

@@ -160,6 +160,7 @@ function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
 
         if (crepeInstance) {
             const instructions = crepeInstance.getMarkdown();
+            console.log(instructions);
             if (instructions.trim() === "" || instructions == "<br />\n") {
                 setFormError("Cooking instructions are required");
                 setShowValidationSummary(true);
@@ -169,8 +170,8 @@ function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
         }
 
         try {
-            if (isEditing && initialData?.id) {
-                await recipeService.updateRecipe(initialData.id, data as Recipe);
+            if (isEditing && initialData?._id) {
+                await recipeService.updateRecipe(initialData._id, data as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
                 await recipeService.createRecipe(data as Recipe);
@@ -222,11 +223,8 @@ function CreateRecipe({ initialData, isEditing = false }: CreateRecipeProps) {
                 root: editorRef.current,
                 defaultValue: initialData?.instructions || "",
             });
-
-            instance.create().then(() => {
-                console.log("Crepe instance created");
-                setCrepeInstance(instance);
-            });
+            instance.create();
+            setCrepeInstance(instance);
         }
 
         // Fetch ingredients

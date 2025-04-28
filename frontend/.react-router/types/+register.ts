@@ -17,4 +17,5 @@ type Params = {
   "/recipes/:id": {
     "id": string;
   };
+  "/dashboard": {};
 };

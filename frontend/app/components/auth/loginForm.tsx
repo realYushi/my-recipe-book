@@ -57,7 +57,7 @@ export function LoginForm({
             await userService.createUser({
               id: user.uid,
               email: user.email || "",
-              username: user.email?.split('@')[0] || ""
+              name: user.email?.split('@')[0] || ""
             });
             navigate("/");
           }

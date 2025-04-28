@@ -13,20 +13,20 @@ function Sidebar() {
         {
             label: "Ingredients",
             icon: Apple,
-            href: "/ingredients",
-            active: pathname === "/ingredients",
+            href: "/app/ingredients",
+            active: pathname === "/app/ingredients",
         },
         {
             label: "Recipes",
             icon: Book,
-            href: "/recipes",
-            active: pathname === "/recipes",
+            href: "/app/recipes",
+            active: pathname === "/app/recipes",
         },
         {
             label: "Dashboard",
             icon: BarChart2,
-            href: "/dashboard",
-            active: pathname === "/dashboard",
+            href: "/app/dashboard",
+            active: pathname === "/app/dashboard",
         },
     ];
 

@@ -13,7 +13,7 @@ export type Info = {
   parents: [Parent0, Parent1, Parent2],
   id: "pages/ingredients/page"
   file: "./pages/ingredients/page.tsx"
-  path: "/ingredients"
+  path: "app/ingredients"
   params: {} & { [key: string]: string | undefined }
   module: Module
   loaderData: T.CreateLoaderData<Module>

@@ -24,7 +24,7 @@ export function IngredientDetail() {
             <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link to="/ingredients">
+                        <Link to="/app/ingredients">
                             <ArrowLeft className="h-4 w-4" />
                             <span className="sr-only">Back to ingredients</span>
                         </Link>

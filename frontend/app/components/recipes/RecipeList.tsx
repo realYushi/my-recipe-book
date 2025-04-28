@@ -128,7 +128,7 @@ export function RecipeList() {
             <ScrollArea className="flex-1 px-4">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {recipes.map((recipe) => (
-                        <Link to={`/recipes/${recipe.id}`} key={recipe.id}>
+                        <Link to={`/app/recipes/${recipe.id}`} key={recipe.id}>
                             <Card className="h-full cursor-pointer hover:bg-muted/50 transition-colors">
                                 <CardHeader>
                                     <CardTitle>{recipe.name}</CardTitle>

@@ -2,17 +2,17 @@
 import {
     type RouteConfig,
     route,
-    layout
+    layout,
 } from "@react-router/dev/routes";
 export default [
-    route("/auth/login", "./pages/auth/login.tsx"),
+    route("app/auth/login", "./pages/auth/login.tsx"),
     layout("./components/ProtectedRoute.tsx", [
         layout("./pages/layout.tsx", [
-            route("/ingredients", "./pages/ingredients/page.tsx"),
-            route("/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
-            route("/recipes", "./pages/recipes/page.tsx"),
-            route("/recipes/:id", "./components/recipes/RecipeDetail.tsx"),
-            route("/dashboard", "./pages/dashboard/page.tsx"),
+            route("app/ingredients", "./pages/ingredients/page.tsx"),
+            route("app/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
+            route("app/recipes", "./pages/recipes/page.tsx"),
+            route("app/recipes/:id", "./components/recipes/RecipeDetail.tsx"),
+            route("app/dashboard", "./pages/dashboard/page.tsx"),
         ]),
     ] satisfies RouteConfig),
 

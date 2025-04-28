@@ -1,17 +1,11 @@
 import { Search, User } from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
 import { NavLink } from "react-router"
+import { DialogContent, DialogTrigger } from "./ui/dialog"
+import { Dialog } from "./ui/dialog"
+import ProfilePage from "~/pages/profilePage"
 
 export function Navbar() {
     return (
@@ -38,27 +32,20 @@ export function Navbar() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input type="search" placeholder="Search..." className="pl-8 w-[200px]" />
                     </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+
+
+                    <Dialog>
+                        <DialogTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
-                                    <AvatarFallback>JD</AvatarFallback>
-                                </Avatar>
+                                <User className="h-4 w-4" />
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <User className="mr-2 h-4 w-4" />
-                                Profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Log out</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </DialogTrigger>
+                        <DialogContent
+                            className="max-w-lg w-full  p-0 "
+                        >
+                            <ProfilePage />
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
         </header>

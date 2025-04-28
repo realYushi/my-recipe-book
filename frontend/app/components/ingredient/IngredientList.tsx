@@ -99,17 +99,17 @@ export function IngredientList() {
                         {ingredients.map((ingredient) => (
                             <TableRow key={ingredient.id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
                                         {ingredient.unit}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
                                         ${ingredient.price.toFixed(2)}
                                     </Link>
                                 </TableCell>

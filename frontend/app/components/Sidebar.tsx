@@ -14,20 +14,19 @@ function Sidebar() {
             label: "Home",
             icon: Home,
             href: "/app/",
-            active: pathname === "/app/",
+            active: pathname.startsWith("/app/"),
         },
         {
             label: "Ingredients",
             icon: Apple,
             href: "/app/ingredients",
-            active: pathname === "/app/ingredients",
+            active: pathname.startsWith("/app/ingredients"),
         },
         {
             label: "Recipes",
             icon: Book,
             href: "/app/recipes",
-            active: pathname === "/app/recipes",
-        },
+            active: pathname.startsWith("/app/recipes"),
     ];
 
     return (

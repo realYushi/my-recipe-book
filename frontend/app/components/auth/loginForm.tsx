@@ -52,14 +52,14 @@ export function LoginForm({
 
           try {
             await userService.getUser(user.uid);
-            navigate("/");
+            navigate("/app/");
           } catch (error) {
             await userService.createUser({
               id: user.uid,
               email: user.email || "",
-              username: user.email?.split('@')[0] || ""
+              name: user.email?.split('@')[0] || ""
             });
-            navigate("/");
+            navigate("/app/");
           }
         } catch (error: any) {
           setServerError("Incorrect password. Please try again.");

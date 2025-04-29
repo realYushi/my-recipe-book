@@ -36,7 +36,7 @@ function UpdateRecipe({ id }: UpdateRecipeProps) {
     }
 
     return (
-        <CreateRecipe initialData={recipeData} isEditing={true} />
+        <CreateRecipe initialData={recipeData} isEditing={true} hideHeader={true} />
     )
 }
 

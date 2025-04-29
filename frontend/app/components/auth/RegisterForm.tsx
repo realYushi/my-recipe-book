@@ -55,12 +55,12 @@ export function RegisterForm({
       // Create user in backend
       await userService.createUser({
         id: user.uid,
-        username: data.username,
+        name: data.username,
         email: data.email,
       });
 
       console.log("Registration successful");
-      navigate("/auth/login");
+      navigate("/app/auth/login");
 
     } catch (error: any) {
       console.error("Registration error:", error);

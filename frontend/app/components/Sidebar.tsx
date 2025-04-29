@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router";
-import { Apple, BarChart2, Book } from "lucide-react";
+import { Apple, BarChart2, Book, Home } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -10,6 +10,12 @@ function Sidebar() {
     const pathname = location.pathname;
 
     const routes = [
+        {
+            label: "Home",
+            icon: Home,
+            href: "/app/",
+            active: pathname === "/app/",
+        },
         {
             label: "Ingredients",
             icon: Apple,
@@ -21,12 +27,6 @@ function Sidebar() {
             icon: Book,
             href: "/app/recipes",
             active: pathname === "/app/recipes",
-        },
-        {
-            label: "Dashboard",
-            icon: BarChart2,
-            href: "/app/dashboard",
-            active: pathname === "/app/dashboard",
         },
     ];
 

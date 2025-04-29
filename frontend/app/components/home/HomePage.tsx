@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { Button } from "~/components/ui/button"
 
-export function Dashboard() {
+export function HomePage() {
     return (
         <div className="flex h-full flex-col w-full">
             <div className="p-4">
@@ -43,7 +43,7 @@ export function Dashboard() {
                             <div className="text-xl font-bold">Chicken Stir Fry</div>
                             <p className="text-xs text-muted-foreground">Quick and healthy</p>
                             <Button variant="link" className="px-0 h-auto mt-1 text-xs" asChild>
-                                <Link to="/recipes/2">View Recipe</Link>
+                                <Link to="/app/recipes/2">View Recipe</Link>
                             </Button>
                         </CardContent>
                     </Card>
@@ -82,4 +82,4 @@ export function Dashboard() {
     )
 }
 
-export default Dashboard;
+export default HomePage;

@@ -72,7 +72,7 @@ function RecipeDetail() {
 
             <div className="flex-1 p-4 overflow-auto">
                 <div className="grid gap-6">
-                    <div className="flex flex-wrap gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Card className="w-full md:w-auto">
                             <CardHeader className="py-2">
                                 <CardTitle className="text-sm font-medium flex items-center">

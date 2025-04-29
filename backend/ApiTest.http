@@ -36,10 +36,6 @@ Content-Type: application/json
 DELETE {{baseUrl}}/users/{{testUserId}}
 Authorization: Bearer {{mockToken}}
 
-### View Profile (Auth Required)
-GET {{baseUrl}}/users/profile
-Authorization: Bearer {{mockToken}}
-
 ### 2. Recipe Endpoints (All Auth Required)
 
 ### Get All Recipes

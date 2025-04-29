@@ -12,7 +12,6 @@ const recipeSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-
 const Recipe = mongoose.model('Recipe', recipeSchema);
 
 export default Recipe;

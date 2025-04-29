@@ -29,6 +29,16 @@ const UserRepository = {
       throw new Error(error);
     }
   },
+  async deleteUser(userId) {
+    try {
+      console.log("Deleting user from MongoDB", userId);
+      const deletedUser = await User.findOneAndDelete({_id: userId });
+      console.log("Deleted user:", deletedUser);
+      return deletedUser;
+    } catch (error) {
+      throw new Error(`Failed to delete user: ${error.message}`);
+    }
+  },
 };
 
 export default UserRepository;

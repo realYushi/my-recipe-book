@@ -1,4 +1,5 @@
 import Recipe from "../models/recipeModel.js";
+
 const recipeRepository = {
   async createRecipe(recipeData) {
     try {
@@ -33,6 +34,13 @@ const recipeRepository = {
       return recipe;
     } catch (error) {
       throw new Error("Failed to update recipe");
+    }
+  },
+  async deleteRecipesByUser(userId) {
+    try {
+      return await Recipe.deleteMany({ user: userId }); 
+    } catch (error) {
+      throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
     }
   },
 };

@@ -4,7 +4,9 @@ import { authService } from "~/service/authService";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { User } from "~/model/user";
+import DeleteAccountButton from "~/components/profile/deleteAccountButton"; 
 function ProfilePage() {
+
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
         const fetchUser = async () => {
@@ -50,14 +52,16 @@ function ProfilePage() {
                     </div>
                 </CardContent>
 
-                <CardFooter className="flex justify-end">
-                    <EditProfileButton
-                        // onAvatarChange={handleAvatarChange}
-                        name={user?.name || ''}
-                        email={user?.email || ''}
-                    />
-                </CardFooter>
-            </Card>
+                    <CardFooter className="flex justify-end">
+                        <EditProfileButton
+                            // onAvatarChange={handleAvatarChange}
+                            name={user?.name || ''}
+                            email={user?.email || ''}
+                        />
+                        <DeleteAccountButton/>
+                    </CardFooter>
+                </Card>
+            </div>
         </div>
     );
 }

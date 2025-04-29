@@ -1,4 +1,5 @@
 import userRepository from "../repositories/userRepository.js";
+import { recipeRepository } from "../repositories/recipeRepository.js";
 
 const UserService = {
   async createUser(userData) {
@@ -22,5 +23,19 @@ const UserService = {
       throw new Error(error);
     }
   },
+  async deleteUser(userId) {
+    try {
+      console.log("Deleting recipes with ID", userId)
+      await recipeRepository.deleteRecipesByUser(userId);
+      console.log("Successfully deleted recipes", userId);
+      const deletedUser = await userRepository.deleteUser(userId);
+      if (!deletedUser) {
+        throw new Error('User not found');
+      }
+      return deletedUser;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to delete user');
+    }
+  }
 };
 export default UserService;

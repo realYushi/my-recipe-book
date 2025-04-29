@@ -7,7 +7,9 @@ export const verifyToken = async (req, res, next) => {
     }
     try {
         const decodedToken = await admin.auth().verifyIdToken(token);
-        console.log("Decoded Token", decodedToken)
+        if(process.env.NODE_ENV === 'development') {
+            console.log("Decoded token:", {uid: decodedToken.uid});
+        }
         req.user = decodedToken;
         next();
     } catch (error) {

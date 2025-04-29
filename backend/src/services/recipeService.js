@@ -1,4 +1,4 @@
-import { recipeRepository } from "../repositories/recipeRepository.js";
+import recipeRepository from "../repositories/recipeRepository.js";
 const recipeService = {
   async createRecipe(recipeData) {
     try {

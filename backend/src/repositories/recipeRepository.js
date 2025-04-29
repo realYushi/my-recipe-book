@@ -1,5 +1,6 @@
 import Recipe from "../models/recipeModel.js";
-export const recipeRepository = {
+
+const recipeRepository = {
   async createRecipe(recipeData) {
     try {
       const recipe = new Recipe(recipeData);
@@ -43,3 +44,5 @@ export const recipeRepository = {
     }
   },
 };
+
+export default recipeRepository;

@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import userService from "~/service/userService";
 
-const DeleteAccountButton: React.FC = () => {
+function DeleteAccountButton() {
     const handleDeleteAccount = async () => {
         await userService.deleteAccount();
     };

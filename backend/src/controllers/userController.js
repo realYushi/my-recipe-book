@@ -1,6 +1,8 @@
 import userService from "../services/userService.js";
 import admin from "../config/firebase.js";
 
+const MAX_USER_ID_LENGTH = 128; 
+
 const UserController = {
   async createUser(req, res) {
     try {
@@ -42,7 +44,7 @@ const UserController = {
   async deleteUser(req, res) {
     try {
         const userId = req.params.id;
-        if (!userId || typeof userId !== "string" || userId.length > 128) {
+        if (!userId || typeof userId !== "string" || userId.length > MAX_USER_ID_LENGTH) {
             return res.status(400).json({ error: "Invalid user ID" });
         }
 

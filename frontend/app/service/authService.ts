@@ -1,4 +1,5 @@
 import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+
 import auth from "@/config/firebaseConfig";
 import type { UpdateUser } from "@/model/user";
 

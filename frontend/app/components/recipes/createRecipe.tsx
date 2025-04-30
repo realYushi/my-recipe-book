@@ -36,7 +36,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Custom Components
-import CreateIngredient from "../ingredient/createIngredient";
+import CreateIngredient from "@/components/ingredient/createIngredient";
 
 // Types
 import type { Ingredient, RecipeIngredient } from "@/model/ingredient";

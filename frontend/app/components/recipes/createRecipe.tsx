@@ -8,7 +8,7 @@ import { z } from "zod";
 import { AlertTriangle } from "lucide-react";
 
 // UI Components
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -16,36 +16,36 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "~/components/ui/select";
+} from "@/components/ui/select";
 import {
     Dialog,
     DialogContent,
     DialogTrigger,
     DialogTitle,
     DialogDescription,
-} from "~/components/ui/dialog";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Custom Components
 import CreateIngredient from "../ingredient/createIngredient";
 
 // Types
-import type { Ingredient, RecipeIngredient } from "~/model/ingredient";
-import { IngredientCategory, IngredientUnit } from "~/model/ingredient";
-import type { Recipe } from "~/model/recipe";
+import type { Ingredient, RecipeIngredient } from "@/model/ingredient";
+import { IngredientCategory, IngredientUnit } from "@/model/ingredient";
+import type { Recipe } from "@/model/recipe";
 
 // Services
-import { ingredientService } from "~/service/ingredientService";
-import recipeService from "~/service/recipeSerive";
+import ingredientService from "@/service/ingredientService";
+import recipeService from "@/service/recipeSerive";
 
 // Zod validation schema for recipe
 const recipeIngredientSchema = z.object({

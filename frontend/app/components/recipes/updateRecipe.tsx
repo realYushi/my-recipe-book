@@ -1,6 +1,6 @@
-import CreateRecipe from "./createRecipe";
-import recipeService from "~/service/recipeSerive";
-import type { Recipe } from "~/model/recipe";
+import CreateRecipe from "@/components/recipes/createRecipe";
+import recipeService from "@/service/recipeSerive";
+import type { Recipe } from "@/model/recipe";
 import { useEffect } from "react";
 import { useState } from "react";
 

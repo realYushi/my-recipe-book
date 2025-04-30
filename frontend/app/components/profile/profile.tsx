@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
-import ProfileCard from "~/components/profile/profileCard";
-import EditProfileButton from "~/components/profile/editProfileButton";
-import { userService } from "~/service/userService";
-import { authService } from "~/service/authService";
+import { useEffect, useState } from "react";
+import userService from "@/service/userService";
+import authService from "@/service/authService";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "~/components/ui/button";
 
 export function Profile() {
     // const handleNameChange = async (newName: string) => {

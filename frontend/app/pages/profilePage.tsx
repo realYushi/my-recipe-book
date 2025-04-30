@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import EditProfileButton from "~/components/profile/editProfileButton";
-import { authService } from "~/service/authService";
+import { useEffect, useState } from "react";
+import EditProfileButton from "@/components/profile/editProfileButton";
+import authService from "@/service/authService";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import type { User } from "~/model/user";
-import DeleteAccountButton from "~/components/profile/deleteAccountButton"; 
+import type { User } from "@/model/user";
+import DeleteAccountButton from "@/components/profile/deleteAccountButton";
 function ProfilePage() {
 
     const [user, setUser] = useState<User | null>(null);
@@ -52,16 +52,15 @@ function ProfilePage() {
                     </div>
                 </CardContent>
 
-                    <CardFooter className="flex justify-end">
-                        <EditProfileButton
-                            // onAvatarChange={handleAvatarChange}
-                            name={user?.name || ''}
-                            email={user?.email || ''}
-                        />
-                        <DeleteAccountButton/>
-                    </CardFooter>
-                </Card>
-            </div>
+                <CardFooter className="flex justify-end">
+                    <EditProfileButton
+                        // onAvatarChange={handleAvatarChange}
+                        name={user?.name || ''}
+                        email={user?.email || ''}
+                    />
+                    <DeleteAccountButton />
+                </CardFooter>
+            </Card>
         </div>
     );
 }

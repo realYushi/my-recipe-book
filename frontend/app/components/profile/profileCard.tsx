@@ -1,5 +1,4 @@
-import React from "react";
-import EditableAvatar from "~/components/profile/editableAvatar";
+import EditableAvatar from "@/components/profile/editableAvatar";
 
 interface ProfileCardProps {
     name: string;
@@ -7,7 +6,7 @@ interface ProfileCardProps {
     avatar: string;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ avatar }) => {
+function ProfileCard({ avatar }: ProfileCardProps) {
     return (
         <div className="flex items-center gap-6">
             <EditableAvatar

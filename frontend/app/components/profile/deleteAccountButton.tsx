@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import userService from "~/service/userService";
+import userService from "@/service/userService";
 
 function DeleteAccountButton() {
     const handleDeleteAccount = async () => {

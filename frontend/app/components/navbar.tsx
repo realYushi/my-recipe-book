@@ -1,11 +1,11 @@
 import { Search, User } from "lucide-react"
 
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { NavLink } from "react-router"
-import { DialogContent, DialogTrigger } from "./ui/dialog"
-import { Dialog } from "./ui/dialog"
-import ProfilePage from "~/pages/profilePage"
+import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog } from "@/components/ui/dialog"
+import ProfilePage from "@/pages/profilePage"
 
 export function Navbar() {
     return (

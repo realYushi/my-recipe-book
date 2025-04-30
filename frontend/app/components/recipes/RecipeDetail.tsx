@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent } from "../ui/dialog"
-import { DialogTrigger } from "../ui/dialog"
-import UpdateRecipe from "./updateRecipe"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import UpdateRecipe from "@/components/recipes/updateRecipe"
 
 
 function RecipeDetail() {

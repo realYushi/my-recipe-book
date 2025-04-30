@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate, Outlet } from "react-router";
-import { authService } from "~/service/authService";
+import authService from "@/service/authService";
 
 export const ProtectedRoute = () => {
     const [loading, setLoading] = useState(true);

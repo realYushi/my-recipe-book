@@ -1,4 +1,4 @@
-import { IngredientList } from "~/components/ingredient/IngredientList";
+import IngredientList from "@/components/ingredient/IngredientList";
 
 function IngredientsPage() {
     return (

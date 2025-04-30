@@ -1,9 +1,8 @@
-import React from "react";
 import { NavLink, useLocation } from "react-router";
 import { Apple, BarChart2, Book, Home } from "lucide-react";
-import { cn } from "~/lib/utils";
-import { Button } from "~/components/ui/button";
-import { ScrollArea } from "~/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 function Sidebar() {
     const location = useLocation();
@@ -27,6 +26,7 @@ function Sidebar() {
             icon: Book,
             href: "/app/recipes",
             active: pathname.startsWith("/app/recipes"),
+        },
     ];
 
     return (

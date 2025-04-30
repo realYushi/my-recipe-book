@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 
 import { useState } from "react";
-import type { Ingredient } from "~/model/ingredient";
-import { ingredientService } from "~/service/ingredientService";
-import { CreateIngredient } from "./createIngredient";
+import type { Ingredient } from "@/model/ingredient";
+import ingredientService from "@/service/ingredientService";
+import CreateIngredient from "@/components/ingredient/createIngredient";
 
 interface UpdateIngredientProps {
     id: string;

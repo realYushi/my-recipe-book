@@ -3,13 +3,13 @@
 import { Plus, Search } from "lucide-react"
 import { Link } from "react-router"
 
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { ScrollArea } from "~/components/ui/scroll-area"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { DialogContent, DialogTrigger } from "../ui/dialog"
-import { Dialog } from "../ui/dialog"
-import CreateIngredient from "./createIngredient"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog } from "@/components/ui/dialog"
+import CreateIngredient from "@/components/ingredient/createIngredient"
 
 // Sample ingredient data
 const ingredients = [

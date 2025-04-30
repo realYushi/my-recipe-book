@@ -1,5 +1,5 @@
-import type { Ingredient } from "~/model/ingredient"
-import { authService } from "./authService";
+import type { Ingredient } from "@/model/ingredient"
+import authService from "./authService";
 
 export const ingredientService = {
     async createIngredient(ingredient: Ingredient) {
@@ -85,3 +85,4 @@ export const ingredientService = {
         }
     }
 }
+export default ingredientService;

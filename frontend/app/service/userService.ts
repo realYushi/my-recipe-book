@@ -1,5 +1,5 @@
-import { authService } from "./authService";
-import type { User } from "~/model/user";
+import authService from "@/service/authService";
+import type { User } from "@/model/user";
 
 export const userService = {
     async createUser(user: User) {

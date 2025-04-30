@@ -1,4 +1,3 @@
-import type { LinksFunction } from "react-router";
 import {
     Links,
     Meta,

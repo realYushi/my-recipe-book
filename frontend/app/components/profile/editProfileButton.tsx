@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -8,10 +8,10 @@ import {
     DialogTitle,
     DialogDescription,
     DialogFooter,
-} from "~/components/ui/dialog";
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authService } from '~/service/authService';
+import authService from "@/service/authService";
 import { useNavigate } from 'react-router';
 
 interface EditProfileButtonProps {
@@ -21,7 +21,7 @@ interface EditProfileButtonProps {
     password?: string;
 }
 
-const EditProfileButton: React.FC<EditProfileButtonProps> = ({ onAvatarChange, name, email, password }) => {
+function EditProfileButton({ onAvatarChange, name, email, password }: EditProfileButtonProps) {
     const [newName, setNewName] = useState(name || email.split("@")[0]);
     const [newEmail, setNewEmail] = useState(email);
     const [newPassword, setNewPassword] = useState(password || "");

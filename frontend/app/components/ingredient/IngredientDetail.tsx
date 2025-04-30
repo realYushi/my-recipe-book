@@ -1,11 +1,11 @@
 import { ArrowLeft, Edit, Trash2 } from "lucide-react"
 import { Link, NavLink, useParams } from "react-router"
 
-import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
-import { Separator } from "~/components/ui/separator"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
-import UpdateIngredient from "./UpdateIngredient"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import UpdateIngredient from "@/components/ingredient/UpdateIngredient"
 
 export function IngredientDetail() {
     const { id } = useParams();

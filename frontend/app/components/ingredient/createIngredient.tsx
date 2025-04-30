@@ -1,27 +1,27 @@
-import { IngredientCategory, IngredientUnit, type Ingredient } from "~/model/ingredient"
-import { Button } from "../ui/button"
+import { IngredientCategory, IngredientUnit, type Ingredient } from "@/model/ingredient"
+import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "../ui/card"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "../ui/select"
+} from "@/components/ui/select"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ingredientService } from "~/service/ingredientService"
+import ingredientService from "@/service/ingredientService"
 import { useState } from "react"
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 
 // Zod validation schema for ingredient

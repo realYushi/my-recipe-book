@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface EditableAvatarProps {
@@ -6,7 +6,7 @@ interface EditableAvatarProps {
     onChange?: (imageDataUrl: string) => void;
 }
 
-const EditableAvatar: React.FC<EditableAvatarProps> = ({ avatar, onChange }) => {
+function EditableAvatar({ avatar, onChange }: EditableAvatarProps) {
     const [imageSrc, setImageSrc] = useState<string | null>(avatar || null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -16,7 +16,7 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ avatar, onChange }) => 
             const reader = new FileReader();
             reader.onloadend = () => {
                 const result = reader.result as string;
-                setImageSrc(result );
+                setImageSrc(result);
                 if (onChange) {
                     onChange(result);
                 }
@@ -27,8 +27,8 @@ const EditableAvatar: React.FC<EditableAvatarProps> = ({ avatar, onChange }) => 
 
     return (
         <div className="relative">
-            <Avatar className="w-24 h-24 cursor-pointer border-2 border-gray-300 shadow-md" 
-            onClick={() => fileInputRef.current?.click()}>
+            <Avatar className="w-24 h-24 cursor-pointer border-2 border-gray-300 shadow-md"
+                onClick={() => fileInputRef.current?.click()}>
                 {imageSrc ? (
                     <AvatarImage src={imageSrc} alt="Avatar" />
                 ) : (

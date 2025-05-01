@@ -1,19 +1,19 @@
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card"
-import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { authService } from "~/service/authService"
-import { userService } from "~/service/userService"
+import authService from "@/service/authService"
+import userService from "@/service/userService"
 
 type FormInputs = {
   username: string;
@@ -55,12 +55,12 @@ export function RegisterForm({
       // Create user in backend
       await userService.createUser({
         id: user.uid,
-        username: data.username,
+        name: data.username,
         email: data.email,
       });
 
       console.log("Registration successful");
-      navigate("/auth/login");
+      navigate("/app/auth/login");
 
     } catch (error: any) {
       console.error("Registration error:", error);

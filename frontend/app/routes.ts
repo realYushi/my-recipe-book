@@ -2,18 +2,21 @@
 import {
     type RouteConfig,
     route,
-    layout
+    layout,
 } from "@react-router/dev/routes";
-
 export default [
-    route("/", "./pages/index.tsx"),
-    route("/auth/register", "./pages/auth/register.tsx"),
-    route("/auth/login", "./pages/auth/login.tsx"),
+    route("/", "./pages/landingPage/page.tsx"),
+    route("app/auth/login", "./pages/auth/login.tsx"),
+    route("app/auth/register", "./pages/auth/register.tsx"),
+
     layout("./components/ProtectedRoute.tsx", [
-        route("/recipes/create", "./pages/recipes/create-recipe.tsx"),
-        route("/ingredients/create", "./pages/ingredients/createIngredient.tsx"),
-        route("/profile", "./pages/profilePage.tsx"),
-        route("/test", "./pages/ingredients/updateIngredient.tsx"),
-        route("/recipes/:id", "./pages/recipes/recipePage.tsx"),
-    ] satisfies RouteConfig)
+        layout("./pages/layout.tsx", [
+            route("app/ingredients", "./pages/ingredients/page.tsx"),
+            route("app/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
+            route("app/recipes", "./pages/recipes/page.tsx"),
+            route("app/recipes/:id", "./components/recipes/RecipeDetail.tsx"),
+            route("app/", "./components/home/HomePage.tsx"),
+        ]),
+    ] satisfies RouteConfig),
+
 ] satisfies RouteConfig;

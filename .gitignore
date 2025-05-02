@@ -154,6 +154,8 @@ dist
 
 # TernJS port file
 .tern-port
+# React Router cache
+.react-router/
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
@@ -231,5 +233,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,react,macos,windows

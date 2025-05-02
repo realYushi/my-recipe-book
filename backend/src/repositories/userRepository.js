@@ -32,7 +32,7 @@ const UserRepository = {
   async deleteUser(userId) {
     try {
       console.log("Deleting user from MongoDB", userId);
-      const deletedUser = await User.findOneAndDelete({_id: userId });
+      const deletedUser = await User.findOneAndDelete({ _id: userId });
       console.log("Deleted user:", deletedUser);
       return deletedUser;
     } catch (error) {

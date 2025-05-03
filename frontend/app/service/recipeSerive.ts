@@ -35,6 +35,25 @@ export const recipeService = {
             throw error;
         }
     },
+    getAllRecipes: async (): Promise<Recipe[]> => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch("/api/recipes", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch recipes: ${response.statusText}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error("Error fetching all recipes:", error);
+            throw error;
+        }
+    },
+
     getRecipeById: async (id: string): Promise<Recipe> => {
         try {
             const token = await authService.getJwtToken();
@@ -42,11 +61,14 @@ export const recipeService = {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
-                },
+                }
             });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch recipe by ID: ${response.statusText}`);
+            }
             return response.json();
         } catch (error) {
-            console.error("Error getting recipe by ID:", error);
+            console.error("Error fetching recipe by ID:", error);
             throw error;
         }
     }

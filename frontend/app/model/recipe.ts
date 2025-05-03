@@ -1,4 +1,11 @@
-import type { RecipeIngredient } from "./ingredient";
+import type { Ingredient, IngredientUnit } from "./ingredient";
+
+export interface RecipeIngredient {
+    ingredient: Ingredient; 
+    quantity: number;
+    unit: IngredientUnit;
+}
+
 export interface Recipe {
     _id?: string;
     name: string;

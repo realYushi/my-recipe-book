@@ -17,10 +17,8 @@ export interface Ingredient {
     unit: IngredientUnit;
 }
 
-
-
 export interface RecipeIngredient {
-    ingredient: string;
+    ingredient: Ingredient; 
     quantity: number;
     unit: IngredientUnit;
 }

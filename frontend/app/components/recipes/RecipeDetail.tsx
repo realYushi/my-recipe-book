@@ -25,7 +25,7 @@ function RecipeDetail({ id }: RecipeDetailProps) {
             try {
                 const data: Recipe = await recipeService.getRecipeById(id);
                 setRecipe(data);
-                setIsOwner(data.user === "mock-logged-in-user-id"); // Replace with actual user ID logic
+                setIsOwner(data.user === "mock-logged-in-user-id"); 
             } catch (error) {
                 console.error("Error fetching recipe details:", error);
             }
@@ -40,7 +40,7 @@ function RecipeDetail({ id }: RecipeDetailProps) {
         try {
             await recipeService.deleteRecipe(id);
             alert("Recipe deleted successfully.");
-            navigate("/app/recipes"); // Redirect to the recipe list
+            navigate("/app/recipes"); 
         } catch (error) {
             console.error("Error deleting recipe:", error);
             alert("Failed to delete the recipe. Please try again later.");

@@ -146,7 +146,7 @@ function RecipeDetail({ id }: RecipeDetailProps) {
                             <TableBody>
                                 {recipe.ingredients.map((ingredient, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
+                                        <TableCell>{ingredient.ingredient.name}</TableCell>
                                         <TableCell>{ingredient.quantity}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>

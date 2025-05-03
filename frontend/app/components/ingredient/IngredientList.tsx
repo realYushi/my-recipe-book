@@ -2,6 +2,7 @@
 
 import { Plus, Search } from "lucide-react"
 import { Link } from "react-router"
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,64 +11,46 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
-
-// Sample ingredient data
-const ingredients = [
-    {
-        id: "68085453b24f5e5b280c9687",
-        name: "Tomatoes",
-        unit: "kg",
-        price: 2.99,
-    },
-    {
-        id: "2",
-        name: "Onions",
-        unit: "kg",
-        price: 1.49,
-    },
-    {
-        id: "3",
-        name: "Chicken Breast",
-        unit: "kg",
-        price: 8.99,
-    },
-    {
-        id: "4",
-        name: "Olive Oil",
-        unit: "bottle",
-        price: 6.99,
-    },
-    {
-        id: "5",
-        name: "Garlic",
-        unit: "head",
-        price: 0.79,
-    },
-    {
-        id: "6",
-        name: "Rice",
-        unit: "kg",
-        price: 3.49,
-    },
-    {
-        id: "7",
-        name: "Pasta",
-        unit: "pack",
-        price: 1.99,
-    },
-    {
-        id: "8",
-        name: "Salt",
-        unit: "kg",
-        price: 1.29,
-    },
-]
+import ingredientService from "@/service/ingredientService";
 
 export function IngredientList() {
+    const [ingredients, setIngredients] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchIngredients = async () => {
+            try {
+                const data = await ingredientService.getIngredients();
+                setIngredients(data);
+            } catch (error) {
+                console.error("Error fetching ingredients:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchIngredients();
+    }, []);
+
+    const handleRemoveIngredient = async (id: string) => {
+        if (!window.confirm("Are you sure you want to remove this ingredient?")) return;
+
+        try {
+            await ingredientService.deleteIngredient(id);
+            setIngredients((prev) => prev.filter((ingredient) => ingredient._id !== id));
+        } catch (error) {
+            console.error("Error removing ingredient:", error);
+        }
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">
-                <h1 className="text-xl font-semibold">Ingredients</h1>
+                <h1 className="text-xl font-semibold">Your Ingredients</h1>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>
@@ -91,27 +74,43 @@ export function IngredientList() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Name</TableHead>
-                            <TableHead>Unit</TableHead>
+                            <TableHead>Category</TableHead>
                             <TableHead>Price</TableHead>
+                            <TableHead>Unit</TableHead>
+                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {ingredients.map((ingredient) => (
-                            <TableRow key={ingredient.id} className="cursor-pointer hover:bg-muted/50">
+                            <TableRow key={ingredient._id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
+                                        {ingredient.category}
+                                    </Link>
+                                </TableCell>
+                                <TableCell>
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
+                                        ${ingredient.price.toFixed(2)}
+                                    </Link>
+                                </TableCell>
+                                <TableCell>
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         {ingredient.unit}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
-                                        ${ingredient.price.toFixed(2)}
-                                    </Link>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleRemoveIngredient(ingredient._id)}
+                                    >
+                                        Remove
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -5,7 +5,7 @@ function IngredientsPage() {
         <div>
             <IngredientList />
         </div>
-    )
+    );
 }
 
 export default IngredientsPage;

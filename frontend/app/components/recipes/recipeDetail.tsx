@@ -1,5 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
-import { Link, useParams } from "react-router"
+import { Link, useParams, useNavigate } from "react-router"
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,6 +17,7 @@ interface RecipeDetailProps {
 function RecipeDetail({ id }: RecipeDetailProps) {
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [isOwner, setIsOwner] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -31,6 +32,20 @@ function RecipeDetail({ id }: RecipeDetailProps) {
         };
         fetchRecipe();
     }, [id]);
+
+    const handleDeleteRecipe = async () => {
+        const confirmation = window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.");
+        if (!confirmation) return;
+
+        try {
+            await recipeService.deleteRecipe(id);
+            alert("Recipe deleted successfully.");
+            navigate("/app/recipes"); // Redirect to the recipe list
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+            alert("Failed to delete the recipe. Please try again later.");
+        }
+    };
 
     if (!recipe) {
         return <div>Loading...</div>;
@@ -61,7 +76,12 @@ function RecipeDetail({ id }: RecipeDetailProps) {
                             <UpdateRecipe id={id as string} />
                         </DialogContent>
                     </Dialog>
-                    <Button variant="outline" size="icon" className="text-destructive rounded-full">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="text-destructive rounded-full"
+                        onClick={handleDeleteRecipe}
+                    >
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete recipe</span>
                     </Button>

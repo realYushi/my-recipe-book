@@ -71,7 +71,21 @@ export const recipeService = {
             console.error("Error fetching recipe by ID:", error);
             throw error;
         }
-    }
+    },
+    async deleteRecipe(id: string): Promise<void> {
+        const jwtToken = await authService.getJwtToken();
+        const response = await fetch(`/api/recipes/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${jwtToken}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to delete the recipe");
+        }
+    },
 }
 
 export default recipeService;

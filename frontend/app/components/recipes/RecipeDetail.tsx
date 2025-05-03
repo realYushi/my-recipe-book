@@ -51,6 +51,7 @@ function RecipeDetail() {
                         <DialogTrigger asChild>
                             <Button variant="outline" size="icon">
                                 <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit recipe</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent

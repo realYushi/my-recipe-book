@@ -1,42 +1,44 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
+import recipeService from "@/service/recipeSerive";
+import type { Recipe } from "@/model/recipe";
 
+interface RecipeDetailProps {
+    id: string;
+}
 
-function RecipeDetail() {
-    const { id } = useParams();
-    // This would normally fetch the recipe by ID from an API
-    const recipe = {
-        id: "1",
-        name: "Spaghetti Bolognese",
-        ingredients: [
-            { name: "Ground Beef", unit: "g", amount: 500 },
-            { name: "Onion", unit: "medium", amount: 1 },
-            { name: "Garlic", unit: "cloves", amount: 2 },
-            { name: "Tomato Sauce", unit: "can", amount: 1 },
-            { name: "Spaghetti", unit: "g", amount: 400 },
-            { name: "Olive Oil", unit: "tbsp", amount: 2 },
-            { name: "Salt", unit: "tsp", amount: 1 },
-            { name: "Pepper", unit: "tsp", amount: 0.5 },
-            { name: "Oregano", unit: "tsp", amount: 1 },
-            { name: "Basil", unit: "tsp", amount: 1 },
-        ],
-        prepTime: "15 mins",
-        cookTime: "45 mins",
-        portions: 4,
-        instructions:
-            "1. Heat olive oil in a large pan over medium heat.\n2. Add onions and garlic, sauté until soft.\n3. Add ground beef and cook until browned.\n4. Add tomato sauce and seasonings.\n5. Simmer for 30 minutes, stirring occasionally.\n6. Meanwhile, cook spaghetti according to package instructions.\n7. Drain pasta and serve with sauce on top.\n8. Optionally, garnish with grated Parmesan cheese.",
-    }
+function RecipeDetail({ id }: RecipeDetailProps) {
+    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [isOwner, setIsOwner] = useState(false);
+
+    useEffect(() => {
+        const fetchRecipe = async () => {
+            if (!id) return;
+            try {
+                const data: Recipe = await recipeService.getRecipeById(id);
+                setRecipe(data);
+                setIsOwner(data.user === "mock-logged-in-user-id"); // Replace with actual user ID logic
+            } catch (error) {
+                console.error("Error fetching recipe details:", error);
+            }
+        };
+        fetchRecipe();
+    }, [id]);
+
+    if (!recipe) {
+        return <div>Loading...</div>;
+   }
 
     return (
-        <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex flex-col max-w-4xl mx-auto">
+            <div className="flex items-center justify-between p-4 border-b mb-6">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
                         <Link to="/app/recipes">
@@ -44,63 +46,70 @@ function RecipeDetail() {
                             <span className="sr-only">Back to recipes</span>
                         </Link>
                     </Button>
-                    <h1 className="text-xl font-semibold">{recipe.name}</h1>
+                    <h1 className="text-2xl font-semibold">{recipe.name}</h1>
                 </div>
+                {isOwner && (
                 <div className="flex items-center gap-2">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Edit className="h-4 w-4" />
+                            <Button variant="outline" size="icon" className="rounded-full">
+                            <Edit className="h-4 w-4" />
                             <span className="sr-only">Edit recipe</span>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent
-                            className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
-                            style={{ padding: 0 }}
-                        >
-                            <div className="h-full overflow-y-auto">
-                                <UpdateRecipe id={id as string} />
-                            </div>
+                        <DialogContent className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto">
+                            <UpdateRecipe id={id as string} />
                         </DialogContent>
                     </Dialog>
-                    <Button variant="outline" size="icon" className="text-destructive">
+                    <Button variant="outline" size="icon" className="text-destructive rounded-full">
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete recipe</span>
                     </Button>
                 </div>
+                )}
             </div>
 
             <div className="flex-1 p-4 overflow-auto">
-                <div className="grid gap-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
+                <div className="grid gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <Card>
+                            <CardHeader className="p-3">
                                 <CardTitle className="text-sm font-medium flex items-center">
                                     <Clock className="mr-2 h-4 w-4" /> Preparation Time
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.prepTime}</p>
+                            <CardContent className="p-3 pt-0">
+                            <p className="text-lg font-semibold">{recipe.preparationTime} mins</p>
                             </CardContent>
                         </Card>
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
+                        <Card>
+                            <CardHeader className="p-3">
                                 <CardTitle className="text-sm font-medium flex items-center">
                                     <Clock className="mr-2 h-4 w-4" /> Cooking Time
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.cookTime}</p>
+                            <CardContent className="p-3 pt-0">
+                            <p className="text-lg font-semibold">{recipe.cookingTime} mins</p>
                             </CardContent>
                         </Card>
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
+                        <Card>
+                            <CardHeader className="p-3">
                                 <CardTitle className="text-sm font-medium flex items-center">
-                                    <Users className="mr-2 h-4 w-4" /> Portions
+                                    <Users className="mr-2 h-4 w-4" /> Total Time
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.portions}</p>
+                            <CardContent className="p-3 pt-0">
+                                <p className="text-lg font-semibold">{recipe.preparationTime + recipe.cookingTime} min</p>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="p-3">
+                                <CardTitle className="text-sm font-medium flex items-center">
+                                    <Users className="mr-2 h-4 w-4" /> Serves
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-3 pt-0">
+                                <p className="text-lg font-semibold">{recipe.portions} min</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -118,8 +127,8 @@ function RecipeDetail() {
                             <TableBody>
                                 {recipe.ingredients.map((ingredient, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
-                                        <TableCell>{ingredient.amount}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
+                                        <TableCell>{ingredient.quantity}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>
                                 ))}
@@ -132,10 +141,14 @@ function RecipeDetail() {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Instructions</h2>
                         <div className="space-y-4">
-                            {recipe.instructions.split("\n").map((step, index) => (
+                        {recipe.instructions.split("\n").map((step: string, index: number) => (
                                 <div key={index} className="flex gap-2">
-                                    <div className="flex-none">{step.split(".")[0]}.</div>
-                                    <div>{step.split(".").slice(1).join(".").trim()}</div>
+                                    <div className="flex-none w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white font-semibold text-sm"> 
+                                        {index + 1}.
+                                    </div>
+                                    <div className ="flex-1 pt-1">
+                                        {step}
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -143,7 +156,9 @@ function RecipeDetail() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default RecipeDetail;
+
+

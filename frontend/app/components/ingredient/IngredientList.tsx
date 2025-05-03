@@ -14,7 +14,7 @@ import CreateIngredient from "@/components/ingredient/createIngredient"
 import ingredientService from "@/service/ingredientService";
 
 export function IngredientList() {
-    const [ingredients, setIngredients] = useState([]);
+    const [ingredients, setIngredients] = useState<{ _id: string; name: string; quantity: string; unit: string }[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -82,27 +82,10 @@ export function IngredientList() {
                     </TableHeader>
                     <TableBody>
                         {ingredients.map((ingredient) => (
-                            <TableRow key={ingredient._id} className="cursor-pointer hover:bg-muted/50">
-                                <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                        {ingredient.name}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                        {ingredient.category}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                        ${ingredient.price.toFixed(2)}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                        {ingredient.unit}
-                                    </Link>
-                                </TableCell>
+                            <TableRow key={ingredient._id}>
+                                <TableCell>{ingredient.name}</TableCell>
+                                <TableCell>{ingredient.quantity}</TableCell>
+                                <TableCell>{ingredient.unit}</TableCell>                           
                                 <TableCell>
                                     <Button
                                         variant="ghost"

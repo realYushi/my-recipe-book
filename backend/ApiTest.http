@@ -68,6 +68,10 @@ Content-Type: application/json
   "cookingTime": 20
 }
 
+### Delete Recipe by ID
+DELETE {{baseUrl}}/recipes
+Authorization: Bearer {{mockToken}}
+
 ### 3. Ingredient Endpoints (All Auth Required)
 
 ### Get All Ingredients

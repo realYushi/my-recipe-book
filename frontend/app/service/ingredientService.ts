@@ -83,6 +83,26 @@ export const ingredientService = {
         } catch (error) {
             throw new Error("Failed to update ingredient: " + (error instanceof Error ? error.message : String(error)));
         }
+    },
+    async deleteIngredient(id: string) {
+        try {
+            const jwtToken = await authService.getJwtToken();
+            const response = await fetch(`/api/ingredients/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${jwtToken}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server error: ${response.status} - ${errorText}`);
+            }
+
+            return response.json();
+        } catch (error) {
+            throw new Error("Failed to delete ingredient: " + (error instanceof Error ? error.message : String(error)));
+        }
     }
 }
 export default ingredientService;

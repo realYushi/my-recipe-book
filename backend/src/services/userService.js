@@ -23,19 +23,31 @@ const UserService = {
       throw new Error(error);
     }
   },
+  async deleteUserAccount(userId) {
+    try {
+      await recipeRepository.deleteRecipesByUser(userId);
+      const deletedUser = await userRepository.deleteUserById(userId);
+      if (!deletedUser) {
+        throw new Error("User not found");
+      }
+      return { message: "User account and associated data deleted successfully" };
+    } catch (error) {
+      throw new Error(`Failed to delete user account: ${error.message}`);
+    }
+  },
   async deleteUser(userId) {
     try {
-      console.log("Deleting recipes with ID", userId)
+      console.log("Deleting recipes with ID", userId);
       await recipeRepository.deleteRecipesByUser(userId);
       console.log("Successfully deleted recipes", userId);
       const deletedUser = await userRepository.deleteUser(userId);
       if (!deletedUser) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
       return deletedUser;
     } catch (error) {
-      throw new Error(error.message || 'Failed to delete user');
+      throw new Error(error.message || "Failed to delete user");
     }
-  }
+  },
 };
 export default UserService;

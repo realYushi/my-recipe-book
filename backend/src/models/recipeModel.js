@@ -3,6 +3,7 @@ import { recipeIngredientSchema } from '../models/ingredientModel.js';
 
 const recipeSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    description: { type: String, required: false },
     instructions: { type: String, required: true },
     ingredients: { type: [recipeIngredientSchema], required: true },
     portions: { type: Number, required: true, min: 1 },

@@ -32,6 +32,17 @@ const recipeService = {
       throw new Error("Failed to update recipe");
     }
   },
+  async deleteRecipeById(recipeId, userId) {
+    try {
+      const deletedRecipe = await recipeRepository.deleteRecipeById(recipeId, userId);
+      if (!deletedRecipe) {
+        throw new Error("Recipe not found or you do not have permission to delete it.");
+      }
+      return deletedRecipe;
+    } catch (error) {
+      throw new Error(`Failed to delete recipe: ${error.message}`);
+    }
+  },
 };
 
 export default recipeService;

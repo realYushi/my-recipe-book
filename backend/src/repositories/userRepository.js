@@ -29,6 +29,13 @@ const UserRepository = {
       throw new Error(error);
     }
   },
+  async deleteRecipeById(recipeId, userId) {
+    try {
+      return await Recipe.findOneAndDelete({ _id: recipeId, user: userId });
+    } catch (error) {
+      throw new Error(`Failed to delete recipe ${recipeId}: ${error.message}`);
+    }
+  },
   async deleteUser(userId) {
     try {
       console.log("Deleting user from MongoDB", userId);

@@ -38,9 +38,17 @@ const recipeRepository = {
   },
   async deleteRecipesByUser(userId) {
     try {
-      return await Recipe.deleteMany({ user: userId }); 
+      return await Recipe.deleteMany({ user: userId });
     } catch (error) {
       throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
+    }
+  },
+  async deleteRecipeById(recipeId, userId) {
+    try {
+      const result = await Recipe.findOneAndDelete({ _id: recipeId, user: userId });
+      return result;
+    } catch (error) {
+      throw new Error(`Failed to delete recipe ${recipeId}: ${error.message}`);
     }
   },
 };

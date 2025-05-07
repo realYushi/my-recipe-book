@@ -1,0 +1,129 @@
+@baseUrl = http://localhost:5000/api
+@mockToken = mock-firebase-token-for-testing
+@testUserId = 123e4567-e89b-12d3-a456-426614174000
+@testIngredientId = 123e4567-e89b-12d3-a456-426614174000
+
+### 1. User Endpoints (No Auth Required for Create)
+
+### Create User (No Auth Required)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john.doe@example.com"
+}
+
+### Get All Users (Auth Required)
+GET {{baseUrl}}/users
+Authorization: Bearer {{mockToken}}
+
+### Get User by ID (Auth Required)
+GET {{baseUrl}}/users/{{testUserId}}
+Authorization: Bearer {{mockToken}}
+
+### Update User (Auth Required)
+PUT {{baseUrl}}/users/{{testUserId}}
+Authorization: Bearer {{mockToken}}
+Content-Type: application/json
+
+{
+  "username": "john_doe_updated1",
+  "email": "john.updated1@example.com"
+}
+
+### Delete User (Auth Required)
+DELETE {{baseUrl}}/users/{{testUserId}}
+Authorization: Bearer {{mockToken}}
+
+### 2. Recipe Endpoints (All Auth Required)
+
+### Get All Recipes
+GET {{baseUrl}}/recipes
+Authorization: Bearer {{mockToken}}
+
+### Create Recipe
+POST {{baseUrl}}/recipes
+Authorization: Bearer {{mockToken}}
+Content-Type: application/json
+
+{
+  "name": "Chicken Parmesan",
+  "instructions": "1. Preheat oven to 375°F\n2. Season chicken\n3. Cook and serve",
+  "ingredients": [
+    {
+      "ingredient": {
+        "id": "{{testIngredientId}}",
+        "name": "Chicken",
+        "category": "Meat",
+        "price": 10.00,
+        "unit": "kg"
+      },
+      "quantity": 1,
+      "unit": "kg"
+    }
+  ],
+  "portions": 4,
+  "preparationTime": 30,
+  "cookingTime": 20
+}
+
+### 3. Ingredient Endpoints (All Auth Required)
+
+### Get All Ingredients
+GET {{baseUrl}}/ingredients
+Authorization: Bearer {{mockToken}}
+
+### Create Ingredient
+POST {{baseUrl}}/ingredients
+Authorization: Bearer {{mockToken}}
+Content-Type: application/json
+
+{
+  "_id": "01",
+  "name": "Carrots",
+  "category": "Vegetable",
+  "price": 5.50,
+  "unit": "kg"
+}
+
+### Get Ingredient by ID
+GET {{baseUrl}}/ingredients/{{testIngredientId}}
+Authorization: Bearer {{mockToken}}
+
+### Update Ingredient
+PUT {{baseUrl}}/ingredients/{{testIngredientId}}
+Authorization: Bearer {{mockToken}}
+Content-Type: application/json
+
+{
+<<<<<<< HEAD
+  "name": "Broccoli",
+=======
+  "name": "Onion",
+>>>>>>> feature/ingredient-update
+  "category": "Vegetable",
+  "price": 6.50,
+  "unit": "kg"
+}
+
+### Delete Ingredient
+DELETE {{baseUrl}}/ingredients/{{testIngredientId}}
+Authorization: Bearer {{mockToken}}
+
+### 4. Error Cases
+
+### Invalid User Creation (Missing Required Fields)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "invalid@example.com"
+}
+
+### Unauthorized Access (Missing Token)
+GET {{baseUrl}}/recipes
+
+### Invalid ID Format
+GET {{baseUrl}}/ingredients/invalid-id
+Authorization: Bearer {{mockToken}}

@@ -43,7 +43,7 @@ function EditProfileButton({ onAvatarChange, name, email, password }: EditProfil
         } catch (error) {
             console.error(error);
         }
-        navigate("/auth/login");
+        navigate("/app/auth/login");
     }
 
     return (

@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 import userController from "../controllers/userController.js";
 import verifyToken from "../middleware/firebase-auth.js";
+import recipeController from "../controllers/recipeController.js";
 
 router.post("/", userController.createUser);
 router.get("/:id", userController.getUserById);

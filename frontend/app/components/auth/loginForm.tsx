@@ -51,13 +51,17 @@ export function LoginForm({
           });
 
           try {
-            await userService.getUser(user.uid);
+            await userService.getOrCreateUser({
+              id: user.uid,
+              email: user.email || "",
+              username: user.email?.split('@')[0] || ""
+            });
             navigate("/app/");
           } catch (error) {
             await userService.createUser({
               id: user.uid,
               email: user.email || "",
-              name: user.email?.split('@')[0] || ""
+              username: user.email?.split('@')[0] || ""
             });
             navigate("/app/");
           }

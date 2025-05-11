@@ -70,7 +70,7 @@ export const userService = {
             if (response.status === 204) {
                 alert("Account deleted successfully.");
                 await authService.logout();
-                window.location.href = "/login";
+                window.location.href = "/";
             } else {
                 const errorData = await response.json();
                 console.error("Error:", errorData);

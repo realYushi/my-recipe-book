@@ -5,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 function DeleteAccountButton() {
     const navigate = useNavigate();
-
     const handleDeleteAccount = async () => {
         try {
             await userService.deleteAccount();
-            navigate("/landing");
+            navigate("/");
         } catch (error) {
             console.error("Error deleting account:", error);
             alert("An error occurred while deleting the account. Please try again later.");

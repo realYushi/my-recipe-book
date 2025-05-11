@@ -1,7 +1,7 @@
 import userService from "../services/userService.js";
 import admin from "../config/firebase.js";
 
-const MAX_USER_ID_LENGTH = 128; 
+const MAX_USER_ID_LENGTH = 128;
 
 const UserController = {
   async createUser(req, res) {
@@ -43,36 +43,27 @@ const UserController = {
   },
   async deleteUser(req, res) {
     try {
-        const userId = req.params.id;
-        if (!userId || typeof userId !== "string" || userId.length > MAX_USER_ID_LENGTH) {
-            return res.status(400).json({ error: "Invalid user ID" });
-        }
-
-        console.log("Deleting user with ID", userId);
-
-        try {
-            await admin.auth().deleteUser(userId);
-        } catch (firebaseError) {
-            console.error("Error deleting user from Firebase:", firebaseError);
-            return res.status(500).json({ error: "Failed to delete user from Firebase." });
-        }
-
-        const deletedUser = await userService.deleteUser(userId);
-        if (!deletedUser) {
-            return res.status(404).json({ error: "User not found" });
-        }
-        try {
-          const deletedUser = await userService.deleteUser(userId);
-          if (!deletedUser) {
-            return res.status(404).json({ error: "User not found" });
-          }
-        } catch (dbError) {
-          console.error("Error deleting user:", dbError);
-          return res.status(500).json({ error: dbError.message });
-        }
-        res.status(204).send();
+      const userId = req.params.id;
+      if (!userId || typeof userId !== "string" || userId.length > MAX_USER_ID_LENGTH) {
+        return res.status(400).json({ error: "Invalid user ID" });
       }
-    catch (error) {
+
+      console.log("Deleting user with ID", userId);
+
+      try {
+        await admin.auth().deleteUser(userId);
+      } catch (firebaseError) {
+        console.error("Error deleting user from Firebase:", firebaseError);
+        return res.status(500).json({ error: "Failed to delete user from Firebase." });
+      }
+
+      const deletedUser = await userService.deleteUser(userId);
+      if (!deletedUser) {
+        console.warn(`User with ID ${userId} not found in MongoDB:`);
+        return res.status(204).send();
+      }
+      res.status(204).send();
+    } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ error: error.message });
     }

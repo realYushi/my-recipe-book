@@ -9,7 +9,7 @@ function DeleteAccountButton() {
     const handleDeleteAccount = async () => {
         try {
             await userService.deleteAccount();
-            navigate("/app/auth/login");
+            navigate("/landing");
         } catch (error) {
             console.error("Error deleting account:", error);
             alert("An error occurred while deleting the account. Please try again later.");

@@ -52,12 +52,6 @@ export const userService = {
         if (!confirmation) return;
 
         try {
-            const isAuthenticated = await authService.isAuthenticated();
-            if (!isAuthenticated) {
-                alert("You are not authenticated. Please log in again.");
-                return;
-            }
-
             const idToken = await authService.getJwtToken();
             const userId = (await authService.getCurrentUser())?.uid;
             if (!userId) {

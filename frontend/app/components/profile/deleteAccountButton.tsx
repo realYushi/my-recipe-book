@@ -1,10 +1,18 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import userService from "@/service/userService";
+import { useNavigate } from "react-router-dom";
 
 function DeleteAccountButton() {
+    const navigate = useNavigate();
     const handleDeleteAccount = async () => {
-        await userService.deleteAccount();
+        try {
+            await userService.deleteAccount();
+            navigate("/");
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            alert("An error occurred while deleting the account. Please try again later.");
+        }
     };
 
     return (

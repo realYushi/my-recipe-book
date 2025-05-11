@@ -31,6 +31,17 @@ export const userService = {
             throw new Error("Failed to fetch user");
         }
     },
+    async getOrCreateUser(userData: User): Promise<User> {
+        const existingUser = await this.getUser(userData.id);
+
+        if (existingUser) {
+            console.log(`User with id ${userData.id} found.`);
+            return existingUser;
+        } else {
+            console.log(`User with id ${userData.id} not found. Creating new user...`);
+            return await this.createUser(userData);
+        }
+    },
     async updateUser(id: string, user: Partial<User>) {
         const jwtToken = await authService.getJwtToken();
         const response = await fetch(`/api/users/${id}`, {
@@ -52,12 +63,6 @@ export const userService = {
         if (!confirmation) return;
 
         try {
-            const isAuthenticated = await authService.isAuthenticated();
-            if (!isAuthenticated) {
-                alert("You are not authenticated. Please log in again.");
-                return;
-            }
-
             const idToken = await authService.getJwtToken();
             const userId = (await authService.getCurrentUser())?.uid;
             if (!userId) {
@@ -76,7 +81,7 @@ export const userService = {
             if (response.status === 204) {
                 alert("Account deleted successfully.");
                 await authService.logout();
-                window.location.href = "/login";
+                window.location.href = "/";
             } else {
                 const errorData = await response.json();
                 console.error("Error:", errorData);

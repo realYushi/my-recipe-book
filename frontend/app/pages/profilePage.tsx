@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/compone
 import { Label } from "@/components/ui/label";
 import type { User } from "@/model/user";
 import DeleteAccountButton from "@/components/profile/deleteAccountButton";
+import userService from "@/service/userService";
 function ProfilePage() {
 
     const [user, setUser] = useState<User | null>(null);
@@ -13,11 +14,14 @@ function ProfilePage() {
             try {
                 const userData = await authService.getCurrentUser();
                 if (userData) {
-                    setUser({
-                        id: userData.uid,
-                        name: userData.displayName || userData.email?.split("@")[0] || '',
-                        email: userData.email || '',
-                    });
+                    const user = await userService.getUser(userData.uid);
+                    if (user) {
+                        setUser({
+                            id: user.id,
+                            username: user.username || user.email?.split("@")[0] || '',
+                            email: user.email || '',
+                        });
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -43,7 +47,7 @@ function ProfilePage() {
                 <CardContent className="grid w-full items-center gap-6">
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Name</Label>
-                        <p className="text-lg font-semibold">{user?.name}</p>
+                        <p className="text-lg font-semibold">{user?.username}</p>
                     </div>
 
                     <div className="flex flex-col space-y-1.5">
@@ -55,7 +59,7 @@ function ProfilePage() {
                 <CardFooter className="flex justify-end">
                     <EditProfileButton
                         // onAvatarChange={handleAvatarChange}
-                        name={user?.name || ''}
+                        username={user?.username || ''}
                         email={user?.email || ''}
                     />
                     <DeleteAccountButton />

@@ -42,7 +42,7 @@
     "zod": "^3.24.3"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.4.0",
+    "@react-router/dev": "^7.6.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^19.0.1",

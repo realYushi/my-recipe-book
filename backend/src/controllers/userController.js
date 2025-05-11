@@ -61,11 +61,20 @@ const UserController = {
         if (!deletedUser) {
             return res.status(404).json({ error: "User not found" });
         }
-
+        try {
+          const deletedUser = await userService.deleteUser(userId);
+          if (!deletedUser) {
+            return res.status(404).json({ error: "User not found" });
+          }
+        } catch (dbError) {
+          console.error("Error deleting user:", dbError);
+          return res.status(500).json({ error: dbError.message });
+        }
         res.status(204).send();
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        res.status(500).json({ error: error.message });
+      }
+    catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ error: error.message });
     }
   },
   async getUserProfile(req, res) {

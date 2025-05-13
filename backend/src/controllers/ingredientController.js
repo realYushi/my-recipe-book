@@ -1,3 +1,4 @@
+import { Ingredient } from "../models/ingredientModel.js";
 import ingredientService from "../services/ingredientService.js";
 
 const IngredientController = {
@@ -61,6 +62,19 @@ const IngredientController = {
       res.status(500).json({ error: error.message });
     }
   },
+  async deleteIngredient(req, res) {
+    try {
+      const { id } = req.params;
+      const deletedIngredient = await ingredientService.deleteIngredient(id);
+      if (!deletedIngredient) {
+        return res.status(404).json({ message: "Ingredient not found" });
+      }
+      res.status(204).send();
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 };
 
 export default IngredientController;

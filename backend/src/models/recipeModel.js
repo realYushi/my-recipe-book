@@ -10,6 +10,7 @@ const recipeSchema = new mongoose.Schema({
     preparationTime: { type: Number, required: false, min: 0 },
     cookingTime: { type: Number, required: false, min: 0 },
     user: { type: String, ref: 'User', required: true },
+    createdBy: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
 

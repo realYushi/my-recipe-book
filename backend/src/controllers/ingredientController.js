@@ -61,6 +61,15 @@ const IngredientController = {
       res.status(500).json({ error: error.message });
     }
   },
+  async deleteIngredient(req, res) {
+    try {
+      const ingredientId = req.params.id;
+      await ingredientService.deleteIngredient(ingredientId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
 };
 
 export default IngredientController;

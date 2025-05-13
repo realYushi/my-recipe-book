@@ -38,6 +38,13 @@ const IngredientRepository = {
       throw new Error(`Failed to update ingredient: ${error.message}`);
     }
   },
+  async deleteIngredient(ingredientId) {
+    try {
+      return await Ingredient.findByIdAndDelete(ingredientId);
+    } catch (error) {
+      throw new Error(`Failed to delete ingredient: ${error.message}`);
+    }
+  }
 };
 
 export default IngredientRepository;

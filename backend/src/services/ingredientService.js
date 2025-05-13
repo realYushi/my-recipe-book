@@ -46,5 +46,14 @@ const IngredientService = {
       });
     }
   },
+  async deleteIngredient(ingredientId) {
+    try {
+      return await ingredientRepository.deleteIngredient(ingredientId);
+    } catch (error) {
+      throw new Error("Failed to delete ingredient: " + error.message, {
+        cause: error,
+      });
+    }
+  },
 };
 export default IngredientService;

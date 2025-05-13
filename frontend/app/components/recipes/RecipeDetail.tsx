@@ -1,6 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
-import recipeService from "@/service/recipeService";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -28,7 +27,8 @@ function RecipeDetail() {
         const fetchRecipe = async () => {
             try {
                 setLoading(true);
-                const fetchedRecipe = await recipeService.getRecipeById(id as string); // Fetch recipe by ID
+                const response = await fetch(`/api/recipes/${id}`);
+                const fetchedRecipe = await response.json();
                 setRecipe(fetchedRecipe);
             } catch (err) {
                 console.error("Error fetching recipe:", err);

@@ -65,6 +65,7 @@ const IngredientController = {
   async deleteIngredient(req, res) {
     try {
       const { id } = req.params;
+      console.log("Deleting ingredient with ID:", id);
       const deletedIngredient = await ingredientService.deleteIngredient(id);
       if (!deletedIngredient) {
         return res.status(404).json({ message: "Ingredient not found" });
@@ -72,6 +73,7 @@ const IngredientController = {
       res.status(204).send();
     }
     catch (error) {
+      console.error("Error deleting ingredient:", error);
       res.status(500).json({ error: error.message });
     }
   }

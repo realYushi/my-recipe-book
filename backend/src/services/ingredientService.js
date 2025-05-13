@@ -48,6 +48,7 @@ const IngredientService = {
   },
   async deleteIngredient(id) {
     try {
+      console.log("Deleting ingredient with ID", id);
       const deletedIngredient = await ingredientRepository.deleteIngredient(id);
       if (!deletedIngredient) {
         throw new Error("Ingredient not found");

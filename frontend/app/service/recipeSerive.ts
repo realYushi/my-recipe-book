@@ -51,6 +51,7 @@ export const recipeService = {
             throw error;
         }
     }
+
 }
 
 export default recipeService;

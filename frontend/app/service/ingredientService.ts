@@ -37,7 +37,13 @@ export const ingredientService = {
             throw new Error(`Server error: ${response.status} - ${errorText}`);
         }
 
-        return response.json();
+        const data = await response.json();
+        return data.map((ingredient: any) => ({
+            id: ingredient._id,
+            name: ingredient.name,
+            unit: ingredient.unit,
+            price: ingredient.price
+        }));
     },
     async getIngredientById(id: string) {
         try {
@@ -59,12 +65,13 @@ export const ingredientService = {
         }
     },
     async deleteIngredient(id: string) {
+        console.log("Deleting ingredient with ID:", id);
         const jwtToken = await authService.getJwtToken();
         const response = await fetch(`/api/ingredients/${id}`, {
             method: "DELETE",
             headers: {
-                "Authorization": `Bearer ${jwtToken}`
-            }
+                "Authorization": `Bearer ${jwtToken}`,
+            },
         });
 
         if (!response.ok) {

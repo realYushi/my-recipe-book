@@ -57,6 +57,6 @@ const IngredientService = {
     catch (error) {
       throw new Error(`Failed to delete ingredient: ${error.message}`);
     }
-  }  
+  }
 };
 export default IngredientService;

@@ -50,13 +50,14 @@ export function IngredientList() {
             alert("Ingredient deleted successfully.");
         } catch (err) {
             console.error("Error deleting ingredient:", err);
-            alert("Failed to delete ingredient. Please try again.");
+            const errorMessage = err instanceof Error ? err.message : "Unknown error";
+            alert(`Failed to delete ingredient: ${errorMessage}`);
         }
     };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
-    
+
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">

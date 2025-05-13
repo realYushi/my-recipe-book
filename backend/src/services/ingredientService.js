@@ -46,5 +46,8 @@ const IngredientService = {
       });
     }
   },
+  async deleteIngredient(ingredientId) {
+    return ingredientRepository.deleteIngredient(ingredientId);
+  },
 };
 export default IngredientService;

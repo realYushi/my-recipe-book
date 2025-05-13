@@ -1,62 +1,61 @@
 "use client"
 
-import { Plus, Search, Trash2 } from "lucide-react"
-import { Link } from "react-router"
-import { useEffect, useState } from "react"
+import { Plus, Search } from "lucide-react"
+import { Link } from "react-router-dom"
+import { getAuth } from "firebase/auth"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Dialog } from "@/components/ui/dialog"
+import { DialogContent, DialogTrigger, Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
-import ingredientService from "@/service/ingredientService";
-
-type Ingredient = {
-    id: string;
-    name: string;
-    unit: string;
-    price: number;
-};
+import { useEffect, useState } from "react"
 
 export function IngredientList() {
-    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    interface Ingredient {
+        id: string;
+        name: string;
+        unit: string;
+        price: number;
+    }
+
+    const [ingredients, setIngredients] = useState<Ingredient[]>([])
+
     useEffect(() => {
         const fetchIngredients = async () => {
             try {
-                setLoading(true);
-                const fetchedIngredients = await ingredientService.getIngredients();
-                setIngredients(fetchedIngredients);
-            } catch (err) {
-                console.error("Error fetching ingredients:", err);
-                setError("Failed to load ingredients. Please try again.");
-            } finally {
-                setLoading(false);
+                const auth = getAuth()
+                const user = auth.currentUser
+
+                if (!user) {
+                    console.warn("User not logged in")
+                    return
+                }
+
+                const token = await user.getIdToken()
+
+                const response = await fetch("/api/ingredients", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                const data = await response.json()
+                console.log("Fetched ingredients:", data)
+
+                if (Array.isArray(data)) {
+                    setIngredients(data)
+                } else {
+                    console.error("API did not return an array:", data)
+                }
+            } catch (error) {
+                console.error("Failed to fetch ingredients:", error)
             }
-        };
-
-        fetchIngredients();
-    }, []);
-
-    const deleteIngredient = async (id: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
-        if (!confirmDelete) return;
-
-        try {
-            await ingredientService.deleteIngredient(id);
-            setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
-            alert("Ingredient deleted successfully.");
-        } catch (err) {
-            console.error("Error deleting ingredient:", err);
-            const errorMessage = err instanceof Error ? err.message : "Unknown error";
-            alert(`Failed to delete ingredient: ${errorMessage}`);
         }
-    };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p className="text-red-500">{error}</p>;
+        fetchIngredients()
+    }, [])
 
     return (
         <div className="flex h-full flex-col">
@@ -70,7 +69,7 @@ export function IngredientList() {
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
-                        <CreateIngredient onSuccess={() => window.location.reload()} />
+                        <CreateIngredient />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -87,7 +86,6 @@ export function IngredientList() {
                             <TableHead>Name</TableHead>
                             <TableHead>Unit</TableHead>
                             <TableHead>Price</TableHead>
-                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -108,15 +106,6 @@ export function IngredientList() {
                                         ${ingredient.price.toFixed(2)}
                                     </Link>
                                 </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => deleteIngredient(ingredient.id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -126,4 +115,4 @@ export function IngredientList() {
     )
 }
 
-export default IngredientList;
+export default IngredientList

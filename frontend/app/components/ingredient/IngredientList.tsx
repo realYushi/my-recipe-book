@@ -1,8 +1,8 @@
 "use client"
 
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, Trash2 } from "lucide-react"
 import { Link } from "react-router"
-
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -10,60 +10,53 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
+import ingredientService from "@/service/ingredientService";
 
-// Sample ingredient data
-const ingredients = [
-    {
-        id: "68085453b24f5e5b280c9687",
-        name: "Tomatoes",
-        unit: "kg",
-        price: 2.99,
-    },
-    {
-        id: "2",
-        name: "Onions",
-        unit: "kg",
-        price: 1.49,
-    },
-    {
-        id: "3",
-        name: "Chicken Breast",
-        unit: "kg",
-        price: 8.99,
-    },
-    {
-        id: "4",
-        name: "Olive Oil",
-        unit: "bottle",
-        price: 6.99,
-    },
-    {
-        id: "5",
-        name: "Garlic",
-        unit: "head",
-        price: 0.79,
-    },
-    {
-        id: "6",
-        name: "Rice",
-        unit: "kg",
-        price: 3.49,
-    },
-    {
-        id: "7",
-        name: "Pasta",
-        unit: "pack",
-        price: 1.99,
-    },
-    {
-        id: "8",
-        name: "Salt",
-        unit: "kg",
-        price: 1.29,
-    },
-]
+type Ingredient = {
+    id: string;
+    name: string;
+    unit: string;
+    price: number;
+};
 
 export function IngredientList() {
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchIngredients = async () => {
+            try {
+                setLoading(true);
+                const fetchedIngredients = await ingredientService.getIngredients();
+                setIngredients(fetchedIngredients);
+            } catch (err) {
+                console.error("Error fetching ingredients:", err);
+                setError("Failed to load ingredients. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchIngredients();
+    }, []);
+
+    const deleteIngredient = async (id: string) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
+        if (!confirmDelete) return;
+
+        try {
+            await ingredientService.deleteIngredient(id);
+            setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+            alert("Ingredient deleted successfully.");
+        } catch (err) {
+            console.error("Error deleting ingredient:", err);
+            alert("Failed to delete ingredient. Please try again.");
+        }
+    };
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p className="text-red-500">{error}</p>;
+    
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">
@@ -76,7 +69,7 @@ export function IngredientList() {
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
-                        <CreateIngredient />
+                        <CreateIngredient onSuccess={() => window.location.reload()} />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -93,6 +86,7 @@ export function IngredientList() {
                             <TableHead>Name</TableHead>
                             <TableHead>Unit</TableHead>
                             <TableHead>Price</TableHead>
+                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -112,6 +106,15 @@ export function IngredientList() {
                                     <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
                                         ${ingredient.price.toFixed(2)}
                                     </Link>
+                                </TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => deleteIngredient(ingredient.id)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

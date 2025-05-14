@@ -1,69 +1,62 @@
 "use client"
 
 import { Plus, Search } from "lucide-react"
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
+import { getAuth } from "firebase/auth"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Dialog } from "@/components/ui/dialog"
+import { DialogContent, DialogTrigger, Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
-
-// Sample ingredient data
-const ingredients = [
-    {
-        id: "68085453b24f5e5b280c9687",
-        name: "Tomatoes",
-        unit: "kg",
-        price: 2.99,
-    },
-    {
-        id: "2",
-        name: "Onions",
-        unit: "kg",
-        price: 1.49,
-    },
-    {
-        id: "3",
-        name: "Chicken Breast",
-        unit: "kg",
-        price: 8.99,
-    },
-    {
-        id: "4",
-        name: "Olive Oil",
-        unit: "bottle",
-        price: 6.99,
-    },
-    {
-        id: "5",
-        name: "Garlic",
-        unit: "head",
-        price: 0.79,
-    },
-    {
-        id: "6",
-        name: "Rice",
-        unit: "kg",
-        price: 3.49,
-    },
-    {
-        id: "7",
-        name: "Pasta",
-        unit: "pack",
-        price: 1.99,
-    },
-    {
-        id: "8",
-        name: "Salt",
-        unit: "kg",
-        price: 1.29,
-    },
-]
+import { useEffect, useState } from "react"
 
 export function IngredientList() {
+    interface Ingredient {
+        id: string;
+        name: string;
+        unit: string;
+        price: number;
+    }
+
+    const [ingredients, setIngredients] = useState<Ingredient[]>([])
+
+    useEffect(() => {
+        const fetchIngredients = async () => {
+            try {
+                const auth = getAuth()
+                const user = auth.currentUser
+
+                if (!user) {
+                    console.warn("User not logged in")
+                    return
+                }
+
+                const token = await user.getIdToken()
+
+                const response = await fetch("/api/ingredients", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                const data = await response.json()
+                console.log("Fetched ingredients:", data)
+
+                if (Array.isArray(data)) {
+                    setIngredients(data)
+                } else {
+                    console.error("API did not return an array:", data)
+                }
+            } catch (error) {
+                console.error("Failed to fetch ingredients:", error)
+            }
+        }
+
+        fetchIngredients()
+    }, [])
+
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">
@@ -122,4 +115,4 @@ export function IngredientList() {
     )
 }
 
-export default IngredientList;
+export default IngredientList

@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateRecipe from "@/components/recipes/createRecipe"
+import { useEffect, useState } from "react"
+import recipeService from "@/service/recipeService"
 
-// Sample recipe data
 const recipes = [
     {
         id: "68086b8bd55d25d7f3f9eaad",
@@ -96,6 +97,35 @@ const recipes = [
         portions: 4,
     },
 ]
+
+export function RecipeList() {
+    const [recipes, setRecipes] = useState<{ 
+        id: string; 
+        name: string; 
+        ingredients: { name: string; unit: string; amount: number }[]; 
+        prepTime: string; 
+        cookTime: string; 
+        portions: number; 
+    }[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                const data = await recipeService.getAllRecipes();
+                setRecipes(data);
+            } catch (error) {
+                console.error("Error fetching recipes:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRecipes();
+    }, []);
+
+    if (loading) return <p>Loading...</p>;
+    if (!recipes.length) return <p>No recipes found.</p>;
+
 
 export function RecipeList() {
     return (

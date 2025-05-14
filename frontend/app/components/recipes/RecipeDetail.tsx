@@ -1,5 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
-import { Link, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,32 +7,44 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-
+import { useEffect, useState } from "react"
+import recipeService from "@/service/recipeService"
+import auth from "@/config/firebaseConfig"
+import authService from "@/service/authService"
 
 function RecipeDetail() {
-    const { id } = useParams();
-    // This would normally fetch the recipe by ID from an API
-    const recipe = {
-        id: "1",
-        name: "Spaghetti Bolognese",
-        ingredients: [
-            { name: "Ground Beef", unit: "g", amount: 500 },
-            { name: "Onion", unit: "medium", amount: 1 },
-            { name: "Garlic", unit: "cloves", amount: 2 },
-            { name: "Tomato Sauce", unit: "can", amount: 1 },
-            { name: "Spaghetti", unit: "g", amount: 400 },
-            { name: "Olive Oil", unit: "tbsp", amount: 2 },
-            { name: "Salt", unit: "tsp", amount: 1 },
-            { name: "Pepper", unit: "tsp", amount: 0.5 },
-            { name: "Oregano", unit: "tsp", amount: 1 },
-            { name: "Basil", unit: "tsp", amount: 1 },
-        ],
-        prepTime: "15 mins",
-        cookTime: "45 mins",
-        portions: 4,
-        instructions:
-            "1. Heat olive oil in a large pan over medium heat.\n2. Add onions and garlic, sauté until soft.\n3. Add ground beef and cook until browned.\n4. Add tomato sauce and seasonings.\n5. Simmer for 30 minutes, stirring occasionally.\n6. Meanwhile, cook spaghetti according to package instructions.\n7. Drain pasta and serve with sauce on top.\n8. Optionally, garnish with grated Parmesan cheese.",
+    const { id } = useParams<{ id: string }>();
+    interface Recipe {
+        name: string;
+        prepTime: string;
+        cookTime: string;
+        portions: number;
+        ingredients: { name: string; amount: string; unit: string }[];
+        instructions: string;
+        user: string;
     }
+
+    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [isOwner, setIsOwner] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchRecipe = async () => {
+            try {
+                const data = await recipeService.getRecipeById(id);
+                const loggedInUser = await authService.getCurrentUser();
+                const loggedInUserId = loggedInUser ? loggedInUser.uid : null;
+                setRecipe(data);
+                setIsOwner(data.user === loggedInUserId); 
+            } catch (error) {
+                console.error("Error fetching recipe:", error);
+            }
+        };
+
+        fetchRecipe();
+    }, [id]);
+    
+    if (!recipe) return <p>Loading...</p>;
 
     return (
         <div className="flex h-full flex-col">

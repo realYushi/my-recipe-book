@@ -1,5 +1,6 @@
 import type { Recipe } from "@/model/recipe";
 import authService from "@/service/authService";
+import { get } from "http";
 export const recipeService = {
     createRecipe: async (recipe: Recipe) => {
         try {
@@ -49,7 +50,20 @@ export const recipeService = {
             console.error("Error getting recipe by ID:", error);
             throw error;
         }
-    }
+    },
+    getAllRecipes: async (): Promise<Recipe[]> => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch("/api/recipes");
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        } catch (error) {   
+            console.error("Error getting all recipes:", error);
+            throw error;
+        }       
+    },
 }
 
 export default recipeService;

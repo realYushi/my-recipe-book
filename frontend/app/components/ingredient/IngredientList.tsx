@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
+import deleteIngredient from "@/components/ingredient/deleteIngredient"
 import ingredientService from "@/service/ingredientService";
 
 type Ingredient = {
@@ -19,7 +20,7 @@ type Ingredient = {
     price: number;
 };
 
-export function IngredientList() {
+export function IngredientList(id: string) {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -39,21 +40,6 @@ export function IngredientList() {
 
         fetchIngredients();
     }, []);
-
-    const deleteIngredient = async (id: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
-        if (!confirmDelete) return;
-
-        try {
-            await ingredientService.deleteIngredient(id);
-            setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
-            alert("Ingredient deleted successfully.");
-        } catch (err) {
-            console.error("Error deleting ingredient:", err);
-            const errorMessage = err instanceof Error ? err.message : "Unknown error";
-            alert(`Failed to delete ingredient: ${errorMessage}`);
-        }
-    };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -112,7 +98,22 @@ export function IngredientList() {
                                     <Button
                                         variant="destructive"
                                         size="sm"
-                                        onClick={() => deleteIngredient(ingredient.id)}
+                                        className="text-destructive"
+                                        onClick={async () => {
+                                            const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
+                                            if (!confirmDelete) return;
+
+                                            try {
+                                                await deleteIngredient(ingredient.id);
+                                                console.log(`Deleted ingredient with ID: ${ingredient.id}`);
+                                                // Filter out the deleted ingredient from state
+                                                setIngredients((prev) => prev.filter((i) => i.id !== ingredient.id));
+                                            } catch (err) {
+                                                console.error("Error deleting ingredient:", err);
+                                                alert("Failed to delete the ingredient.");
+                                            }
+                                        }}
+
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>

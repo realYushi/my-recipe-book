@@ -15,6 +15,9 @@ export interface Ingredient {
     category: IngredientCategory;
     price: number;
     unit: IngredientUnit;
+    stock?: number;
+    notes?: string;
+    supplier?: string;
 }
 
 

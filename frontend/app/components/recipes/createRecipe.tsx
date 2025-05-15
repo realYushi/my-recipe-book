@@ -45,7 +45,7 @@ import type { Recipe } from "@/model/recipe";
 
 // Services
 import ingredientService from "@/service/ingredientService";
-import recipeService from "@/service/recipeSerive";
+import recipeService from "@/service/recipeService";
 
 // Zod validation schema for recipe
 const recipeIngredientSchema = z.object({

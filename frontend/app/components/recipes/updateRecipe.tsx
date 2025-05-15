@@ -1,5 +1,5 @@
 import CreateRecipe from "@/components/recipes/createRecipe";
-import recipeService from "@/service/recipeSerive";
+import recipeService from "@/service/recipeService";
 import type { Recipe } from "@/model/recipe";
 import { useEffect } from "react";
 import { useState } from "react";

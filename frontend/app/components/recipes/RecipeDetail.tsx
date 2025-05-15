@@ -1,5 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,44 +8,40 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useState } from "react"
-import recipeService from "@/service/recipeService"
-import auth from "@/config/firebaseConfig"
-import authService from "@/service/authService"
+
+type Recipe = {
+    id: string;
+    name: string;
+    prepTime: string;
+    cookTime: string;
+    portions: number;
+    ingredients: { name: string; amount: string; unit: string }[];
+    instructions: string;
+};
 
 function RecipeDetail() {
     const { id } = useParams<{ id: string }>();
-    interface Recipe {
-        name: string;
-        prepTime: string;
-        cookTime: string;
-        portions: number;
-        ingredients: { name: string; amount: string; unit: string }[];
-        instructions: string;
-        user: string;
-    }
-
     const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [isOwner, setIsOwner] = useState(false);
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
-                const data = await recipeService.getRecipeById(id);
-                const loggedInUser = await authService.getCurrentUser();
-                const loggedInUserId = loggedInUser ? loggedInUser.uid : null;
-                setRecipe(data);
-                setIsOwner(data.user === loggedInUserId); 
+                setLoading(true);
+                const response = await fetch(`/api/recipes/${id}`);
+                const fetchRecipe = await response.json();
+                setRecipe(fetchRecipe);
             } catch (error) {
                 console.error("Error fetching recipe:", error);
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchRecipe();
     }, [id]);
-    
-    if (!recipe) return <p>Loading...</p>;
 
+    if (loading) return <p>Loading...</p>;
+    if (!recipe) return <p>Recipe not found.</p>;
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4 border-b">

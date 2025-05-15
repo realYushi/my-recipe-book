@@ -94,7 +94,7 @@ export function IngredientList() {
                         {ingredients.map((ingredient) => (
                             <TableRow key={ingredient.id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full" onClick={() => console.log("Navigate to ingredient with ID", ingredient.id)}>
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>

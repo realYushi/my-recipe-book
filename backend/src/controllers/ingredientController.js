@@ -61,6 +61,7 @@ const IngredientController = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+    console.log("Fetching ingredient with ID", req.params.id);
   },
   async deleteIngredient(req, res) {
     try {

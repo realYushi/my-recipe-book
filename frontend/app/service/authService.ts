@@ -11,7 +11,6 @@ export interface RegisterCredentials extends AuthCredentials {
     username: string;
 }
 
-
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<User> {
         try {

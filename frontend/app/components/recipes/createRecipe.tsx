@@ -81,8 +81,9 @@ type CreateRecipeProps = {
     initialData?: Recipe;
     isEditing?: boolean;
     hideHeader?: boolean;
+    onSuccess?: () => void;
 }
-function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: CreateRecipeProps) {
+function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSuccess }: CreateRecipeProps) {
     // Editor state
     const editorRef = useRef(null);
     const [crepeInstance, setCrepeInstance] = useState<any>(null);
@@ -171,13 +172,14 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
         }
 
         try {
-            if (isEditing && initialData?._id) {
-                await recipeService.updateRecipe(initialData._id, data as Recipe);
+            if (isEditing && initialData?.id) {
+                await recipeService.updateRecipe(initialData.id, data as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
                 await recipeService.createRecipe(data as Recipe);
                 setSuccessMessage("Recipe created successfully!");
             }
+            onSuccess?.();
         } catch (error) {
             console.error(`Error ${isEditing ? "updating" : "creating"} recipe:`, error);
             setFormError(`Failed to ${isEditing ? "update" : "create"} recipe. Please try again.`);

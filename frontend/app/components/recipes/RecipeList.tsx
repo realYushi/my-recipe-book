@@ -9,52 +9,36 @@ import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateRecipe from "@/components/recipes/createRecipe"
 import { useEffect, useState } from "react"
-import { format } from "path"
+import recipeService from "@/service/recipeService"
+import type { Recipe } from "@/model/recipe"
 
 export function RecipeList() {
-    const [recipes, setRecipes] = useState<{
-        id: string;
-        name: string;
-        ingredients: { name: string; unit: string; amount: number }[];
-        prepTime: string;
-        cookTime: string;
-        portions: number;
-    }[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchRecipes = async () => {
-            try {
-                const response = await fetch("/api/recipes");
-                const fetchedRecipes = await response.json();
-                const formattedRecipes = fetchedRecipes.map((recipe: any) => ({
-                    id: recipe.id,
-                    name: recipe.name,
-                    ingredients: recipe.ingredients,
-                    prepTime: recipe.preparationTime || "N/A",
-                    cookTime: recipe.cookingTime || "N/A",
-                    portions: recipe.portions,
-                }));
-                setRecipes(formattedRecipes);
-            } catch (error) {
+    const fetchRecipes = () => {
+        recipeService.getAllRecipes()
+            .then(setRecipes)
+            .catch((error) => {
                 console.error("Error fetching recipes:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+            });
+    };
+    useEffect(() => {
         fetchRecipes();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
-    if (!recipes.length) return <p>No recipes found.</p>;
+    const handleCreateSuccess = () => {
+        setIsCreateOpen(false);
+        fetchRecipes();
+    }
 
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4">
                 <h1 className="text-xl font-semibold">Recipes</h1>
-                <Dialog>
+                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
-                        <Button>
+                        <Button onClick={() => setIsCreateOpen(true)}>
                             <Plus className="mr-2 h-4 w-4" />
                             Add Recipe
                         </Button>
@@ -64,7 +48,7 @@ export function RecipeList() {
                         style={{ padding: 0 }}
                     >
                         <div className="h-full overflow-y-auto">
-                            <CreateRecipe />
+                            <CreateRecipe onSuccess={handleCreateSuccess} />
                         </div>
                     </DialogContent>
                 </Dialog>
@@ -88,11 +72,11 @@ export function RecipeList() {
                                         <div className="grid grid-cols-2 gap-2 text-sm">
                                             <div>
                                                 <span className="text-muted-foreground">Prep: </span>
-                                                {recipe.prepTime}
+                                                {recipe.preparationTime}
                                             </div>
                                             <div>
                                                 <span className="text-muted-foreground">Cook: </span>
-                                                {recipe.cookTime}
+                                                {recipe.cookingTime}
                                             </div>
                                             <div>
                                                 <span className="text-muted-foreground">Portions: </span>

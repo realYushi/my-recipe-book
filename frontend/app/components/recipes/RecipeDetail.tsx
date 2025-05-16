@@ -1,5 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,39 +9,27 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useState } from "react"
 
-type Recipe = {
-    id: string;
-    name: string;
-    prepTime: string;
-    cookTime: string;
-    portions: number;
-    ingredients: { name: string; amount: string; unit: string }[];
-    instructions: string;
-};
-
 function RecipeDetail() {
-    const { id } = useParams<{ id: string }>();
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    const [recipe, setRecipe] = useState<any>(null);
 
     useEffect(() => {
-        const fetchRecipe = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/recipes/${id}`);
-                const fetchRecipe = await response.json();
-                setRecipe(fetchRecipe);
-            } catch (error) {
+        fetch(`/api/recipes/${id}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch recipe");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setRecipe(data);
+            })
+            .catch((error) => {
                 console.error("Error fetching recipe:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchRecipe();
+            });
     }, [id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (!recipe) return <p>Recipe not found.</p>;
+    if (!recipe) return <p>Loading...</p>;
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4 border-b">
@@ -123,7 +111,7 @@ function RecipeDetail() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recipe.ingredients.map((ingredient, index) => (
+                                {recipe.ingredients.map((ingredient: any, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell className="font-medium">{ingredient.name}</TableCell>
                                         <TableCell>{ingredient.amount}</TableCell>
@@ -139,7 +127,7 @@ function RecipeDetail() {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Instructions</h2>
                         <div className="space-y-4">
-                            {recipe.instructions.split("\n").map((step, index) => (
+                            {recipe.instructions.split("\n").map((step: string, index: number) => (
                                 <div key={index} className="flex gap-2">
                                     <div className="flex-none">{step.split(".")[0]}.</div>
                                     <div>{step.split(".").slice(1).join(".").trim()}</div>

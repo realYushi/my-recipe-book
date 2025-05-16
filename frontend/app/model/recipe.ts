@@ -1,6 +1,6 @@
 import type { RecipeIngredient } from "./ingredient";
 export interface Recipe {
-    _id?: string;
+    id: string;
     name: string;
     portions: number;
     preparationTime: number;

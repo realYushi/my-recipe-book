@@ -1,6 +1,6 @@
 import type { Recipe } from "@/model/recipe";
 import authService from "@/service/authService";
-import { get } from "http";
+
 export const recipeService = {
     createRecipe: async (recipe: Recipe) => {
         try {
@@ -54,15 +54,20 @@ export const recipeService = {
     getAllRecipes: async (): Promise<Recipe[]> => {
         try {
             const token = await authService.getJwtToken();
-            const response = await fetch("/api/recipes");
+            const response = await fetch(`/api/recipes`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             return response.json();
-        } catch (error) {   
+        } catch (error) {
             console.error("Error getting all recipes:", error);
             throw error;
-        }       
+        }
     },
 }
 

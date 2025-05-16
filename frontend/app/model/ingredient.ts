@@ -23,4 +23,5 @@ export interface RecipeIngredient {
     ingredient: string;
     quantity: number;
     unit: IngredientUnit;
+    name?: string;
 }

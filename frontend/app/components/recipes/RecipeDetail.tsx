@@ -8,10 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useState } from "react"
+import type { Recipe } from "@/model/recipe"
 
 function RecipeDetail() {
     const { id } = useParams();
-    const [recipe, setRecipe] = useState<any>(null);
+    const [recipe, setRecipe] = useState<Recipe | null>(null);
 
     useEffect(() => {
         fetch(`/api/recipes/${id}`)
@@ -75,7 +76,7 @@ function RecipeDetail() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.prepTime}</p>
+                                <p className="text-lg font-semibold">{recipe.preparationTime}</p>
                             </CardContent>
                         </Card>
                         <Card className="w-full md:w-auto">
@@ -85,7 +86,7 @@ function RecipeDetail() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.cookTime}</p>
+                                <p className="text-lg font-semibold">{recipe.cookingTime}</p>
                             </CardContent>
                         </Card>
                         <Card className="w-full md:w-auto">

@@ -22,12 +22,14 @@ const RecipeController = {
       const recipe = await recipeService.getRecipeById(req.params.id);
       res.status(200).json(recipe);
     } catch (error) {
+      console.error("Error fetching recipe by ID:", error);
       res.status(500).json({ error: "Failed to get recipe by ID" });
     }
   },
   async getAllRecipes(req, res) {
     try {
-      const recipes = await recipeService.getAllRecipes();
+      const userId = req.user.uid;
+      const recipes = await recipeService.getAllRecipes(userId);
       res.status(200).json(recipes);
     } catch (error) {
       res.status(500).json({ error: "Failed to get all recipes" });

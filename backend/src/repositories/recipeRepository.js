@@ -43,3 +43,4 @@ const recipeRepository = {
     }
   },
 };
+export default recipeRepository;

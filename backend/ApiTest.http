@@ -72,6 +72,10 @@ Content-Type: application/json
   "cookingTime": 20
 }
 
+### Get Recipe by ID
+GET {{baseUrl}}/recipes/{{testRecipeId}}
+Authorization: Bearer {{mockToken}}
+
 ### 3. Ingredient Endpoints (All Auth Required)
 
 ### Get All Ingredients
@@ -101,11 +105,7 @@ Authorization: Bearer {{mockToken}}
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
   "name": "Broccoli",
-=======
-  "name": "Onion",
->>>>>>> feature/ingredient-update
   "category": "Vegetable",
   "price": 6.50,
   "unit": "kg"

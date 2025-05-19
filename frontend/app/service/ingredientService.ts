@@ -25,29 +25,22 @@ export const ingredientService = {
         }
     },
     async getIngredients() {
-        try { 
-        const jwtToken = await authService.getJwtToken();
-        const response = await fetch("/api/ingredients", {
-            headers: {
-                "Authorization": `Bearer ${jwtToken}`
+        try {
+            const jwtToken = await authService.getJwtToken();
+            const response = await fetch("/api/ingredients", {
+                headers: {
+                    "Authorization": `Bearer ${jwtToken}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server error: ${response.status} - ${errorText}`);
             }
-        });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Server error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        return data.map((ingredient: any) => ({
-            id: ingredient._id,
-            name: ingredient.name,
-            unit: ingredient.unit,
-            price: ingredient.price
-        }));
-        }
-        catch (error) {
-            throw new Error("Failed to fetch ingredients: " + (error instanceof Error ? error.message : String(error)));
+            return response.json();
+        } catch (error) {
+            throw new Error("Failed to get ingredients: " + (error instanceof Error ? error.message : String(error)));
         }
     },
     async getIngredientById(id: string) {
@@ -68,25 +61,6 @@ export const ingredientService = {
         } catch (error) {
             throw new Error("Failed to get ingredient by id: " + (error instanceof Error ? error.message : String(error)));
         }
-    },
-    async deleteIngredient(id: string) {
-        try {
-        console.log("Deleting ingredient with ID:", id);
-        const jwtToken = await authService.getJwtToken();
-        const response = await fetch(`/api/ingredients/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": `Bearer ${jwtToken}`,
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Server error: ${response.status} - ${errorText}`);
-        }
-    } catch (error) {
-        throw new Error("Failed to delete ingredient: " + (error instanceof Error ? error.message : String(error)));
-    }
     },
     async updateIngredient(id: string, ingredient: Ingredient) {
         try {

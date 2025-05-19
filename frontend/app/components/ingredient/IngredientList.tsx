@@ -2,7 +2,7 @@
 
 import { Plus, Search } from "lucide-react"
 import { Link } from "react-router"
-
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -87,19 +87,19 @@ export function IngredientList(_id: string) {
                     </TableHeader>
                     <TableBody>
                         {ingredients.map((ingredient) => (
-                            <TableRow key={ingredient.id} className="cursor-pointer hover:bg-muted/50">
+                            <TableRow key={ingredient._id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         {ingredient.unit}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/app/ingredients/${ingredient.id}`} className="block w-full">
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         ${ingredient.price.toFixed(2)}
                                     </Link>
                                 </TableCell>

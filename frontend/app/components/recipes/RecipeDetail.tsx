@@ -1,5 +1,5 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,30 +7,45 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import type { Recipe } from "@/model/recipe"
+import type { RecipeIngredient } from "@/model/ingredient"
 
 function RecipeDetail() {
     const { id } = useParams();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
-
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     useEffect(() => {
-        fetch(`/api/recipes/${id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch recipe");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setRecipe(data);
-            })
-            .catch((error) => {
-                console.error("Error fetching recipe:", error);
-            });
+        const fetchRecipe = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/recipes/${id}`);
+                const fetchedRecipe = await response.json();
+                setRecipe(fetchedRecipe);
+            } catch (err) {
+                console.error("Error fetching recipe:", err);
+                setError("Failed to load recipe. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecipe();
     }, [id]);
 
-    if (!recipe) return <p>Loading...</p>;
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error) {
+        return <p className="text-red-500">{error}</p>;
+    }
+
+    if (!recipe) {
+        return <p>Recipe not found.</p>;
+    }
+
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4 border-b">
@@ -114,8 +129,8 @@ function RecipeDetail() {
                             <TableBody>
                                 {recipe.ingredients.map((ingredient: any, index: number) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
-                                        <TableCell>{ingredient.amount}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.ingredient}</TableCell>
+                                        <TableCell>{ingredient.quantity}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>
                                 ))}

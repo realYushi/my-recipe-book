@@ -10,11 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
-import deleteIngredient from "@/components/ingredient/deleteIngredient"
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
+//import { set } from "react-hook-form"
 
-export function IngredientList(id: string) {
+export function IngredientList(_id: string) {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -34,6 +34,22 @@ export function IngredientList(id: string) {
 
         fetchIngredients();
     }, []);
+
+    const deleteIngredient = async (id: string) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
+        if (!confirmDelete) return;
+
+        try {
+            await ingredientService.deleteIngredient(id);
+            alert("Ingredient deleted successfully.");
+            setIngredients(prev => prev.filter(ingredient => ingredient._id !== id));
+        } catch (err) {
+            console.error("Error deleting ingredient:", err);
+            const errorMessage = err instanceof Error ? err.message : "Unknown error";
+            alert(`Failed to delete ingredient: ${errorMessage}`);
+        }
+    }
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;

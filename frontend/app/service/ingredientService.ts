@@ -25,6 +25,7 @@ export const ingredientService = {
         }
     },
     async getIngredients() {
+        try { 
         const jwtToken = await authService.getJwtToken();
         const response = await fetch("/api/ingredients", {
             headers: {
@@ -44,6 +45,10 @@ export const ingredientService = {
             unit: ingredient.unit,
             price: ingredient.price
         }));
+        }
+        catch (error) {
+            throw new Error("Failed to fetch ingredients: " + (error instanceof Error ? error.message : String(error)));
+        }
     },
     async getIngredientById(id: string) {
         try {
@@ -65,6 +70,7 @@ export const ingredientService = {
         }
     },
     async deleteIngredient(id: string) {
+        try {
         console.log("Deleting ingredient with ID:", id);
         const jwtToken = await authService.getJwtToken();
         const response = await fetch(`/api/ingredients/${id}`, {
@@ -78,6 +84,9 @@ export const ingredientService = {
             const errorText = await response.text();
             throw new Error(`Server error: ${response.status} - ${errorText}`);
         }
+    } catch (error) {
+        throw new Error("Failed to delete ingredient: " + (error instanceof Error ? error.message : String(error)));
+    }
     },
     async updateIngredient(id: string, ingredient: Ingredient) {
         try {

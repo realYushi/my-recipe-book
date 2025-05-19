@@ -46,18 +46,5 @@ const IngredientService = {
       });
     }
   },
-  async deleteIngredient(id) {
-    try {
-      console.log("Deleting ingredient with ID", id);
-      const deletedIngredient = await ingredientRepository.deleteIngredient(id);
-      if (!deletedIngredient) {
-        throw new Error("Ingredient not found");
-      }
-      return deletedIngredient;
-    }
-    catch (error) {
-      throw new Error(`Failed to delete ingredient: ${error.message}`);
-    }
-  }
 };
 export default IngredientService;

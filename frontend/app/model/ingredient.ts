@@ -10,14 +10,11 @@ export enum IngredientCategory {
     MEAT = "Meat",
 }
 export interface Ingredient {
-    _id: string;
+    _id?: string;
     name: string;
     category: IngredientCategory;
     price: number;
     unit: IngredientUnit;
-    stock?: number;
-    notes?: string;
-    supplier?: string;
 }
 
 

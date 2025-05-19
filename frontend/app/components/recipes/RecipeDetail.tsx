@@ -1,48 +1,37 @@
 import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-import { useEffect, useState } from "react";
-import type { Recipe } from "@/model/recipe"
-import type { RecipeIngredient } from "@/model/ingredient"
+
 
 function RecipeDetail() {
     const { id } = useParams();
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    useEffect(() => {
-        const fetchRecipe = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/recipes/${id}`);
-                const fetchedRecipe = await response.json();
-                setRecipe(fetchedRecipe);
-            } catch (err) {
-                console.error("Error fetching recipe:", err);
-                setError("Failed to load recipe. Please try again.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchRecipe();
-    }, [id]);
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p className="text-red-500">{error}</p>;
-    }
-
-    if (!recipe) {
-        return <p>Recipe not found.</p>;
+    // This would normally fetch the recipe by ID from an API
+    const recipe = {
+        id: "1",
+        name: "Spaghetti Bolognese",
+        ingredients: [
+            { name: "Ground Beef", unit: "g", amount: 500 },
+            { name: "Onion", unit: "medium", amount: 1 },
+            { name: "Garlic", unit: "cloves", amount: 2 },
+            { name: "Tomato Sauce", unit: "can", amount: 1 },
+            { name: "Spaghetti", unit: "g", amount: 400 },
+            { name: "Olive Oil", unit: "tbsp", amount: 2 },
+            { name: "Salt", unit: "tsp", amount: 1 },
+            { name: "Pepper", unit: "tsp", amount: 0.5 },
+            { name: "Oregano", unit: "tsp", amount: 1 },
+            { name: "Basil", unit: "tsp", amount: 1 },
+        ],
+        prepTime: "15 mins",
+        cookTime: "45 mins",
+        portions: 4,
+        instructions:
+            "1. Heat olive oil in a large pan over medium heat.\n2. Add onions and garlic, sauté until soft.\n3. Add ground beef and cook until browned.\n4. Add tomato sauce and seasonings.\n5. Simmer for 30 minutes, stirring occasionally.\n6. Meanwhile, cook spaghetti according to package instructions.\n7. Drain pasta and serve with sauce on top.\n8. Optionally, garnish with grated Parmesan cheese.",
     }
 
     return (
@@ -90,7 +79,7 @@ function RecipeDetail() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.preparationTime}</p>
+                                <p className="text-lg font-semibold">{recipe.prepTime}</p>
                             </CardContent>
                         </Card>
                         <Card className="w-full md:w-auto">
@@ -100,7 +89,7 @@ function RecipeDetail() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.cookingTime}</p>
+                                <p className="text-lg font-semibold">{recipe.cookTime}</p>
                             </CardContent>
                         </Card>
                         <Card className="w-full md:w-auto">
@@ -128,8 +117,8 @@ function RecipeDetail() {
                             <TableBody>
                                 {recipe.ingredients.map((ingredient, index) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.ingredient}</TableCell>
-                                        <TableCell>{ingredient.quantity}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
+                                        <TableCell>{ingredient.amount}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>
                                 ))}

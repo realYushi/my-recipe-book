@@ -1,6 +1,5 @@
 import type { Recipe } from "@/model/recipe";
 import authService from "@/service/authService";
-
 export const recipeService = {
     createRecipe: async (recipe: Recipe) => {
         try {
@@ -39,7 +38,7 @@ export const recipeService = {
     getRecipeById: async (id: string): Promise<Recipe> => {
         try {
             const token = await authService.getJwtToken();
-            const response = await fetch(`"/api/recipes/${id}`, {
+            const response = await fetch(`/api/recipes/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
@@ -51,7 +50,6 @@ export const recipeService = {
             throw error;
         }
     }
-
 }
 
 export default recipeService;

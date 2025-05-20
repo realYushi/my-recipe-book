@@ -172,8 +172,8 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSu
         }
 
         try {
-            if (isEditing && initialData?.id) {
-                await recipeService.updateRecipe(initialData.id, data as Recipe);
+            if (isEditing && initialData?._id) {
+                await recipeService.updateRecipe(initialData._id, data as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
                 await recipeService.createRecipe(data as Recipe);

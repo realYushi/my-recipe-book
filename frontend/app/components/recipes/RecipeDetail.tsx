@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useState } from "react";
 import type { Recipe } from "@/model/recipe"
-import type { RecipeIngredient } from "@/model/ingredient"
+import recipeService from "@/service/recipeService"
 
 function RecipeDetail() {
     const { id } = useParams();
@@ -20,8 +20,7 @@ function RecipeDetail() {
         const fetchRecipe = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/recipes/${id}`);
-                const fetchedRecipe = await response.json();
+                const fetchedRecipe = await recipeService.getRecipeById(id as string);
                 setRecipe(fetchedRecipe);
             } catch (err) {
                 console.error("Error fetching recipe:", err);
@@ -127,9 +126,9 @@ function RecipeDetail() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recipe.ingredients.map((ingredient: any, index: number) => (
+                                {recipe.ingredients?.map((ingredient: any, index: number) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.ingredient}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
                                         <TableCell>{ingredient.quantity}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>
@@ -143,12 +142,14 @@ function RecipeDetail() {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Instructions</h2>
                         <div className="space-y-4">
-                            {recipe.instructions.split("\n").map((step: string, index: number) => (
-                                <div key={index} className="flex gap-2">
-                                    <div className="flex-none">{step.split(".")[0]}.</div>
-                                    <div>{step.split(".").slice(1).join(".").trim()}</div>
-                                </div>
-                            ))}
+                            {recipe.instructions ? recipe.instructions.split("\n").filter((step: string) => step.trim() !== "")
+                                .map((step: string, index: number) => (
+                                    <div key={index} className="flex gap-2">
+                                        <div className="flex-none">{step.split(".")[0]}.</div>
+                                        <div>{step.split(".").slice(1).join(".").trim()}</div>
+                                    </div>
+                                ))
+                                : <p>No instructions available.</p>}
                         </div>
                     </div>
                 </div>

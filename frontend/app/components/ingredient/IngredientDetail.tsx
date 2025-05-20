@@ -138,10 +138,7 @@ export function IngredientDetail() {
                     <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Used In Recipes</h2>
                         <ul className="list-disc pl-6 space-y-1">
-                            <li>Tomato Pasta Sauce</li>
-                            <li>Garden Salad</li>
-                            <li>Bruschetta</li>
-                            <li>Caprese Salad</li>
+                            <li>...</li>
                         </ul>
                     </div>
                 </div>

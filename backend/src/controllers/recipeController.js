@@ -19,8 +19,8 @@ const RecipeController = {
   },
   async searchRecipes(req, res) {
     try {
-      const { name, ingredients } = req.query;
-      const recipes = await recipeService.searchRecipes(name, ingredients);
+      const { name } = req.query;
+      const recipes = await recipeService.searchRecipes(name);
       res.status(200).json(recipes);
     } catch (error) {
       res.status(500).json({ error: "Failed to search recipes" });

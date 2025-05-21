@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
-
 
 export function SearchBar() {
     const [input, setInput] = useState("");
     const [results, setResults] = useState<any[]>([]);
+    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
     const fetchData = async (value: string) => {
         try {
@@ -14,7 +14,40 @@ export function SearchBar() {
         } catch (error) {
             console.error("Error fetching data:", error);
         }
-    };
+        try {
+            const token = localStorage.getItem("token")
+
+            const response = await fetch(`/api/recipes?name=${value}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setResults(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
+
+        if (input.trim() === "") {
+            setResults([]);
+            return;
+        }
+
+        debounceTimeout.current = setTimeout(() => {
+            fetchData(input);
+        }, 300);
+    }, [input]);
 
     return (
         <div className="relative w-full max-w-sm mx-auto">

@@ -8,18 +8,14 @@ const recipeService = {
       throw new Error("Failed to create recipe");
     }
   },
-  async searchRecipes(name, ingredients) {
+  async searchRecipes(name) {
     const query = {};
 
     if (name) {
       query.name = { $regex: name, $options: "i" };
     }
-
-    if (ingredients) {
-      query.ingredients = { $in: ingredients };
-    }
-
     return Recipe.find(query);
+    return results;
   },
 
   async getRecipeById(id) {

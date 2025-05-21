@@ -3,6 +3,7 @@ import express from "express";
 const router = express.Router();
 
 router.post("/", RecipeController.createRecipe);
+router.get("/", RecipeController.searchRecipes);
 router.get("/:id", RecipeController.getRecipeById);
 router.put("/:id", RecipeController.updateRecipe);
 export default router;

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateRecipe from "@/components/recipes/createRecipe"
+import SearchBar from "../SearchBar"
 
 // Sample recipe data
 const recipes = [
@@ -121,8 +122,7 @@ export function RecipeList() {
             </div>
             <div className="px-4 pb-4">
                 <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input type="search" placeholder="Search recipes..." className="pl-8" />
+                    <SearchBar />
                 </div>
             </div>
             <ScrollArea className="flex-1 px-4">

@@ -1,39 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 
 export function SearchBar() {
     const [input, setInput] = useState("");
+    const [results, setResults] = useState<any[]>([]);
 
     const fetchData = async (value: string) => {
         try {
-            //this is the api call to the backend I need to  add
-            const response = await fetch(`http://localhost:5174/app/?query=${value}`);
+            const response = await fetch(`/api/recipes?name=${value}`);
             const data = await response.json();
-            console.log(data);
+            setResults(data);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
 
     return (
-        <div className="relative hidden md:flex w-full max-w-sm items-center">
-            <FaSearch />
-            <input
-                type="text"
-                className="search-input"
-                placeholder="Type to search..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-            />
-            <div className="search-button">
-                <button
-                    type="button"
-                    className="search-button"
-                    onClick={() => fetchData(input)}
-                >
-                </button>
+        <div className="relative w-full max-w-sm mx-auto">
+            <div className="flex items-center border border-gray-300 rounded px-2 py-1">
+                <span className="text-gray-500 mr-2">
+                    <FaSearch />
+                </span>
+                <input
+                    type="text"
+                    placeholder="Type to search..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="flex-grow focus:outline-none"
+                />
             </div>
+
+            {results.length > 0 && (
+                <ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 shadow">
+                    {results.map((recipe, index) => (
+                        <li key={index} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            {recipe.title}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }

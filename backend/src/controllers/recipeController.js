@@ -17,6 +17,15 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to create recipe" });
     }
   },
+  async searchRecipes(req, res) {
+    try {
+      const { name, ingredients } = req.query;
+      const recipes = await recipeService.searchRecipes(name, ingredients);
+      res.status(200).json(recipes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to search recipes" });
+    }
+  },
   async getRecipeById(req, res) {
     try {
       const recipe = await recipeService.getRecipeById(req.params.id);

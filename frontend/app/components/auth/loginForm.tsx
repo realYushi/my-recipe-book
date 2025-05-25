@@ -56,14 +56,14 @@ export function LoginForm({
               email: user.email || "",
               username: user.email?.split('@')[0] || ""
             });
-            navigate("/app/");
+            navigate("/app/home");
           } catch (error) {
             await userService.createUser({
               id: user.uid,
               email: user.email || "",
               username: user.email?.split('@')[0] || ""
             });
-            navigate("/app/");
+            navigate("/app/home ");
           }
         } catch (error: any) {
           setServerError("Incorrect password. Please try again.");

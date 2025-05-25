@@ -42,8 +42,7 @@ const recipeService = {
     } catch (error) {
       throw new Error("Failed to update recipe");
     }
-  },
-
+  }
 };
 
 export default recipeService;

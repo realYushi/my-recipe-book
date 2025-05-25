@@ -50,7 +50,7 @@ export const recipeService = {
             throw error;
         }
     },
-    getRecipes: async (): Promise<Recipe[]> => {
+    getAllRecipes: async (): Promise<Recipe[]> => {
         try {
             const token = await authService.getJwtToken();
             const response = await fetch("/api/recipes", {

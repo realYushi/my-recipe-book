@@ -2,7 +2,6 @@ import { BarChart, LineChart, PieChart } from "lucide-react"
 import { Link } from "react-router"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import ingredientService from "@/service/ingredientService"
@@ -10,15 +9,16 @@ import recipeService from "@/service/recipeSerive"
 
 export function HomePage() {
     //get total ingredients
-    const [totalIngredients, setTotalIngredients] = useState(null);
-    const [totalRecipes, setTotalRecipes] = useState(null);
+    const [totalIngredients, setTotalIngredients] = useState(0);
+    const [totalRecipes, setTotalRecipes] = useState(0);
     useEffect(() => {
         ingredientService.getIngredients().then((ingredients) => {
             setTotalIngredients(ingredients.length);
         });
-        recipeService.getRecipes().then((recipes) => {
+        recipeService.getAllRecipes().then((recipes) => {
             setTotalRecipes(recipes.length);
         });
+
     }, []);
 
 
@@ -36,8 +36,7 @@ export function HomePage() {
                             <BarChart className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">42</div>
-                            <p className="text-xs text-muted-foreground">+5 from last month</p>
+                            <div className="text-2xl font-bold">{totalIngredients}</div>
                         </CardContent>
                     </Card>
                     <Card>
@@ -46,8 +45,7 @@ export function HomePage() {
                             <LineChart className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">18</div>
-                            <p className="text-xs text-muted-foreground">+2 from last month</p>
+                            <div className="text-2xl font-bold">{totalRecipes}</div>
                         </CardContent>
                     </Card>
                     <Card>
@@ -64,35 +62,6 @@ export function HomePage() {
                         </CardContent>
                     </Card>
                 </div>
-
-                <Tabs defaultValue="ingredients" className="mt-6">
-                    <TabsList>
-                        <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
-                        <TabsTrigger value="recipes">Recipes</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="ingredients" className="mt-4">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Ingredient Categories</CardTitle>
-                                <CardDescription>Distribution of ingredients by category</CardDescription>
-                            </CardHeader>
-                            <CardContent className="h-[300px] flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">[Ingredient Category Chart]</div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                    <TabsContent value="recipes" className="mt-4">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Recipe Difficulty</CardTitle>
-                                <CardDescription>Distribution of recipes by difficulty level</CardDescription>
-                            </CardHeader>
-                            <CardContent className="h-[300px] flex items-center justify-center">
-                                <div className="text-center text-muted-foreground">[Recipe Difficulty Chart]</div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
             </div>
         </div>
     )

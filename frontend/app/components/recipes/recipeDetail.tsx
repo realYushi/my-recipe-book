@@ -7,14 +7,11 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-import recipeService from "@/service/recipeSerive";
 import type { Recipe } from "@/model/recipe";
+import recipeService from "@/service/recipeService";
 
-interface RecipeDetailProps {
-    id: string;
-}
-
-function RecipeDetail({ id }: RecipeDetailProps) {
+function RecipeDetail() {
+    const { id } = useParams<{ id?: string }>();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [isOwner, setIsOwner] = useState(false);
     const navigate = useNavigate();
@@ -38,7 +35,7 @@ function RecipeDetail({ id }: RecipeDetailProps) {
         if (!confirmation) return;
 
         try {
-            await recipeService.deleteRecipe(id);
+            await recipeService.deleteRecipe(id as string);
             alert("Recipe deleted successfully.");
             navigate("/app/recipes"); 
         } catch (error) {

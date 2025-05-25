@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import authService from "@/service/authService";
 
 export function SearchBar() {
     const [input, setInput] = useState("");
@@ -8,14 +9,7 @@ export function SearchBar() {
 
     const fetchData = async (value: string) => {
         try {
-            const response = await fetch(`/api/recipes?name=${value}`);
-            const data = await response.json();
-            setResults(data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-        try {
-            const token = localStorage.getItem("token")
+            const token = await authService.getJwtToken("token");
 
             const response = await fetch(`/api/recipes?name=${value}`, {
                 headers: {
@@ -31,8 +25,9 @@ export function SearchBar() {
             setResults(data);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setResults([]);
         }
-    }
+    };
 
     useEffect(() => {
         if (debounceTimeout.current) {

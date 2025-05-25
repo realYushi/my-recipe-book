@@ -18,6 +18,7 @@ const RecipeController = {
     }
   },
   async searchRecipes(req, res) {
+    console.log(req.query);
     try {
       const { name } = req.query;
       const recipes = await recipeService.searchRecipes(name);

@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateRecipe from "@/components/recipes/createRecipe"
-import recipeService from "@/service/recipeSerive";
+import recipeService from "@/service/recipeService";
 import type { RecipeIngredient } from "@/model/ingredient";
 
 export function RecipeList() {

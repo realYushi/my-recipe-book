@@ -6,7 +6,8 @@
     "build": "react-router build",
     "dev": "react-router dev --host",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "test": "vitest run --reporter verbose --environment jsdom"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -43,16 +44,22 @@
   "devDependencies": {
     "@react-router/dev": "^7.6.0",
     "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.1",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.5.0",
     "autoprefixer": "^10.4.21",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.3",
     "react-router-devtools": "^1.1.0",
     "tailwindcss": "^4.1.4",
     "typescript": "^5.7.2",
     "vite": "^6.3.5",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.4"
   }
 }

@@ -49,6 +49,21 @@ export const recipeService = {
             console.error("Error getting recipe by ID:", error);
             throw error;
         }
+    },
+    getRecipes: async (): Promise<Recipe[]> => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch("/api/recipes", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+            return response.json();
+        } catch (error) {
+            console.error("Error getting recipes:", error);
+            throw error;
+        }
     }
 }
 

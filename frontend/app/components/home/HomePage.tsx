@@ -4,8 +4,24 @@ import { Link } from "react-router"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+import ingredientService from "@/service/ingredientService"
+import recipeService from "@/service/recipeSerive"
 
 export function HomePage() {
+    //get total ingredients
+    const [totalIngredients, setTotalIngredients] = useState(null);
+    const [totalRecipes, setTotalRecipes] = useState(null);
+    useEffect(() => {
+        ingredientService.getIngredients().then((ingredients) => {
+            setTotalIngredients(ingredients.length);
+        });
+        recipeService.getRecipes().then((recipes) => {
+            setTotalRecipes(recipes.length);
+        });
+    }, []);
+
+
     return (
         <div className="flex h-full flex-col w-full">
             <div className="p-4">

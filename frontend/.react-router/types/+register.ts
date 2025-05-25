@@ -22,5 +22,5 @@ type Params = {
   "/app/recipes/:id": {
     "id": string;
   };
-  "/app": {};
+  "/app/home": {};
 };

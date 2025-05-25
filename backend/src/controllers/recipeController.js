@@ -24,6 +24,7 @@ const RecipeController = {
       const recipes = await recipeService.searchRecipes(name);
       res.status(200).json(recipes);
     } catch (error) {
+      console.error("Error in searchRecipes:", error);
       res.status(500).json({ error: "Failed to search recipes" });
     }
   },

@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
+import RecipeController from "../controllers/recipeController.js";
 import userController from "../controllers/userController.js";
 import verifyToken from "../middleware/firebase-auth.js";
 
 router.post("/", userController.createUser);
-router.get("/", verifyToken, RecipeController.searchRecipes); // this action requires authentication
 router.get("/:id", userController.getUserById);
 router.put("/:id", userController.updateUser);
 router.delete("/:id", verifyToken, userController.deleteUser);

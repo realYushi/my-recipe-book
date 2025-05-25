@@ -1,4 +1,6 @@
 import recipeRepository from "../repositories/recipeRepository.js";
+import Recipe from "../models/recipeModel.js";
+
 const recipeService = {
   async createRecipe(recipeData) {
     try {
@@ -14,10 +16,14 @@ const recipeService = {
     if (name) {
       query.name = { $regex: name, $options: "i" };
     }
-    return Recipe.find(query);
-    return results;
-  },
 
+    try {
+      const results = await Recipe.find(query);
+      return results;
+    } catch (error) {
+      throw new Error("Failed to search recipes");
+    }
+  },
   async getRecipeById(id) {
     try {
       const recipe = await recipeRepository.getRecipeById(id);

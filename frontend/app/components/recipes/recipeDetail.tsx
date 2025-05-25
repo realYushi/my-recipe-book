@@ -7,11 +7,14 @@ import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-import recipeService from "@/service/recipeService";
+import recipeService from "@/service/recipeSerive";
 import type { Recipe } from "@/model/recipe";
 
-function RecipeDetail() {
-    const { id } = useParams<{ id?: string }>();
+interface RecipeDetailProps {
+    id: string;
+}
+
+function RecipeDetail({ id }: RecipeDetailProps) {
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [isOwner, setIsOwner] = useState(false);
     const navigate = useNavigate();
@@ -35,7 +38,7 @@ function RecipeDetail() {
         if (!confirmation) return;
 
         try {
-            await recipeService.deleteRecipe(id as string);
+            await recipeService.deleteRecipe(id);
             alert("Recipe deleted successfully.");
             navigate("/app/recipes"); 
         } catch (error) {
@@ -125,7 +128,7 @@ function RecipeDetail() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-3 pt-0">
-                                <p className="text-lg font-semibold">{recipe.portions} people</p>
+                                <p className="text-lg font-semibold">{recipe.portions} min</p>
                             </CardContent>
                         </Card>
                     </div>

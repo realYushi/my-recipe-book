@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import authService from "@/service/authService";
+//import { useRouter } from 'next/navigation';
 
 export function SearchBar() {
     const [input, setInput] = useState("");
     const [results, setResults] = useState<any[]>([]);
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+    //const router = useRouter();
 
     const fetchData = async (value: string) => {
         try {
@@ -62,8 +64,12 @@ export function SearchBar() {
             {results.length > 0 && (
                 <ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 shadow">
                     {results.map((recipe, index) => (
-                        <li key={index} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            {recipe.title}
+                        <li
+                            key={index}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        //onClick={() => router.push(`/recipes/${recipe._id}`)}
+                        >
+                            {recipe.name}
                         </li>
                     ))}
                 </ul>

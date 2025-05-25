@@ -21,6 +21,7 @@ const RecipeController = {
     console.log(req.query);
     try {
       const { name } = req.query;
+      console.log("Searching for recipes with name like:", name);
       const recipes = await recipeService.searchRecipes(name);
       res.status(200).json(recipes);
     } catch (error) {

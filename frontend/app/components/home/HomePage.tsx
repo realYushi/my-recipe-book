@@ -70,7 +70,6 @@ export function HomePage() {
                 <p className="text-sm text-muted-foreground">Overview of your kitchen and recipes</p>
             </div>
             <div className="flex-1 p-4 pt-0 space-y-6">
-                {/* Stats Cards */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -112,9 +111,7 @@ export function HomePage() {
                     </Card>
                 </div>
 
-                {/* Content Grid */}
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Recent Recipes */}
                     <Card className="col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -147,40 +144,8 @@ export function HomePage() {
                         </CardContent>
                     </Card>
 
-                    {/* Quick Recipes */}
-                    <Card className="col-span-1">
-                        <CardHeader>
-                            <CardTitle className="flex items-center">
-                                <Clock className="mr-2 h-4 w-4" />
-                                Quick Recipes
-                            </CardTitle>
-                            <CardDescription>Ready in 30 minutes or less</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {quickRecipes.length > 0 ? (
-                                quickRecipes.map((recipe) => (
-                                    <div key={recipe._id} className="flex items-center justify-between">
-                                        <div>
-                                            <p className="font-medium">{recipe.name}</p>
-                                            <div className="flex items-center gap-2">
-                                                {recipe.preparationTime + recipe.cookingTime} mins
-                                                <span className="text-xs text-muted-foreground">
-                                                    {recipe.portions} portions
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <Button variant="ghost" size="sm" asChild>
-                                            <Link to={`/app/recipes/${recipe._id}`}>Cook</Link>
-                                        </Button>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-sm text-muted-foreground">No quick recipes yet</p>
-                            )}
-                        </CardContent>
-                    </Card>
 
-                    {/* Expensive Ingredients */}
+
                     <Card className="col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -215,12 +180,11 @@ export function HomePage() {
                     </Card>
                 </div>
 
-                {/* Recipe Suggestion */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center">
                             <ChefHat className="mr-2 h-4 w-4" />
-                            Supprise me!
+                            Suprise me!
                         </CardTitle>
                         <CardDescription>Get a random recipe</CardDescription>
                     </CardHeader>

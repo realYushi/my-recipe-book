@@ -53,7 +53,7 @@ vi.mock('@/service/recipeSerive', () => ({
                 cookingTime: 15,
                 ingredients: [],
                 instructions: 'Boil pasta and add sauce',
-                createdAt: new Date('2024-01-10'),
+                createdAt: new Date(),
             },
         ]),
     },
@@ -63,7 +63,7 @@ const renderWithRouter = (component: React.ReactElement) => {
     return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
-describe('HomePage', () => {
+describe('HomePage, testing the cards', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -72,22 +72,92 @@ describe('HomePage', () => {
         renderWithRouter(<HomePage />);
         expect(screen.getByText('Dashboard')).toBeInTheDocument();
     });
-
-    it('displays stats cards', async () => {
+    //showing total ingredients card
+    it('displays total ingredients card', async () => {
         renderWithRouter(<HomePage />);
-
-        await waitFor(() => {
-            expect(screen.getByText('Total Ingredients')).toBeInTheDocument();
-            expect(screen.getByText('Total Recipes')).toBeInTheDocument();
-        });
+        expect(screen.getByText('Total Ingredients')).toBeInTheDocument();
     });
-
-    it('displays correct counts', async () => {
+    //showing total recipes card
+    it('displays total recipes card', async () => {
         renderWithRouter(<HomePage />);
-
-        await waitFor(() => {
-            expect(screen.getByText('3')).toBeInTheDocument(); // ingredients
-            expect(screen.getByText('2')).toBeInTheDocument(); // recipes
-        });
+        expect(screen.getByText('Total Recipes')).toBeInTheDocument();
     });
-});
+    //showing average cooking time card
+    it('displays average cooking time card', async () => {
+        renderWithRouter(<HomePage />);
+        expect(screen.getByText('Avg Cook Time')).toBeInTheDocument();
+    });
+    //showing quick recipes card
+    it('displays quick recipes card', async () => {
+        renderWithRouter(<HomePage />);
+        expect(screen.getByText('Quick Recipes')).toBeInTheDocument();
+    });
+    //showing priciest ingredients card
+    it('displays priciest ingredients card', async () => {
+        renderWithRouter(<HomePage />);
+        expect(screen.getByText('Priciest Ingredients')).toBeInTheDocument();
+    });
+    //showing random recipe card
+    it('displays random recipe card', async () => {
+        renderWithRouter(<HomePage />);
+        expect(screen.getByText('Suprise me!')).toBeInTheDocument();
+    });
+})
+describe('HomePage, testing the stats numbers', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+    it('displays total ingredients number', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('3')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+    it('displays total recipes number', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('2')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+    it('displays average cooking time number', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('28')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+    it('displays quick recipes number', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('1')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+})
+describe('HomePage,testing the recent recipes and priciest ingredients', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+    it('displays recent recipes', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            const recipes = screen.getAllByText(/Chicken Stir Fry/i);
+            expect(recipes).toHaveLength(2);
+        }, { timeout: 1000 });
+    });
+    it('displays priciest ingredients', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('Beef Steak')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+})
+describe('HomePage,testing the random recipe', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+    it('displays random recipe', async () => {
+        renderWithRouter(<HomePage />);
+        await waitFor(() => {
+            expect(screen.getByText('Create New Recipe')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+})

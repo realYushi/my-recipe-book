@@ -29,7 +29,10 @@ export function Navbar() {
                     </nav>
                 </div>
                 <div className="flex items-center gap-4">
-                    <SearchBar />
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input type="search" placeholder="Type to search" className="pl-8" />
+                    </div>
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full">

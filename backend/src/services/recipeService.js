@@ -27,9 +27,9 @@ const recipeService = {
       throw new Error("Failed to get recipe by ID");
     }
   },
-  async getAllRecipes() {
+  async getAllRecipes(userId) {
     try {
-      const recipes = await recipeRepository.getAllRecipes();
+      const recipes = await recipeRepository.getAllRecipes(userId);
       return recipes;
     } catch (error) {
       throw new Error("Failed to get all recipes");
@@ -42,8 +42,7 @@ const recipeService = {
     } catch (error) {
       throw new Error("Failed to update recipe");
     }
-  },
-
+  }
 };
 
 export default recipeService;

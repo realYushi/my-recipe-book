@@ -63,7 +63,7 @@ export function LoginForm({
               email: user.email || "",
               username: user.email?.split('@')[0] || ""
             });
-            navigate("/app/home ");
+            navigate("/app/home");
           }
         } catch (error: any) {
           setServerError("Incorrect password. Please try again.");

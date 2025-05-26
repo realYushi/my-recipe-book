@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import authService from "@/service/authService";
-import { usePathname } from 'next/navigation';
 
-//import { useRouter } from 'next/navigation';
 
 export function SearchBar() {
     const [input, setInput] = useState("");
     const [results, setResults] = useState<any[]>([]);
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-    const pathname = usePathname();
-    const pageTitle = pathname.split('/').filter(Boolean).pop() || 'recipes';
     //const router = useRouter();
 
     const fetchData = async (value: string) => {
@@ -58,7 +54,7 @@ export function SearchBar() {
                 </span>
                 <input
                     type="text"
-                    placeholder={`Search for ${pageTitle}`}
+                    placeholder={`Search for recipes...`}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     className="flex-grow focus:outline-none"

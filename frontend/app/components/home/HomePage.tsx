@@ -1,4 +1,4 @@
-import { BarChart, LineChart, PieChart, Clock, ChefHat, TrendingUp, Calendar, Badge } from "lucide-react"
+import { BarChart, LineChart, Clock, ChefHat, TrendingUp, Calendar } from "lucide-react"
 import { Link } from "react-router"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

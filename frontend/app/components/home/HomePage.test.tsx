@@ -100,7 +100,7 @@ describe('HomePage, testing the cards', () => {
     //showing random recipe card
     it('displays random recipe card', async () => {
         renderWithRouter(<HomePage />);
-        expect(screen.getByText('Suprise me!')).toBeInTheDocument();
+        expect(screen.getByText('Surprise me!')).toBeInTheDocument();
     });
 })
 describe('HomePage, testing the stats numbers', () => {

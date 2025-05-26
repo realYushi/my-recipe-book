@@ -184,7 +184,7 @@ export function HomePage() {
                     <CardHeader>
                         <CardTitle className="flex items-center">
                             <ChefHat className="mr-2 h-4 w-4" />
-                            Suprise me!
+                            Surprise me!
                         </CardTitle>
                         <CardDescription>Get a random recipe</CardDescription>
                     </CardHeader>

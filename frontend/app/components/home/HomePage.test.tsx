@@ -135,12 +135,12 @@ describe('HomePage, testing the stats numbers', () => {
 describe('HomePage,testing the recent recipes and priciest ingredients', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
     });
     it('displays recent recipes', async () => {
         renderWithRouter(<HomePage />);
         await waitFor(() => {
-            const recipes = screen.getAllByText(/Chicken Stir Fry/i);
-            expect(recipes).toHaveLength(2);
+            expect(screen.getByText('Chicken Stir Fry')).toBeInTheDocument();
         }, { timeout: 1000 });
     });
     it('displays priciest ingredients', async () => {
@@ -153,11 +153,13 @@ describe('HomePage,testing the recent recipes and priciest ingredients', () => {
 describe('HomePage,testing the random recipe', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
     });
     it('displays random recipe', async () => {
         renderWithRouter(<HomePage />);
         await waitFor(() => {
-            expect(screen.getByText('Create New Recipe')).toBeInTheDocument();
+            const recipes = screen.getAllByText(/Quick Pasta/i);
+            expect(recipes).toHaveLength(2);
         }, { timeout: 1000 });
     });
 })

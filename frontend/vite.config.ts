@@ -6,7 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  plugins: [tailwindcss(), !process.env.VITEST && reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './app'),

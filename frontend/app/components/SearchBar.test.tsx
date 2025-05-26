@@ -36,14 +36,14 @@ describe('SearchBar Component', () => {
 
     it('renders without crashing', () => {
         render(<SearchBar />);
-        expect(screen.getByPlaceholderText('Type to search...')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Search for recipes...')).toBeInTheDocument();
     });
 
     it('fetches and displays search results based on input', async () => {
         render(<SearchBar />);
 
         // Simulate user typing into input
-        const input = screen.getByPlaceholderText('Type to search...');
+        const input = screen.getByPlaceholderText('Search for recipes...');
         fireEvent.change(input, { target: { value: 'Spaghetti' } });
 
         // Wait for results to be rendered

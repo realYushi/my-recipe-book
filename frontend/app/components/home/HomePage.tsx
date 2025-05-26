@@ -1,13 +1,15 @@
-import { BarChart, LineChart, Clock, ChefHat, TrendingUp, Calendar } from "lucide-react"
+import { BarChart, LineChart, Clock, ChefHat, TrendingUp, Calendar, Plus } from "lucide-react"
 import { Link } from "react-router"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useEffect, useState } from "react"
 import ingredientService from "@/service/ingredientService"
 import recipeService from "@/service/recipeSerive"
 import type { Recipe } from "@/model/recipe"
 import type { Ingredient } from "@/model/ingredient"
+import CreateRecipe from "../recipes/createRecipe"
 
 export function HomePage() {
     const [totalIngredients, setTotalIngredients] = useState(0);
@@ -17,6 +19,7 @@ export function HomePage() {
     const [expensiveIngredients, setExpensiveIngredients] = useState<Ingredient[]>([]);
     const [avgCookingTime, setAvgCookingTime] = useState(0);
     const [randomRecipe, setRandomRecipe] = useState<Recipe | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -144,8 +147,6 @@ export function HomePage() {
                         </CardContent>
                     </Card>
 
-
-
                     <Card className="col-span-1">
                         <CardHeader>
                             <CardTitle className="flex items-center">
@@ -198,14 +199,23 @@ export function HomePage() {
                                 <Button variant="outline" asChild>
                                     <Link to="/app/recipes">Browse Recipes</Link>
                                 </Button>
-                                <Button asChild>
-                                    <Link to="/app/recipes/create">Create New Recipe</Link>
+                                <Button onClick={() => setIsDialogOpen(true)}>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Create New Recipe
                                 </Button>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
             </div>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-lg max-w-[95vw] max-h-[90vh] overflow-hidden p-0">
+                    <div className="max-h-[80vh] overflow-y-auto">
+                        <CreateRecipe />
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

@@ -43,7 +43,7 @@ const RecipeController = {
 
   async getAllRecipes(req, res) {
     try {
-      const recipes = await recipeService.getAllRecipes(req.user.uid);
+      const recipes = await recipeService.getAllRecipes(req.user.uidreq.user.uid);
       res.status(200).json(recipes);
     } catch (error) {
       res.status(500).json({ error: "Failed to get all recipes" });

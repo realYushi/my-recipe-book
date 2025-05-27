@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import authService from "@/service/authService";
 
-
 export function SearchBar() {
     const [input, setInput] = useState("");
     const [results, setResults] = useState<any[]>([]);

@@ -2,6 +2,17 @@ import recipeRepository from "../repositories/recipeRepository.js";
 import Recipe from "../models/recipeModel.js";
 
 const recipeService = {
+  async deleteRecipe(id) {
+    try {
+      const recipe = await recipeRepository.deleteRecipe(id);
+      if (!recipe) {
+        throw new Error("Recipe not found");
+      }
+      return recipe;
+    } catch (error) {
+      throw new Error("Failed to delete recipe");
+    }
+  },
   async createRecipe(recipeData) {
     try {
       const recipe = await recipeRepository.createRecipe(recipeData);
@@ -32,9 +43,9 @@ const recipeService = {
       throw new Error("Failed to get recipe by ID");
     }
   },
-  async getAllRecipes() {
+  async getAllRecipes(userId) {
     try {
-      const recipes = await recipeRepository.getAllRecipes();
+      const recipes = await recipeRepository.getAllRecipes(userId);
       return recipes;
     } catch (error) {
       throw new Error("Failed to get all recipes");
@@ -47,7 +58,7 @@ const recipeService = {
     } catch (error) {
       throw new Error("Failed to update recipe");
     }
-  },
+  }
 };
 
 export default recipeService;

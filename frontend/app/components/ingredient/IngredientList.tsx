@@ -14,7 +14,7 @@ import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
 //import { set } from "react-hook-form"
 
-export function IngredientList(_id: string) {
+export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

@@ -1,4 +1,4 @@
-import { Crepe, CrepeFeature } from "@milkdown/crepe";
+import { Crepe } from "@milkdown/crepe";
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
 import { useEffect, useRef, useState } from "react";
@@ -120,7 +120,11 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSu
             portions: initialData.portions,
             preparationTime: initialData.preparationTime,
             cookingTime: initialData.cookingTime,
-            ingredients: initialData.ingredients,
+            ingredients: initialData.ingredients.map((ingredient: RecipeIngredient) => ({
+                ingredient: ingredient.ingredient._id,
+                quantity: ingredient.quantity,
+                unit: ingredient.ingredient.unit
+            })),
             instructions: initialData.instructions
         } : {
             name: "",
@@ -173,10 +177,10 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSu
 
         try {
             if (isEditing && initialData?._id) {
-                await recipeService.updateRecipe(initialData._id, data as Recipe);
+                await recipeService.updateRecipe(initialData._id, data as unknown as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
-                await recipeService.createRecipe(data as Recipe);
+                await recipeService.createRecipe(data as unknown as Recipe);
                 setSuccessMessage("Recipe created successfully!");
             }
             onSuccess?.();

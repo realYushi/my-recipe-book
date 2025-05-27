@@ -1,5 +1,4 @@
 import recipeRepository from "../repositories/recipeRepository.js";
-import Recipe from "../models/recipeModel.js";
 
 const recipeService = {
   async deleteRecipe(id) {

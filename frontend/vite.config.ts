@@ -8,14 +8,10 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [tailwindcss(), !process.env.VITEST && reactRouter(), tsconfigPaths()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './app'),
-    },
-  },
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: './app/vitest-setup.ts',
   },
   server: {
     proxy: {
@@ -23,6 +19,7 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
+
       }
     }
   }

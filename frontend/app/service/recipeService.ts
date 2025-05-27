@@ -51,6 +51,25 @@ export const recipeService = {
             throw error;
         }
     },
+    searchRecipes: async (name: string): Promise<Recipe[]> => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch(`/api/recipes/search?name=${name}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to search recipes: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error("Error searching recipes:", error);
+            throw error;
+        }
+    },
+
     getAllRecipes: async (): Promise<Recipe[]> => {
         try {
             const token = await authService.getJwtToken();

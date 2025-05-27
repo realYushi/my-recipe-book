@@ -1,9 +1,7 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/vitest';
 import SearchBar from './SearchBar';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-
+import { BrowserRouter } from 'react-router';
 // Mock authService
 vi.mock('@/service/authService', () => ({
     default: {
@@ -29,19 +27,21 @@ global.fetch = vi.fn(() =>
             ]),
     })
 ) as unknown as typeof fetch;
-
+const renderWithRouter = (component: React.ReactElement) => {
+    return render(<BrowserRouter>{component}</BrowserRouter>);
+};
 describe('SearchBar Component', () => {
     beforeEach(() => {
         vi.clearAllMocks(); // Reset mocks between tests
     });
 
     it('renders without crashing', () => {
-        render(<SearchBar />);
+        renderWithRouter(<SearchBar />);
         expect(screen.getByPlaceholderText('Search for recipes...')).toBeInTheDocument();
     });
 
     it('fetches and displays search results based on input', async () => {
-        render(<SearchBar />);
+        renderWithRouter(<SearchBar />);
 
         // Simulate user typing into input
         const input = screen.getByPlaceholderText('Search for recipes...');
@@ -57,6 +57,7 @@ describe('SearchBar Component', () => {
         expect(global.fetch).toHaveBeenCalledWith('/api/recipes/search?name=Spaghetti', {
             headers: {
                 Authorization: 'Bearer mock-token',
+                'Content-Type': 'application/json',
             },
         });
     });

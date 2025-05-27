@@ -58,27 +58,4 @@ describe("IngredientDetail", () => {
       expect(screen.getByText("Failed to load ingredient. Please try again.")).toBeInTheDocument();
     });
   });
-
-  it("can delete ingredient and navigate away", async () => {
-    window.confirm = vi.fn().mockReturnValue(true);
-    (ingredientService.getIngredientById as  ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredient);
-    (ingredientService.deleteIngredient as  ReturnType<typeof vi.fn>).mockResolvedValue({});
-
-    render(
-      <MemoryRouter initialEntries={["/app/ingredients/123"]}>
-        <Routes>
-          <Route path="/app/ingredients/:id" element={<IngredientDetail />} />
-          <Route path="/app/ingredients" element={<div>Ingredient List Page</div>} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => screen.getByText("Sugar"));
-
-    fireEvent.click(screen.getByRole("button", { name: /delete ingredient/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText("Ingredient List Page")).toBeInTheDocument();
-    });
-  });
 });

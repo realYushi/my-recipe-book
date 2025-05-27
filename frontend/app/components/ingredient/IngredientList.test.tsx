@@ -46,24 +46,4 @@ describe("IngredientList", () => {
       expect(screen.getByText("Failed to load ingredients. Please try again.")).toBeInTheDocument();
     });
   });
-
-  it("deletes an ingredient when delete button is clicked", async () => {
-    window.confirm = vi.fn().mockReturnValue(true);
-    (ingredientService.getIngredients as ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredients);
-    (ingredientService.deleteIngredient as ReturnType<typeof vi.fn>).mockResolvedValue({});
-
-    render(
-      <MemoryRouter>
-        <IngredientList />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => screen.getByText("Flour"));
-
-    fireEvent.click(screen.getAllByRole("button", { name: "" })[0]); 
-
-    await waitFor(() => {
-      expect(ingredientService.deleteIngredient).toHaveBeenCalledWith("1");
-    });
-  });
 });

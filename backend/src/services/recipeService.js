@@ -1,4 +1,6 @@
 import recipeRepository from "../repositories/recipeRepository.js";
+import Recipe from "../models/recipeModel.js";
+
 const recipeService = {
   async deleteRecipe(id) {
     try {
@@ -17,6 +19,20 @@ const recipeService = {
       return recipe;
     } catch (error) {
       throw new Error("Failed to create recipe");
+    }
+  },
+  async searchRecipes(name) {
+    const query = {};
+
+    if (name) {
+      query.name = { $regex: name, $options: "i" };
+    }
+
+    try {
+      const results = await Recipe.find(query);
+      return results;
+    } catch (error) {
+      throw new Error("Failed to search recipes");
     }
   },
   async getRecipeById(id) {

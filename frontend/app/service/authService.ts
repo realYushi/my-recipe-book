@@ -100,7 +100,7 @@ export const authService = {
             throw new Error("Failed to check user exists");
         }
     },
-    async getJwtToken() {
+    async getJwtToken(p0: string) {
         const user = await this.getCurrentUser();
         if (!user) {
             throw new Error("User not found");

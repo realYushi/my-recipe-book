@@ -29,23 +29,7 @@ export const authService = {
         }
     },
     async getCurrentUser(): Promise<User | null> {
-        return new Promise((resolve, reject) => {
-            try {
-                const unsubscribe = onAuthStateChanged(
-                    auth,
-                    (user) => {
-                        unsubscribe();
-                        resolve(user as User);
-                    },
-                    (error) => {
-                        unsubscribe();
-                        reject(error);
-                    }
-                );
-            } catch (error) {
-                reject(error);
-            }
-        });
+        return auth.currentUser as User | null;
     },
     async updateUser(updatedUser: UpdateUser): Promise<User> {
         try {

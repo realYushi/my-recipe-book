@@ -1,4 +1,4 @@
-import { Crepe, CrepeFeature } from "@milkdown/crepe";
+import { Crepe } from "@milkdown/crepe";
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
 import { useEffect, useRef, useState } from "react";
@@ -45,7 +45,7 @@ import type { Recipe } from "@/model/recipe";
 
 // Services
 import ingredientService from "@/service/ingredientService";
-import recipeService from "@/service/recipeSerive";
+import recipeService from "@/service/recipeService";
 
 // Zod validation schema for recipe
 const recipeIngredientSchema = z.object({
@@ -81,8 +81,9 @@ type CreateRecipeProps = {
     initialData?: Recipe;
     isEditing?: boolean;
     hideHeader?: boolean;
+    onSuccess?: () => void;
 }
-function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: CreateRecipeProps) {
+function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSuccess }: CreateRecipeProps) {
     // Editor state
     const editorRef = useRef(null);
     const [crepeInstance, setCrepeInstance] = useState<any>(null);
@@ -119,7 +120,11 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
             portions: initialData.portions,
             preparationTime: initialData.preparationTime,
             cookingTime: initialData.cookingTime,
-            ingredients: initialData.ingredients,
+            ingredients: initialData.ingredients.map((ingredient: RecipeIngredient) => ({
+                ingredient: ingredient.ingredient._id,
+                quantity: ingredient.quantity,
+                unit: ingredient.ingredient.unit
+            })),
             instructions: initialData.instructions
         } : {
             name: "",
@@ -172,12 +177,13 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
 
         try {
             if (isEditing && initialData?._id) {
-                await recipeService.updateRecipe(initialData._id, data as Recipe);
+                await recipeService.updateRecipe(initialData._id, data as unknown as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
-                await recipeService.createRecipe(data as Recipe);
+                await recipeService.createRecipe(data as unknown as Recipe);
                 setSuccessMessage("Recipe created successfully!");
             }
+            onSuccess?.();
         } catch (error) {
             console.error(`Error ${isEditing ? "updating" : "creating"} recipe:`, error);
             setFormError(`Failed to ${isEditing ? "update" : "create"} recipe. Please try again.`);

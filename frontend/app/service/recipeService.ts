@@ -1,5 +1,6 @@
 import type { Recipe } from "@/model/recipe";
 import authService from "@/service/authService";
+
 export const recipeService = {
     createRecipe: async (recipe: Recipe) => {
         try {

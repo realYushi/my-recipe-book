@@ -32,7 +32,7 @@ vi.mock('@/service/ingredientService', () => ({
     },
 }));
 
-vi.mock('@/service/recipeSerive', () => ({
+vi.mock('@/service/recipeService', () => ({
     default: {
         getAllRecipes: vi.fn().mockResolvedValue([
             {

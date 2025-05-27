@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@/service/authService', () => ({
     default: {
         getJwtToken: vi.fn(() => Promise.resolve('mock-token')),
+        getCurrentUser: vi.fn(() => Promise.resolve({ uid: 'mock-user-id' })),
     },
 }));
 
@@ -53,7 +54,7 @@ describe('SearchBar Component', () => {
         });
 
         // Optional: check fetch call was made correctly
-        expect(global.fetch).toHaveBeenCalledWith('/api/recipes?name=Spaghetti', {
+        expect(global.fetch).toHaveBeenCalledWith('/api/recipes/search?name=Spaghetti', {
             headers: {
                 Authorization: 'Bearer mock-token',
             },

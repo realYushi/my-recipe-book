@@ -1,10 +1,11 @@
+/// <reference types="vitest" />
+import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  plugins: [!process.env.VITEST && reactRouter(), tailwindcss(), tsconfigPaths()],
   server: {
     proxy: {
       '/api': {
@@ -12,6 +13,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       }
-    }
-  }
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './app/test-setup.ts',
+  },
 });

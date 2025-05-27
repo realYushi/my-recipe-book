@@ -1,26 +1,33 @@
-import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
+import { AlertTriangle, ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Recipe } from "@/model/recipe"
+import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
+import { Crepe } from "@milkdown/crepe";
 
 function RecipeDetail() {
     const { id } = useParams();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    // Editor state
+    const editorRef = useRef(null);
+    const [crepeInstance, setCrepeInstance] = useState<any>(null);
+
+    // Separate useEffect for fetching recipe data
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/recipes/${id}`);
-                const fetchedRecipe = await response.json();
+                const fetchedRecipe = await recipeService.getRecipeById(id as string);
                 setRecipe(fetchedRecipe);
             } catch (err) {
                 console.error("Error fetching recipe:", err);
@@ -32,6 +39,26 @@ function RecipeDetail() {
 
         fetchRecipe();
     }, [id]);
+
+    // Separate useEffect for initializing the editor AFTER recipe is loaded
+    useEffect(() => {
+        if (!recipe || !editorRef.current) return;
+
+        const instance = new Crepe({
+            root: editorRef.current,
+            defaultValue: recipe.instructions || "",
+        });
+        instance.setReadonly(true);
+        instance.create();
+        setCrepeInstance(instance);
+
+        // Cleanup function
+        return () => {
+            if (instance) {
+                instance.destroy();
+            }
+        };
+    }, [recipe]); // This runs when recipe data is available
 
     if (loading) {
         return <p>Loading...</p>;
@@ -126,11 +153,11 @@ function RecipeDetail() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recipe.ingredients.map((ingredient, index) => (
+                                {recipe.ingredients?.map((ingredient: RecipeIngredient, index: number) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.ingredient}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
                                         <TableCell>{ingredient.quantity}</TableCell>
-                                        <TableCell>{ingredient.unit}</TableCell>
+                                        <TableCell>{ingredient.ingredient.unit}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -140,15 +167,10 @@ function RecipeDetail() {
                     <Separator />
 
                     <div>
-                        <h2 className="text-lg font-semibold mb-2">Instructions</h2>
-                        <div className="space-y-4">
-                            {recipe.instructions.split("\n").map((step, index) => (
-                                <div key={index} className="flex gap-2">
-                                    <div className="flex-none">{step.split(".")[0]}.</div>
-                                    <div>{step.split(".").slice(1).join(".").trim()}</div>
-                                </div>
-                            ))}
-                        </div>
+                        <div className="text-lg font-medium">Cooking Instructions</div>
+                        <div
+                            ref={editorRef}
+                        ></div>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import RecipeDetail from './RecipeDetail';
+import '@testing-library/jest-dom';
+
 
 vi.mock('@milkdown/crepe', () => ({
     Crepe: vi.fn().mockImplementation(() => ({

@@ -15,7 +15,7 @@ export default [
             route("app/ingredients/:id", "./components/ingredient/IngredientDetail.tsx"),
             route("app/recipes", "./pages/recipes/page.tsx"),
             route("app/recipes/:id", "./components/recipes/RecipeDetail.tsx"),
-            route("app/", "./components/home/HomePage.tsx"),
+            route("app/home", "./components/home/HomePage.tsx"),
         ]),
     ] satisfies RouteConfig),
 

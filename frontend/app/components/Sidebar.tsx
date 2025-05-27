@@ -12,8 +12,8 @@ function Sidebar() {
         {
             label: "Home",
             icon: Home,
-            href: "/app/",
-            active: pathname.startsWith("/app/"),
+            href: "/app/home",
+            active: pathname.startsWith("/app/home"),
         },
         {
             label: "Ingredients",

@@ -54,21 +54,21 @@ export const recipeService = {
     getAllRecipes: async (): Promise<Recipe[]> => {
         try {
             const token = await authService.getJwtToken();
-            const response = await fetch(`/api/recipes`, {
+            const response = await fetch("/api/recipes", {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
-                }
+                },
             });
             if (!response.ok) {
-                throw new Error("Network response was not ok");
+                throw new Error(`Failed to get all recipes: ${response.status} ${response.statusText}`);
             }
             return response.json();
         } catch (error) {
-            console.error("Error getting all recipes:", error);
+            console.error("Error getting recipes:", error);
             throw error;
         }
-    },
+    }
 }
 
 export default recipeService;

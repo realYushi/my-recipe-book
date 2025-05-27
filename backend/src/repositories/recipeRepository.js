@@ -18,9 +18,9 @@ const recipeRepository = {
       throw new Error("Failed to get recipe by ID");
     }
   },
-  async getAllRecipes() {
+  async getAllRecipes(userId) {
     try {
-      const recipes = await Recipe.find();
+      const recipes = await Recipe.find({ user: userId });
       return recipes;
     } catch (error) {
       throw new Error("Failed to get all recipes");

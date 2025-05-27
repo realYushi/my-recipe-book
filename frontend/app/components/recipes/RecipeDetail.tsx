@@ -81,6 +81,7 @@ function RecipeDetail() {
         const dataUrl = await toJpeg(recipeRef.current, {
           backgroundColor: "#ffffff",
           quality: 0.95,
+          skipFonts: true,
         });
         const link = document.createElement("a");
         link.href = dataUrl;

@@ -1,4 +1,5 @@
 import recipeService from "../services/recipeService.js";
+
 const RecipeController = {
   async createRecipe(req, res) {
     try {
@@ -17,6 +18,7 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to create recipe" });
     }
   },
+
   async searchRecipes(req, res) {
     console.log(req.query);
     try {
@@ -29,6 +31,7 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to search recipes" });
     }
   },
+
   async getRecipeById(req, res) {
     try {
       const recipe = await recipeService.getRecipeById(req.params.id);
@@ -37,14 +40,16 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to get recipe by ID" });
     }
   },
+
   async getAllRecipes(req, res) {
     try {
-      const recipes = await recipeService.getAllRecipes();
+      const recipes = await recipeService.getAllRecipes(req.user.uid);
       res.status(200).json(recipes);
     } catch (error) {
       res.status(500).json({ error: "Failed to get all recipes" });
     }
   },
+
   async updateRecipe(req, res) {
     console.log(req.params.id);
     console.log(req.body);
@@ -67,4 +72,5 @@ const RecipeController = {
     }
   },
 };
+
 export default RecipeController;

@@ -21,16 +21,10 @@ const recipeService = {
       throw new Error("Failed to create recipe");
     }
   },
-  async searchRecipes(name) {
-    const query = {};
-
-    if (name) {
-      query.name = { $regex: name, $options: "i" };
-    }
-
+  async searchRecipes(name, userId) {
     try {
-      const results = await Recipe.find(query);
-      return results;
+      const recipes = await recipeRepository.searchRecipes(name, userId);
+      return recipes;
     } catch (error) {
       throw new Error("Failed to search recipes");
     }

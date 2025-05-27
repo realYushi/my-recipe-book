@@ -12,7 +12,7 @@ export function SearchBar() {
         try {
             const token = await authService.getJwtToken("token");
 
-            const response = await fetch(`/api/recipes?name=${value}`, {
+            const response = await fetch(`/api/recipes/search?name=${value}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

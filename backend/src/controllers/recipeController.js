@@ -20,11 +20,9 @@ const RecipeController = {
   },
 
   async searchRecipes(req, res) {
-    console.log(req.query);
     try {
       const { name } = req.query;
-      console.log("Searching for recipes with name like:", name);
-      const recipes = await recipeService.searchRecipes(name);
+      const recipes = await recipeService.searchRecipes(name, req.user.uid);
       res.status(200).json(recipes);
     } catch (error) {
       console.error("Error in searchRecipes:", error);
@@ -44,9 +42,7 @@ const RecipeController = {
 
   async getAllRecipes(req, res) {
     try {
-      const recipes = await recipeService.getAllRecipes(
-        req.user.uidreq.user.uid
-      );
+      const recipes = await recipeService.getAllRecipes(req.user.uid);
       res.status(200).json(recipes);
     } catch (error) {
       res.status(500).json({ error: "Failed to get all recipes" });
@@ -54,8 +50,6 @@ const RecipeController = {
   },
 
   async updateRecipe(req, res) {
-    console.log(req.params.id);
-    console.log(req.body);
     try {
       const recipeData = {
         name: req.body.name,

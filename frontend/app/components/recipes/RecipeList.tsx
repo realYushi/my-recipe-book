@@ -61,7 +61,7 @@ export function RecipeList() {
             </div>
             <ScrollArea className="flex-1 px-4">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {recipes.map((recipe) => (
+                    {recipes.map((recipe: Recipe) => (
                         <Link to={`/app/recipes/${recipe._id}`} key={recipe._id}>
                             <Card className="h-full cursor-pointer hover:bg-muted/50 transition-colors">
                                 <CardHeader>
@@ -88,16 +88,6 @@ export function RecipeList() {
                                             </div>
                                         </div>
 
-                                        <div>
-                                            <h4 className="text-sm font-medium mb-1">Main Ingredients:</h4>
-                                            <p className="text-sm text-muted-foreground">
-                                                {recipe.ingredients
-                                                    .slice(0, 3)
-                                                    .map((i) => i.name)
-                                                    .join(", ")}
-                                                {recipe.ingredients.length > 3 ? "..." : ""}
-                                            </p>
-                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>

@@ -10,6 +10,8 @@ import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useState } from "react";
 import type { Recipe } from "@/model/recipe"
 import recipeService from "@/service/recipeService"
+import type { RecipeIngredient } from "@/model/ingredient"
+
 
 function RecipeDetail() {
     const { id } = useParams();
@@ -126,11 +128,11 @@ function RecipeDetail() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recipe.ingredients?.map((ingredient: any, index: number) => (
+                                {recipe.ingredients?.map((ingredient: RecipeIngredient, index: number) => (
                                     <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
+                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
                                         <TableCell>{ingredient.quantity}</TableCell>
-                                        <TableCell>{ingredient.unit}</TableCell>
+                                        <TableCell>{ingredient.ingredient.unit}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

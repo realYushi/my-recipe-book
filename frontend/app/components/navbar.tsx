@@ -1,6 +1,7 @@
 import { Search, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { SearchBar } from "@/components/SearchBar"
 import { Input } from "@/components/ui/input"
 import { NavLink } from "react-router"
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
@@ -28,12 +29,10 @@ export function Navbar() {
                     </nav>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="relative hidden md:flex w-full max-w-sm items-center">
+                    <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input type="search" placeholder="Search..." className="pl-8 w-[200px]" />
+                        <Input type="search" placeholder="Type to search" className="pl-8" />
                     </div>
-
-
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full">

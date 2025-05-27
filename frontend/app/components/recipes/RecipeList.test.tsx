@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import { RecipeList } from './RecipeList';
+import '@testing-library/jest-dom';
+
 
 // Mock the services
 vi.mock('@/service/recipeService', () => ({

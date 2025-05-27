@@ -127,8 +127,8 @@ function RecipeDetail() {
                             </TableHeader>
                             <TableBody>
                                 {recipe.ingredients?.map((ingredient: any, index: number) => (
-                                    <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.name}</TableCell>
+                                    <TableRow key={ingredient._id || index} >
+                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
                                         <TableCell>{ingredient.quantity}</TableCell>
                                         <TableCell>{ingredient.unit}</TableCell>
                                     </TableRow>

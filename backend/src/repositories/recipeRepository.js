@@ -12,7 +12,7 @@ const recipeRepository = {
   },
   async getRecipeById(id) {
     try {
-      const recipe = await Recipe.findById(id);
+      const recipe = await Recipe.findById(id).populate("ingredients.ingredient");
       return recipe;
     } catch (error) {
       throw new Error("Failed to get recipe by ID");
@@ -20,7 +20,7 @@ const recipeRepository = {
   },
   async getAllRecipes(userId) {
     try {
-      const recipes = await Recipe.find({ user: userId });
+      const recipes = await Recipe.find({ user: userId }).populate("ingredients.ingredient");
       return recipes;
     } catch (error) {
       throw new Error("Failed to get all recipes");
@@ -30,7 +30,7 @@ const recipeRepository = {
     try {
       const recipe = await Recipe.findByIdAndUpdate(id, recipeData, {
         new: true,
-      });
+      }).populate("ingredients.ingredient");
       return recipe;
     } catch (error) {
       throw new Error("Failed to update recipe");

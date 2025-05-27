@@ -113,3 +113,7 @@ export const ingredientService = {
     }
 }
 export default ingredientService;
+
+export function deleteIngredient(deleteIngredient: any) {
+  throw new Error("Function not implemented.");
+}

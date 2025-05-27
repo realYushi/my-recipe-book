@@ -90,7 +90,7 @@ export function IngredientList(_id: string) {
                         {ingredients.map((ingredient) => (
                             <TableRow key={ingredient._id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full" onClick={() => console.log("Navigate to ingredient with ID", ingredient.id)}>
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full" onClick={() => console.log("Navigate to ingredient with ID", ingredient._id)}>
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>

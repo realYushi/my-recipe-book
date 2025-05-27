@@ -1,36 +1,35 @@
-import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react";
-import { Link, useParams } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import UpdateRecipe from "@/components/recipes/updateRecipe";
-import type { Recipe } from "@/model/recipe";
-import type { RecipeIngredient } from "@/model/ingredient";
-import { useEffect, useState, useRef } from "react";
+import { AlertTriangle, ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
+import { Link, useParams } from "react-router"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import UpdateRecipe from "@/components/recipes/updateRecipe"
+import { useEffect, useRef, useState } from "react";
+import type { Recipe } from "@/model/recipe"
+import recipeService from "@/service/recipeService"
+import type { RecipeIngredient } from "@/model/ingredient"
+import { Crepe } from "@milkdown/crepe";
 import html2canvas from "html2canvas";
+import { toJpeg } from "html-to-image";
 
 function RecipeDetail() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Editor state
+  const editorRef = useRef(null);
+  const [crepeInstance, setCrepeInstance] = useState<any>(null);
   const recipeRef = useRef<HTMLDivElement>(null);
 
+  // Separate useEffect for fetching recipe data
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/recipes/${id}`);
-        const fetchedRecipe = await response.json();
+        const fetchedRecipe = await recipeService.getRecipeById(id as string);
         setRecipe(fetchedRecipe);
       } catch (err) {
         console.error("Error fetching recipe:", err);
@@ -43,16 +42,25 @@ function RecipeDetail() {
     fetchRecipe();
   }, [id]);
 
-  const handleScreenshot = async () => {
-    if (recipeRef.current) {
-      const canvas = await html2canvas(recipeRef.current);
-      const image = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = image;
-      link.download = `${recipe?.name || "recipe"}.png`;
-      link.click();
-    }
-  };
+  // Separate useEffect for initializing the editor AFTER recipe is loaded
+  useEffect(() => {
+    if (!recipe || !editorRef.current) return;
+
+    const instance = new Crepe({
+      root: editorRef.current,
+      defaultValue: recipe.instructions || "",
+    });
+    instance.setReadonly(true);
+    instance.create();
+    setCrepeInstance(instance);
+
+    // Cleanup function
+    return () => {
+      if (instance) {
+        instance.destroy();
+      }
+    };
+  }, [recipe]); // This runs when recipe data is available
 
   if (loading) {
     return <p>Loading...</p>;
@@ -64,6 +72,26 @@ function RecipeDetail() {
 
   if (!recipe) {
     return <p>Recipe not found.</p>;
+  }
+
+  const handleScreenshot = async () => {
+    console.log("handleScreenshot called");
+    if (recipeRef.current) {
+      try {
+        const dataUrl = await toJpeg(recipeRef.current, {
+          backgroundColor: "#ffffff",
+          quality: 0.95,
+        });
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `${recipe?.name || "recipe"}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (err) {
+        console.error("Error saving image:", err);
+      }
+    }
   }
 
   return (
@@ -111,9 +139,7 @@ function RecipeDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="py-2">
-                <p className="text-lg font-semibold">
-                  {recipe.preparationTime}
-                </p>
+                <p className="text-lg font-semibold">{recipe.preparationTime}</p>
               </CardContent>
             </Card>
             <Card className="w-full md:w-auto">
@@ -149,13 +175,11 @@ function RecipeDetail() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recipe.ingredients.map((ingredient, index) => (
+                {recipe.ingredients?.map((ingredient: RecipeIngredient, index: number) => (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">
-                      {ingredient.ingredient}
-                    </TableCell>
+                    <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
                     <TableCell>{ingredient.quantity}</TableCell>
-                    <TableCell>{ingredient.unit}</TableCell>
+                    <TableCell>{ingredient.ingredient.unit}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -164,26 +188,29 @@ function RecipeDetail() {
 
           <Separator />
 
+          <div className="mt-8 flex justify-end">
+            <Button
+              onClick={() => {
+                console.log("Button clicked"); // Debugging
+                handleScreenshot();
+              }}
+              className="text-black"
+              variant="outline"
+            >
+              Screen Shot
+            </Button>
+          </div>
+
           <div>
-            <h2 className="text-lg font-semibold mb-2">Instructions</h2>
-            <div className="space-y-4">
-              {recipe.instructions.split("\n").map((step, index) => (
-                <div key={index} className="flex gap-2">
-                  <div className="flex-none">{step.split(".")[0]}.</div>
-                  <div>{step.split(".").slice(1).join(".").trim()}</div>
-                </div>
-              ))}
+            <div className="text-lg font-medium">Cooking Instructions</div>
+            <div
+              ref={editorRef} className="flex h-full flex-col">
             </div>
           </div>
         </div>
-        <div className="mt-8 flex justify-end">
-          <Button onClick={handleScreenshot} variant="outline">
-            Save as Screenshot
-          </Button>
-        </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default RecipeDetail;

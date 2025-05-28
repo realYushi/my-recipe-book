@@ -2,22 +2,25 @@
 import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
+import path from 'path';
 import tsconfigPaths from "vite-tsconfig-paths";
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [!process.env.VITEST && reactRouter(), tailwindcss(), tsconfigPaths()],
+  plugins: [tailwindcss(), !process.env.VITEST && reactRouter(), tsconfigPaths()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './app/vitest-setup.ts',
+  },
   server: {
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
+
       }
-    },
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './app/test-setup.ts',
-  },
+    }
+  }
 });

@@ -43,6 +43,14 @@ const recipeRepository = {
       throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
     }
   },
+  async searchRecipes(name, userId) {
+    try {
+      const recipes = await Recipe.find({ name: { $regex: name, $options: "i" }, user: userId });
+      return recipes;
+    } catch (error) {
+      throw new Error("Failed to search recipes");
+    }
+  },
 };
 
 export default recipeRepository;

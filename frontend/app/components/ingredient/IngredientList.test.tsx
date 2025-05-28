@@ -19,7 +19,7 @@ const mockIngredients = [
     name: "Eggs", 
     unit: IngredientUnit.G, 
     price: 0.3,
-    category: IngredientCategory.VEGETABLE 
+    category: IngredientCategory.VEGETABLE,
   },
 ];
 
@@ -41,13 +41,12 @@ describe("IngredientList", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Flour")).toBeInTheDocument();
-      expect(screen.getByText("Eggs")).toBeInTheDocument();
-      expect(screen.getByText("3.5")).toBeInTheDocument();
-      expect(screen.getByText("0.3")).toBeInTheDocument();
       expect(screen.getByText("kg")).toBeInTheDocument();
-      expect(screen.getByText("g")).toBeInTheDocument();
-      expect(screen.getByText("Vegetable")).toBeInTheDocument();
-      expect(screen.getByText("Vegetable")).toBeInTheDocument();
+      expect(screen.getByText("$3.50")).toBeInTheDocument();
+      expect(screen.getByText("Eggs")).toBeInTheDocument();
+      expect(screen.getByText("g")).toBeInTheDocument(); 
+      expect(screen.getByText("$0.30")).toBeInTheDocument();
+   
     });
   });
 

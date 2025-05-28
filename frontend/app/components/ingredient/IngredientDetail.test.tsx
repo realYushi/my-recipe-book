@@ -3,17 +3,19 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import IngredientDetail from "./IngredientDetail";
 import ingredientService from "@/service/ingredientService";
 import { vi, describe, it, expect, beforeEach } from "vitest";
+import { IngredientCategory, IngredientUnit } from "@/model/ingredient";
 
 vi.mock("@/service/ingredientService");
 
 const mockIngredient = {
   _id: "123",
   name: "Sugar",
-  unit: "g",
+  unit: IngredientUnit.G,
   price: 2.5,
   stock: 100,
   supplier: "NZ Foods",
   notes: "Keep dry",
+  category: IngredientCategory.VEGETABLE,
 };
 
 describe("IngredientDetail", () => {
@@ -22,7 +24,7 @@ describe("IngredientDetail", () => {
   });
 
   it("displays ingredient details after fetching", async () => {
-    (ingredientService.getIngredientById as ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredient);
+    vi.mocked(ingredientService.getIngredientById).mockResolvedValue(mockIngredient);
 
     render(
       <MemoryRouter initialEntries={["/app/ingredients/123"]}>
@@ -44,7 +46,7 @@ describe("IngredientDetail", () => {
   });
 
   it("shows error message on fetch failure", async () => {
-    (ingredientService.getIngredientById as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Fetch failed"));
+    vi.mocked(ingredientService.getIngredientById).mockRejectedValue(new Error("Fetch failed"));
 
     render(
       <MemoryRouter initialEntries={["/app/ingredients/123"]}>

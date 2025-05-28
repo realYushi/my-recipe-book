@@ -35,10 +35,8 @@ export const userService = {
         const existingUser = await this.getUser(userData.id);
 
         if (existingUser) {
-            console.log(`User with id ${userData.id} found.`);
             return existingUser;
         } else {
-            console.log(`User with id ${userData.id} not found. Creating new user...`);
             return await this.createUser(userData);
         }
     },

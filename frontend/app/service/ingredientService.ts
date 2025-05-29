@@ -72,7 +72,6 @@ export const ingredientService = {
     },
     async deleteIngredient(id: string) {
         try {
-            console.log("Deleting ingredient with ID:", id);
             const jwtToken = await authService.getJwtToken();
             const response = await fetch(`/api/ingredients/${id}`, {
                 method: "DELETE",
@@ -114,6 +113,3 @@ export const ingredientService = {
 }
 export default ingredientService;
 
-export function deleteIngredient(deleteIngredient: any) {
-  throw new Error("Function not implemented.");
-}

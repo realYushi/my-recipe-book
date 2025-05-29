@@ -25,7 +25,6 @@ function UpdateIngredient({ id }: UpdateIngredientProps) {
                 setIsLoading(false);
             }
         };
-        console.log("Fetching ingredient with ID:", id);
         fetchIngredient();
     }, [id]);
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { Plus, Search, Trash2 } from "lucide-react"
 import { Link } from "react-router"
 import { useEffect, useState } from "react"
@@ -12,7 +10,6 @@ import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
-//import { set } from "react-hook-form"
 
 export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -90,7 +87,7 @@ export function IngredientList() {
                         {ingredients.map((ingredient) => (
                             <TableRow key={ingredient._id} className="cursor-pointer hover:bg-muted/50">
                                 <TableCell className="font-medium">
-                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full" onClick={() => console.log("Navigate to ingredient with ID", ingredient._id)}>
+                                    <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         {ingredient.name}
                                     </Link>
                                 </TableCell>

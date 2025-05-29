@@ -4,14 +4,14 @@ import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateRecipe from "@/components/recipes/createRecipe"
 import SearchBar from "@/components/SearchBar"
 import { useEffect, useState } from "react"
 import recipeService from "@/service/recipeService"
 import type { Recipe } from "@/model/recipe"
-
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 export function RecipeList() {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -47,6 +47,9 @@ export function RecipeList() {
                         className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
                         style={{ padding: 0 }}
                     >
+                        <VisuallyHidden asChild>
+                            <DialogTitle>Create Recipe</DialogTitle>
+                        </VisuallyHidden>
                         <div className="h-full overflow-y-auto">
                             <CreateRecipe onSuccess={handleCreateSuccess} />
                         </div>

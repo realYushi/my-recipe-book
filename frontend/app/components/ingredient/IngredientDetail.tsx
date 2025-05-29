@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import UpdateIngredient from "@/components/ingredient/UpdateIngredient"
 import { useEffect, useState } from "react";
 import ingredientService from "@/service/ingredientService";
@@ -73,6 +73,7 @@ export function IngredientDetail() {
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
+                            <DialogTitle></DialogTitle>
                             <UpdateIngredient id={id as string} />
                         </DialogContent>
                     </Dialog>

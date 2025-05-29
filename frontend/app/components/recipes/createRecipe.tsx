@@ -320,7 +320,7 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSu
                             )}
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="preparationTime" className={errors.preparationTime ? "text-red-500 font-medium" : ""}>Preparation Time (min)</Label>
+                            <Label htmlFor="preparationTime" className={errors.preparationTime ? "text-red-500 font-medium" : ""}>Prep Time (min)</Label>
                             <Input
                                 id="preparationTime"
                                 type="number"

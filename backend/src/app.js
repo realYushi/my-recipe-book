@@ -5,6 +5,7 @@ import ingredientRouter from "./routes/ingredientRoutes.js";
 import recipeRouter from "./routes/recipeRoutes.js";
 import verifyToken from "./middleware/firebase-auth.js";
 import mongoose from "mongoose";
+import scrapeRouter from "./routes/scrapeRouter.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -31,8 +32,12 @@ mongoose.connection.once("open", () => {
 });
 
 app.use(express.json());
+app.get("/api/test-direct", (req, res) => {
+  res.send("Direct route working!");
+});
 
 app.use("/api/users", verifyToken, userRouter);
+app.use("/api/scrape", scrapeRouter);
 app.use("/api/ingredients", verifyToken, ingredientRouter);
 app.use("/api/recipes", verifyToken, recipeRouter);
 

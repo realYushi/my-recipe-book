@@ -8,6 +8,9 @@ puppeteer.use(StealthPlugin());
 
 const dummyUserId = "68228c6f6bbff1a4a3adf332";
 
+// List of standalone units to filter out
+const ignoredUnits = [" ea ", " kg ", " g ", " l ", " ml "];
+
 async function scrapeAndStoreIngredients(url) {
   const browser = await puppeteer.launch({
     headless: "new",
@@ -18,10 +21,43 @@ async function scrapeAndStoreIngredients(url) {
   await page.goto(url, { waitUntil: "networkidle2" });
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
+  const productHandles = await page.$$('[data-testid^="product-"]');
+  for (const productHandle of productHandles) {
+    const rawText = await page.evaluate((el) => el.innerText, productHandle);
+
+    const cleanedText = rawText
+      .split("\n")
+      .filter((line) => {
+        const trimmed = line.trim();
+
+        if (
+          /add to list/i.test(trimmed) ||
+          /product of/i.test(trimmed) ||
+          /select unit type/i.test(trimmed) ||
+          /^quantity$/i.test(trimmed) ||
+          /^add$/i.test(trimmed)
+        ) {
+          return false;
+        }
+
+        if (/^\d{1,3}$/.test(trimmed)) {
+          return false;
+        }
+
+        return true;
+      })
+      .join("\n")
+      .trim();
+
+    console.log(cleanedText);
+    console.log("-----------------------------");
+  }
+
+  // Count total products
   const productCount = await page.evaluate(() => {
     return document.querySelectorAll('[data-testid^="product-"]').length;
   });
-  console.log(`Detected ${productCount} products on page.`);
+  console.log(`\n🔍 Detected ${productCount} products on page.\n`);
 
   const ingredients = await page.evaluate(() => {
     const items = [];
@@ -33,19 +69,20 @@ async function scrapeAndStoreIngredients(url) {
           const titleNode = product.querySelector(
             '[data-testid="product-title"]'
           );
-          const subtitleNode = product.querySelector(
-            '[data-testid="product-subtitle"]'
-          );
           const priceNode =
             product.querySelector('[data-testid="product-price"]') ||
             product.querySelector('[class*="price"]');
 
           const name = titleNode?.innerText?.trim() || null;
-          const unit = subtitleNode?.innerText?.trim() || null;
 
           const priceText = priceNode?.innerText?.trim() || "";
           const priceMatch = priceText.match(/\$?([\d.]+)/);
           const price = priceMatch ? parseFloat(priceMatch[1]) : null;
+
+          const originText =
+            Array.from(product.querySelectorAll("div, span, p"))
+              .map((el) => el.innerText?.trim())
+              .find((text) => /Product of/i.test(text)) || null;
 
           const threshold = product
             .querySelector('[data-testid="multibuy-threshold"]')
@@ -59,14 +96,12 @@ async function scrapeAndStoreIngredients(url) {
             : null;
 
           items.push({
-            index: i,
+            index: i + 1,
             name,
-            unit,
             price,
+            origin: originText,
             isOnSpecial,
             discountText,
-            hasTitle: !!titleNode,
-            hasPrice: !!priceNode,
           });
         } catch (err) {
           console.error("Error parsing product:", err);
@@ -81,17 +116,20 @@ async function scrapeAndStoreIngredients(url) {
   );
 
   console.log(
-    `Scraped ${validIngredients.length} valid ingredients out of ${ingredients.length} total.`
+    `✅ Scraped ${validIngredients.length} valid ingredients out of ${ingredients.length} total.\n`
   );
-  console.log("Example entries:");
-  console.dir(ingredients.slice(0, 5), { depth: null });
 
   for (const item of validIngredients) {
+    console.log(`${item.name} - $${item.price.toFixed(2)}`);
+    if (item.origin) console.log(item.origin);
+    if (item.isOnSpecial) console.log(`Special: ${item.discountText}`);
+    console.log("-------------------------");
+
     const ingredient = new Ingredient({
       name: item.name,
       category: "Unknown",
       price: item.price,
-      unit: item.unit || "unit",
+      unit: "unit", // Default placeholder since we removed subtitle
       user: dummyUserId,
       deal: item.isOnSpecial,
       discountText: item.discountText || null,
@@ -99,9 +137,8 @@ async function scrapeAndStoreIngredients(url) {
 
     try {
       await ingredient.save();
-      console.log(`Saved: ${item.name} - $${item.price}`);
     } catch (err) {
-      console.error(`Failed to save ${item.name}:`, err.message);
+      console.error(`❌ Failed to save ${item.name}:`, err.message);
     }
   }
 
@@ -113,8 +150,8 @@ async function scrapeAndStoreIngredients(url) {
   try {
     const url = "https://www.paknsave.co.nz/shop/search?";
     await scrapeAndStoreIngredients(url);
-    console.log("Scraping completed.");
+    console.log("\n🚀 Scraping completed.");
   } catch (error) {
-    console.error("Scraping failed:", error);
+    console.error("❌ Scraping failed:", error);
   }
 })();

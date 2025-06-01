@@ -1,5 +1,5 @@
 import { ArrowLeft, Edit, Trash2 } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

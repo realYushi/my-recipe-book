@@ -8,9 +8,6 @@ puppeteer.use(StealthPlugin());
 
 const dummyUserId = "68228c6f6bbff1a4a3adf332";
 
-// List of standalone units to filter out
-const ignoredUnits = [" ea ", " kg ", " g ", " l ", " ml "];
-
 async function scrapeAndStoreIngredients(url) {
   const browser = await puppeteer.launch({
     headless: "new",
@@ -22,35 +19,29 @@ async function scrapeAndStoreIngredients(url) {
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
   const productHandles = await page.$$('[data-testid^="product-"]');
+
   for (const productHandle of productHandles) {
-    const rawText = await page.evaluate((el) => el.innerText, productHandle);
+    const productData = await page.evaluate((el) => {
+      const titleEl = el.querySelector('[data-testid="product-title"]');
+      const dollarsEl = el.querySelector('[data-testid="price-dollars"]');
+      const centsEl = el.querySelector('[data-testid="price-cents"]');
+      const unitEl = el.querySelector('[data-testid="price-per"]');
 
-    const cleanedText = rawText
-      .split("\n")
-      .filter((line) => {
-        const trimmed = line.trim();
+      const title = titleEl?.textContent?.trim() || "N/A";
+      const dollars = dollarsEl?.textContent?.trim() || "0";
+      const cents = centsEl?.textContent?.trim() || "00";
+      const unit = unitEl?.textContent?.trim() || "";
 
-        if (
-          /add to list/i.test(trimmed) ||
-          /product of/i.test(trimmed) ||
-          /select unit type/i.test(trimmed) ||
-          /^quantity$/i.test(trimmed) ||
-          /^add$/i.test(trimmed)
-        ) {
-          return false;
-        }
+      const price = `${dollars}.${cents}`;
 
-        if (/^\d{1,3}$/.test(trimmed)) {
-          return false;
-        }
+      return { title, price, unit };
+    }, productHandle);
 
-        return true;
-      })
-      .join("\n")
-      .trim();
+    // Skip if product is "N/A" and price is "0.00"
+    if (productData.title === "N/A" || productData.price === "0.00") continue;
 
-    console.log(cleanedText);
-    console.log("-----------------------------");
+    console.log(`\n Product: ${productData.title}`);
+    console.log(` Price: $${productData.price} ${productData.unit}`);
   }
 
   // Count total products
@@ -116,7 +107,7 @@ async function scrapeAndStoreIngredients(url) {
   );
 
   console.log(
-    `✅ Scraped ${validIngredients.length} valid ingredients out of ${ingredients.length} total.\n`
+    ` Scraped ${validIngredients.length} valid ingredients out of ${ingredients.length} total.\n`
   );
 
   for (const item of validIngredients) {
@@ -129,7 +120,7 @@ async function scrapeAndStoreIngredients(url) {
       name: item.name,
       category: "Unknown",
       price: item.price,
-      unit: "unit", // Default placeholder since we removed subtitle
+      unit: "unit",
       user: dummyUserId,
       deal: item.isOnSpecial,
       discountText: item.discountText || null,
@@ -138,7 +129,7 @@ async function scrapeAndStoreIngredients(url) {
     try {
       await ingredient.save();
     } catch (err) {
-      console.error(`❌ Failed to save ${item.name}:`, err.message);
+      console.error(` Failed to save ${item.name}:`, err.message);
     }
   }
 
@@ -150,8 +141,8 @@ async function scrapeAndStoreIngredients(url) {
   try {
     const url = "https://www.paknsave.co.nz/shop/search?";
     await scrapeAndStoreIngredients(url);
-    console.log("\n🚀 Scraping completed.");
+    console.log("\n Scraping completed.");
   } catch (error) {
-    console.error("❌ Scraping failed:", error);
+    console.error(" Scraping failed:", error);
   }
 })();

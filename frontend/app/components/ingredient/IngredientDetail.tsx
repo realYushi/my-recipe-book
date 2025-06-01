@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import UpdateIngredient from "@/components/ingredient/UpdateIngredient"
 import { useEffect, useState } from "react";
 import ingredientService from "@/service/ingredientService";
@@ -73,6 +73,7 @@ export function IngredientDetail() {
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
+                            <DialogTitle></DialogTitle>
                             <UpdateIngredient id={id as string} />
                         </DialogContent>
                     </Dialog>
@@ -108,7 +109,7 @@ export function IngredientDetail() {
                             </CardHeader>
                             <CardContent className="py-2">
                                 <p className="text-lg font-semibold">
-                                    {ingredient.stock} {ingredient.unit}
+                                    {ingredient.stock ? ingredient.stock : 0} {ingredient.unit}
                                 </p>
                             </CardContent>
                         </Card>
@@ -116,7 +117,7 @@ export function IngredientDetail() {
 
                     <Separator />
 
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Additional Information</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -126,24 +127,21 @@ export function IngredientDetail() {
                         </div>
                     </div>
 
-                    <Separator />
+                    <Separator /> */}
 
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Notes</h2>
                         <p>{ingredient.notes}</p>
                     </div>
 
-                    <Separator />
+                    <Separator /> */}
 
-                    <div className="space-y-2">
+                    {/* <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Used In Recipes</h2>
                         <ul className="list-disc pl-6 space-y-1">
-                            <li>Tomato Pasta Sauce</li>
-                            <li>Garden Salad</li>
-                            <li>Bruschetta</li>
-                            <li>Caprese Salad</li>
+                            <li>...</li>
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

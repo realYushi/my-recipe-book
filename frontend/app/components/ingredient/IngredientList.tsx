@@ -1,5 +1,3 @@
-"use client"
-
 import { Plus, Search, Trash2 } from "lucide-react"
 import { Link } from "react-router"
 import { useEffect, useState } from "react"
@@ -7,13 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
 
-export function IngredientList(_id: string) {
+export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -49,7 +47,8 @@ export function IngredientList(_id: string) {
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
-                        <CreateIngredient onSuccess={() => window.location.reload()} />
+                        <DialogTitle>Create Ingredient</DialogTitle>
+                        <CreateIngredient onSuccess={() => window.location.reload()} hideHeader={true} />
                     </DialogContent>
                 </Dialog>
             </div>

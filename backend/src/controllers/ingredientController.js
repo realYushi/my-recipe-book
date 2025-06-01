@@ -1,4 +1,3 @@
-import { Ingredient } from "../models/ingredientModel.js";
 import ingredientService from "../services/ingredientService.js";
 
 const IngredientController = {

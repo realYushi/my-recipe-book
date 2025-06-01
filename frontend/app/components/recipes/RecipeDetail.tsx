@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import UpdateRecipe from "@/components/recipes/updateRecipe"
 import { useEffect, useRef, useState } from "react";
 import type { Recipe } from "@/model/recipe"
 import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
-
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 function RecipeDetail() {
     const { id } = useParams();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -95,6 +95,10 @@ function RecipeDetail() {
                             className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
                             style={{ padding: 0 }}
                         >
+                            <VisuallyHidden asChild>
+                                <DialogTitle>Update Recipe</DialogTitle>
+                            </VisuallyHidden>
+
                             <div className="h-full overflow-y-auto">
                                 <UpdateRecipe id={id as string} />
                             </div>

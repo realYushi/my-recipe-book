@@ -12,7 +12,6 @@ import { Dialog } from "@/components/ui/dialog"
 import CreateIngredient from "@/components/ingredient/createIngredient"
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
-//import { set } from "react-hook-form"
 
 export function IngredientList(_id: string) {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -34,22 +33,6 @@ export function IngredientList(_id: string) {
 
         fetchIngredients();
     }, []);
-
-    const deleteIngredient = async (id: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
-        if (!confirmDelete) return;
-
-        try {
-            await ingredientService.deleteIngredient(id);
-            alert("Ingredient deleted successfully.");
-            setIngredients(prev => prev.filter(ingredient => ingredient._id !== id));
-        } catch (err) {
-            console.error("Error deleting ingredient:", err);
-            const errorMessage = err instanceof Error ? err.message : "Unknown error";
-            alert(`Failed to delete ingredient: ${errorMessage}`);
-        }
-    }
-
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -83,7 +66,6 @@ export function IngredientList(_id: string) {
                             <TableHead>Name</TableHead>
                             <TableHead>Unit</TableHead>
                             <TableHead>Price</TableHead>
-                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -103,15 +85,6 @@ export function IngredientList(_id: string) {
                                     <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
                                         ${ingredient.price.toFixed(2)}
                                     </Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => deleteIngredient(ingredient._id)}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

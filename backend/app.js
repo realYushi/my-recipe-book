@@ -19,20 +19,18 @@ app.use(express.json());
 
 // Test route
 app.get("/api/test-direct", (req, res) => {
-  res.send("✅ Direct route working!");
+  res.send("Direct route working!");
 });
 
-// Mount routers
 app.use("/api/users", verifyToken, userRouter);
 app.use("/api/ingredients", verifyToken, ingredientRouter);
 app.use("/api/recipes", verifyToken, recipeRouter);
-app.use("/api/scrape", scrapeRouter); // 🧽 Unprotected route for now
-console.log("✅ Mounting scrapeRouter at /api/scrape");
+app.use("/api/scrape", verifyToken, scrapeRouter);
+console.log("Mounting scrapeRouter at /api/scrape");
 
-// MongoDB Connection
 connectDB()
   .then(() => {
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
 
     mongoose.connection.once("open", () => {
       mongoose.connection.db.listCollections().toArray((err, collections) => {
@@ -40,7 +38,7 @@ connectDB()
           console.error("⚠️ Error listing collections:", err);
         } else {
           console.log(
-            "📦 Available collections:",
+            "Available collections:",
             collections.map((c) => c.name)
           );
         }
@@ -48,17 +46,17 @@ connectDB()
     });
 
     app.get("/api/scrape/test-direct", (req, res) => {
-      res.send("✅ Test direct route works");
+      res.send("Test direct route works");
     });
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`Server running at http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
+    console.error("MongoDB connection error:", err.message);
   });
 
 mongoose.connection.on("error", (err) => {
-  console.error("❌ MongoDB runtime error:", err);
+  console.error(" MongoDB runtime error:", err);
 });

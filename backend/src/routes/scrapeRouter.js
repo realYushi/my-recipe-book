@@ -3,6 +3,6 @@ import { scrapeController } from "../controllers/scrapeController.js";
 
 const router = express.Router();
 
-router.get("/paknsave", authenticate, scrapeController);
+router.get("/paknsave", scrapeController);
 
 export default router;

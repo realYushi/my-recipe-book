@@ -37,18 +37,16 @@ async function scrapeAndStoreIngredients(url) {
       return { title, price, unit };
     }, productHandle);
 
-    // Skip if product is "N/A" and price is "0.00"
     if (productData.title === "N/A" || productData.price === "0.00") continue;
 
     console.log(`\n Product: ${productData.title}`);
     console.log(` Price: $${productData.price} ${productData.unit}`);
   }
 
-  // Count total products
   const productCount = await page.evaluate(() => {
     return document.querySelectorAll('[data-testid^="product-"]').length;
   });
-  console.log(`\n🔍 Detected ${productCount} products on page.\n`);
+  console.log(`\n Detected ${productCount} products on page.\n`);
 
   await browser.close();
 }

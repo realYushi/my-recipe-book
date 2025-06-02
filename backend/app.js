@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 
-// Test route
+// Routes
 app.get("/api/test-direct", (req, res) => {
   res.send("Direct route working!");
 });
@@ -28,14 +28,16 @@ app.use("/api/recipes", verifyToken, recipeRouter);
 app.use("/api/scrape", verifyToken, scrapeRouter);
 console.log("Mounting scrapeRouter at /api/scrape");
 
+// Connect to DB and start server
 connectDB()
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Database connected successfully");
 
     mongoose.connection.once("open", () => {
+      console.log("MongoDB connected successfully");
       mongoose.connection.db.listCollections().toArray((err, collections) => {
         if (err) {
-          console.error("⚠️ Error listing collections:", err);
+          console.error("Error listing collections:", err);
         } else {
           console.log(
             "Available collections:",
@@ -57,6 +59,7 @@ connectDB()
     console.error("MongoDB connection error:", err.message);
   });
 
+// Handle MongoDB runtime errors
 mongoose.connection.on("error", (err) => {
-  console.error(" MongoDB runtime error:", err);
+  console.error("MongoDB runtime error:", err);
 });

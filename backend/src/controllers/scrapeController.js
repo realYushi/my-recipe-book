@@ -6,6 +6,17 @@ import { Ingredient } from "../models/ingredientModel.js";
 dotenv.config();
 puppeteer.use(StealthPlugin());
 
+// Normalize units to match model enum
+const normalizeUnit = (rawUnit) => {
+  const u = rawUnit.toLowerCase();
+  if (u.includes("kg")) return "kg";
+  if (u.includes("g")) return "g";
+  if (u.includes("ml")) return "ml";
+  if (u.includes("l")) return "l";
+  // fallback to 'g' for unknowns like 'ea'
+  return "g";
+};
+
 export const scrapeController = async (req, res) => {
   const userId = req.user?.uid;
   const searchQuery = req.query.q;
@@ -49,14 +60,17 @@ export const scrapeController = async (req, res) => {
 
       if (productData.title === "N/A" || productData.price === 0) continue;
 
+      const normalizedUnit = normalizeUnit(productData.unit);
+
       console.log(
-        `Product: ${productData.title} | $${productData.price} ${productData.unit}`
+        `Product: ${productData.title} | $${productData.price} ${normalizedUnit}`
       );
 
       scrapedItems.push({
         name: productData.title,
         price: productData.price,
-        unit: productData.unit,
+        unit: normalizedUnit,
+        category: "Unknown", // default for now
         user: userId,
       });
     }

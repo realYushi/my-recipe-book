@@ -1,7 +1,7 @@
 import { Search, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { SearchBar } from "@/components/SearchBar"
+import { SearchBar } from "@/components/RecipeSearchBar"
 import { Input } from "@/components/ui/input"
 import { NavLink } from "react-router"
 import { DialogContent, DialogTrigger } from "@/components/ui/dialog"

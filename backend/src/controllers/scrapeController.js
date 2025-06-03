@@ -13,8 +13,7 @@ const normalizeUnit = (rawUnit) => {
   if (u.includes("g")) return "g";
   if (u.includes("ml")) return "ml";
   if (u.includes("l")) return "l";
-  // fallback to 'g' for unknowns like 'ea'
-  return "g";
+  return "g"; // fallback to 'g' for unknowns like 'ea'
 };
 
 export const scrapeController = async (req, res) => {
@@ -58,7 +57,17 @@ export const scrapeController = async (req, res) => {
         return { title, price, unit };
       }, productHandle);
 
-      if (productData.title === "N/A" || productData.price === 0) continue;
+      const normalizedTitle = productData.title.toLowerCase();
+      const normalizedQuery = searchQuery?.toLowerCase();
+
+      // Skip if title is bad, price is 0, or (if query exists) title doesn't include it
+      if (
+        productData.title === "N/A" ||
+        productData.price === 0 ||
+        (normalizedQuery && !normalizedTitle.includes(normalizedQuery))
+      ) {
+        continue;
+      }
 
       const normalizedUnit = normalizeUnit(productData.unit);
 
@@ -70,14 +79,12 @@ export const scrapeController = async (req, res) => {
         name: productData.title,
         price: productData.price,
         unit: normalizedUnit,
-        category: "Unknown", // default for now
+        category: "Unknown",
         user: userId,
       });
     }
 
-    // Save to MongoDB
     await Ingredient.insertMany(scrapedItems);
-
     await browser.close();
 
     return res.status(200).json({

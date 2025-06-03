@@ -1,8 +1,13 @@
-import { Plus, Search, Trash2 } from "lucide-react";
-import { Link } from "react-router";
 import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
+import { Link } from "react-router-dom";
+import ingredientService from "@/service/ingredientService";
+import type { Ingredient } from "@/model/ingredient";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Plus, Search, Trash2 } from "lucide-react";
+import CreateIngredient from "@/components/ingredient/createIngredient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Table,
@@ -12,14 +17,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Dialog } from "@/components/ui/dialog";
-import CreateIngredient from "@/components/ingredient/createIngredient";
-import ingredientService from "@/service/ingredientService";
-import type { Ingredient } from "@/model/ingredient";
-import { getAuth } from "firebase/auth";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
-export function IngredientList() {
+interface IngredientListProps {
+    ingredientsProp?: Ingredient[];
+}
+
+export function IngredientList({ ingredientsProp }: IngredientListProps) {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -27,8 +31,13 @@ export function IngredientList() {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     useEffect(() => {
-        fetchIngredients();
-    }, []);
+        if (!ingredientsProp) {
+            fetchIngredients();
+        } else {
+            setIngredients(ingredientsProp);
+            setLoading(false);
+        }
+    }, [ingredientsProp]);
 
     const fetchIngredients = async () => {
         try {
@@ -50,7 +59,7 @@ export function IngredientList() {
             if (!user) throw new Error("User not authenticated");
 
             const token = await user.getIdToken();
-            const res = await fetch("/api/scrape/paknsave", {
+            const res = await fetch(`/api/scrape/paknsave?q=${encodeURIComponent(searchTerm)}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -58,7 +67,7 @@ export function IngredientList() {
 
             if (!res.ok) throw new Error("Failed to fetch Pak'nSave data");
             const data = await res.json();
-            setIngredients(data.ingredients);
+            setIngredients(data.data); // assumes API returns { data: Ingredient[] }
         } catch (err) {
             console.error("Pak'nSave fetch error:", err);
             setError("Could not load Pak'nSave items. Try again.");
@@ -68,9 +77,7 @@ export function IngredientList() {
     };
 
     const deleteIngredient = async (id: string) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this ingredient?"
-        );
+        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
         if (!confirmDelete) return;
 
         try {
@@ -80,8 +87,7 @@ export function IngredientList() {
             setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
         } catch (err) {
             console.error("Error deleting ingredient:", err);
-            const errorMessage = err instanceof Error ? err.message : "Unknown error";
-            alert(`Failed to delete ingredient: ${errorMessage}`);
+            alert("Failed to delete ingredient");
         }
     };
 
@@ -92,9 +98,7 @@ export function IngredientList() {
         if (!confirm) return;
 
         try {
-            await Promise.all(
-                selectedIds.map((id) => ingredientService.deleteIngredient(id))
-            );
+            await Promise.all(selectedIds.map((id) => ingredientService.deleteIngredient(id)));
             alert("Selected ingredients deleted.");
             setIngredients((prev) => prev.filter((i) => !selectedIds.includes(i._id)));
             setSelectedIds([]);
@@ -106,6 +110,10 @@ export function IngredientList() {
 
     const handleIngredientAdded = () => {
         fetchIngredients();
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
     };
 
     const filteredIngredients = ingredients.filter((ingredient) =>
@@ -141,10 +149,7 @@ export function IngredientList() {
                         </DialogTrigger>
                         <DialogContent>
                             <DialogTitle>Create Ingredient</DialogTitle>
-                            <CreateIngredient
-                                onSuccess={handleIngredientAdded}
-                                hideHeader={true}
-                            />
+                            <CreateIngredient onSuccess={handleIngredientAdded} hideHeader={true} />
                         </DialogContent>
                     </Dialog>
                 </div>
@@ -158,7 +163,7 @@ export function IngredientList() {
                         placeholder="Search ingredients..."
                         className="pl-8"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchChange}
                     />
                 </div>
             </div>
@@ -197,10 +202,7 @@ export function IngredientList() {
                             </TableRow>
                         ) : (
                             filteredIngredients.map((ingredient) => (
-                                <TableRow
-                                    key={ingredient._id}
-                                    className="cursor-pointer hover:bg-muted/50"
-                                >
+                                <TableRow key={ingredient._id} className="hover:bg-muted/50">
                                     <TableCell>
                                         <input
                                             type="checkbox"
@@ -217,20 +219,12 @@ export function IngredientList() {
                                         />
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
+                                        <Link to={`/app/ingredients/${ingredient._id}`}>
                                             {ingredient.name}
                                         </Link>
                                     </TableCell>
-                                    <TableCell>
-                                        <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                            {ingredient.unit}
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Link to={`/app/ingredients/${ingredient._id}`} className="block w-full">
-                                            ${ingredient.price.toFixed(2)}
-                                        </Link>
-                                    </TableCell>
+                                    <TableCell>{ingredient.unit}</TableCell>
+                                    <TableCell>${ingredient.price.toFixed(2)}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="destructive"

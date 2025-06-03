@@ -67,7 +67,19 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
 
             if (!res.ok) throw new Error("Failed to fetch Pak'nSave data");
             const data = await res.json();
-            setIngredients(data.data); // assumes API returns { data: Ingredient[] }
+
+            // Deduplication logic
+            const existingKeySet = new Set(
+                ingredients.map((i) => `${i.name.toLowerCase()}|${i.price}`)
+            );
+
+            const uniqueScrapedItems = data.data.filter(
+                (item: Ingredient) =>
+                    !existingKeySet.has(`${item.name.toLowerCase()}|${item.price}`)
+            );
+
+            // Add unique items to the list
+            setIngredients((prev) => [...prev, ...uniqueScrapedItems]);
         } catch (err) {
             console.error("Pak'nSave fetch error:", err);
             setError("Could not load Pak'nSave items. Try again.");

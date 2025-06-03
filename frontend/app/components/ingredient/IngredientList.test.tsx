@@ -1,23 +1,23 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import IngredientList from "./IngredientList";
 import ingredientService from "@/service/ingredientService";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter } from "react-router-dom";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { IngredientUnit, IngredientCategory } from "@/model/ingredient";
 vi.mock("@/service/ingredientService");
 
 const mockIngredients = [
-  { 
-    _id: "1", 
-    name: "Flour", 
-    unit: IngredientUnit.KG, 
-    price: 3.5, 
+  {
+    _id: "1",
+    name: "Flour",
+    unit: IngredientUnit.KG,
+    price: 3.5,
     category: IngredientCategory.VEGETABLE,
   },
-  { 
-    _id: "2", 
-    name: "Eggs", 
-    unit: IngredientUnit.G, 
+  {
+    _id: "2",
+    name: "Eggs",
+    unit: IngredientUnit.G,
     price: 0.3,
     category: IngredientCategory.VEGETABLE,
   },
@@ -44,9 +44,9 @@ describe("IngredientList", () => {
       expect(screen.getByText("kg")).toBeInTheDocument();
       expect(screen.getByText("$3.50")).toBeInTheDocument();
       expect(screen.getByText("Eggs")).toBeInTheDocument();
-      expect(screen.getByText("g")).toBeInTheDocument(); 
+      expect(screen.getByText("g")).toBeInTheDocument();
       expect(screen.getByText("$0.30")).toBeInTheDocument();
-   
+
     });
   });
 

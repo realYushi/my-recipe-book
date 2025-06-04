@@ -200,7 +200,6 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
                             <TableHead>Name</TableHead>
                             <TableHead>Unit</TableHead>
                             <TableHead>Price</TableHead>
-                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

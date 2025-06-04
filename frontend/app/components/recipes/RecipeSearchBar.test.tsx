@@ -1,14 +1,36 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SearchBar from './RecipeSearchBar';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BrowserRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 
+// Mock authService
 vi.mock('@/service/authService', () => ({
     default: {
         getJwtToken: vi.fn(() => Promise.resolve('mock-token')),
         getCurrentUser: vi.fn(() => Promise.resolve({ uid: 'mock-user-id' })),
     },
 }));
+
+// Mock recipeService
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useNavigate: () => vi.fn(),
+    };
+});
+
+
+
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useNavigate: () => vi.fn(),
+    };
+});
+
 
 global.fetch = vi.fn(() =>
     Promise.resolve({
@@ -17,16 +39,21 @@ global.fetch = vi.fn(() =>
             Promise.resolve([
                 { _id: '123', name: 'Spaghetti Bolognese' },
                 { _id: '456', name: 'Spaghetti Carbonara' },
+                { _id: '123', name: 'Spaghetti Bolognese' },
+                { _id: '456', name: 'Spaghetti Carbonara' },
             ]),
     })
 ) as unknown as typeof fetch;
 
+
 const renderWithRouter = (component: React.ReactElement) => {
-    return render(<BrowserRouter>{component}</BrowserRouter>);
+    return render(<MemoryRouter>{component}</MemoryRouter>);
 };
+
 
 describe('SearchBar Component', () => {
     beforeEach(() => {
+        vi.clearAllMocks();
         vi.clearAllMocks();
     });
 

@@ -13,8 +13,24 @@ vi.mock("firebase/auth", () => ({
 }));
 
 const mockIngredients: Ingredient[] = [
-    { _id: "1", name: "Milk", unit: "ml", price: 2, category: "Unknown", supplier: "", stock: 0 },
-    { _id: "2", name: "Almond Milk", unit: "ml", price: 3, category: "Unknown", supplier: "", stock: 0 },
+    {
+        _id: "1",
+        name: "Milk",
+        unit: "g",
+        price: 2,
+        category: "Vegetable",
+        supplier: "",
+        stock: 0,
+    },
+    {
+        _id: "2",
+        name: "Almond Milk",
+        unit: "g",
+        price: 3,
+        category: "Vegetable",
+        supplier: "",
+        stock: 0,
+    },
 ];
 
 global.fetch = vi.fn(() =>
@@ -32,14 +48,18 @@ describe("IngredientSearchBar", () => {
     it("renders input with placeholder", () => {
         const onResults = vi.fn();
         render(<IngredientSearchBar onResults={onResults} />);
-        expect(screen.getByPlaceholderText("Search Pak'nSave ingredients...")).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText("Search Pak'nSave ingredients...")
+        ).toBeInTheDocument();
     });
 
     it("fetches and filters ingredients based on input", async () => {
         const onResults = vi.fn();
         render(<IngredientSearchBar onResults={onResults} />);
 
-        const input = screen.getByPlaceholderText("Search Pak'nSave ingredients...");
+        const input = screen.getByPlaceholderText(
+            "Search Pak'nSave ingredients..."
+        );
         fireEvent.change(input, { target: { value: "Milk" } });
 
         await waitFor(() => {
@@ -65,7 +85,9 @@ describe("IngredientSearchBar", () => {
         const onResults = vi.fn();
         render(<IngredientSearchBar onResults={onResults} />);
 
-        const input = screen.getByPlaceholderText("Search Pak'nSave ingredients...");
+        const input = screen.getByPlaceholderText(
+            "Search Pak'nSave ingredients..."
+        );
         fireEvent.change(input, { target: { value: "Milk" } });
 
         await waitFor(() => {

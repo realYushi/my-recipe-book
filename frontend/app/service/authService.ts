@@ -1,4 +1,4 @@
-import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword, sendPasswordResetEmail } from "firebase/auth";
 
 import auth from "@/config/firebaseConfig";
 import type { UpdateUser } from "@/model/user";
@@ -89,6 +89,13 @@ export const authService = {
             return await user.getIdToken();
         } catch (error) {
             throw new Error("Failed to get JWT token");
+        }
+    },
+    async resetPassword(email: string): Promise<void> {
+        try {
+            await sendPasswordResetEmail(auth, email);
+        } catch (error) {
+            throw new Error("Failed to send password reset email");
         }
     }
 

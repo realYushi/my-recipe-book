@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/compone
 import { Label } from "@/components/ui/label";
 import type { User } from "@/model/user";
 import DeleteAccountButton from "@/components/profile/deleteAccountButton";
+import ResetPasswordButton from "@/components/profile/resetPassword";
 import userService from "@/service/userService";
 function ProfilePage() {
 
@@ -63,6 +64,7 @@ function ProfilePage() {
                         email={user?.email || ''}
                     />
                     <DeleteAccountButton />
+                    {user?.email && <ResetPasswordButton email={user.email} />}
                 </CardFooter>
             </Card>
         </div>

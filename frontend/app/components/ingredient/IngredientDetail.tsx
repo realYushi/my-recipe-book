@@ -1,11 +1,11 @@
-import { ArrowLeft, Edit, Trash2 } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router"
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import UpdateIngredient from "@/components/ingredient/UpdateIngredient"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import UpdateIngredient from "@/components/ingredient/UpdateIngredient";
 import { useEffect, useState } from "react";
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
@@ -77,7 +77,12 @@ export function IngredientDetail() {
                             <UpdateIngredient id={id as string} />
                         </DialogContent>
                     </Dialog>
-                    <Button variant="outline" size="icon" className="text-destructive" onClick={deleteIngredient}>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="text-destructive"
+                        onClick={deleteIngredient}
+                    >
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete ingredient</span>
                     </Button>
@@ -117,7 +122,7 @@ export function IngredientDetail() {
 
                     <Separator />
 
-                    {/* <div className="space-y-2">
+                    <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Additional Information</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
@@ -127,16 +132,16 @@ export function IngredientDetail() {
                         </div>
                     </div>
 
-                    <Separator /> */}
+                    <Separator />
 
-                    {/* <div className="space-y-2">
+                    <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Notes</h2>
                         <p>{ingredient.notes}</p>
                     </div>
 
-                    <Separator /> */}
-
-                    {/* <div className="space-y-2">
+                    {/* Optional future section
+                    <Separator />
+                    <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Used In Recipes</h2>
                         <ul className="list-disc pl-6 space-y-1">
                             <li>...</li>
@@ -145,6 +150,7 @@ export function IngredientDetail() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
+
 export default IngredientDetail;

@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SearchBar from './RecipeSearchBar';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router';
-// Mock authService
+
 vi.mock('@/service/authService', () => ({
     default: {
         getJwtToken: vi.fn(() => Promise.resolve('mock-token')),
@@ -10,29 +10,24 @@ vi.mock('@/service/authService', () => ({
     },
 }));
 
-// Mock global fetch
 global.fetch = vi.fn(() =>
     Promise.resolve({
         ok: true,
         json: () =>
             Promise.resolve([
-                {
-                    _id: '123',
-                    name: 'Spaghetti Bolognese',
-                },
-                {
-                    _id: '456',
-                    name: 'Spaghetti Carbonara',
-                },
+                { _id: '123', name: 'Spaghetti Bolognese' },
+                { _id: '456', name: 'Spaghetti Carbonara' },
             ]),
     })
 ) as unknown as typeof fetch;
+
 const renderWithRouter = (component: React.ReactElement) => {
     return render(<BrowserRouter>{component}</BrowserRouter>);
 };
+
 describe('SearchBar Component', () => {
     beforeEach(() => {
-        vi.clearAllMocks(); // Reset mocks between tests
+        vi.clearAllMocks();
     });
 
     it('renders without crashing', () => {
@@ -43,22 +38,37 @@ describe('SearchBar Component', () => {
     it('fetches and displays search results based on input', async () => {
         renderWithRouter(<SearchBar />);
 
-        // Simulate user typing into input
         const input = screen.getByPlaceholderText('Search for recipes...');
         fireEvent.change(input, { target: { value: 'Spaghetti' } });
 
-        // Wait for results to be rendered
         await waitFor(() => {
             expect(screen.getByText('Spaghetti Bolognese')).toBeInTheDocument();
             expect(screen.getByText('Spaghetti Carbonara')).toBeInTheDocument();
         });
 
-        // Optional: check fetch call was made correctly
         expect(global.fetch).toHaveBeenCalledWith('/api/recipes/search?name=Spaghetti', {
             headers: {
                 Authorization: 'Bearer mock-token',
                 'Content-Type': 'application/json',
             },
+        });
+    });
+
+    it('clears results when input is empty', async () => {
+        renderWithRouter(<SearchBar />);
+
+        const input = screen.getByPlaceholderText('Search for recipes...');
+        fireEvent.change(input, { target: { value: 'Spaghetti' } });
+
+        await waitFor(() => {
+            expect(screen.getByText('Spaghetti Bolognese')).toBeInTheDocument();
+        });
+
+        fireEvent.change(input, { target: { value: '' } });
+
+        await waitFor(() => {
+            const resultsList = screen.queryByText('Spaghetti Bolognese');
+            expect(resultsList).not.toBeInTheDocument();
         });
     });
 });

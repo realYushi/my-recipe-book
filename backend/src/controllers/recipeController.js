@@ -68,6 +68,21 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to update recipe" });
     }
   },
+  async filterRecipes(req, res) {
+    try {
+      const { portions, prepTime, cookingTime } = req.query;
+      const userId = req.user.uid;
+      const recipes = await recipeService.filterRecipes({
+        portions: portions ? Number(portions) : undefined,
+        prepTime: prepTime ? Number(prepTime) : undefined,
+        cookingTime: cookingTime ? Number(cookingTime) : undefined,
+        userId,
+      });
+      res.status(200).json(recipes);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to filter recipes" });
+    }
+  },
 };
 
 export default RecipeController;

@@ -51,7 +51,15 @@ const recipeService = {
     } catch (error) {
       throw new Error("Failed to update recipe");
     }
-  }
+  },
+  async filterRecipes({ portions, prepTime, cookingTime, userId }) {
+    try {
+      const recipes = await recipeRepository.filterRecipes({ portions, prepTime, cookingTime, userId });
+      return recipes;
+    } catch (error) {
+      throw new Error("Failed to filter recipes");
+    }
+  },
 };
 
 export default recipeService;

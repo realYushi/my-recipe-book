@@ -51,6 +51,19 @@ const recipeRepository = {
       throw new Error("Failed to search recipes");
     }
   },
+  async filterRecipes({ portions, prepTime, cookingTime, userId }) {
+    try {
+      const query = {};
+      if (userId) query.user = userId;
+      if (portions) query.portions = portions;
+      if (prepTime) query.preparationTime = { $lte: prepTime };
+      if (cookingTime) query.cookingTime = { $lte: cookingTime };
+
+      return await Recipe.find(query);
+    } catch (error) {
+      throw new Error("Failed to filter recipes");
+    }
+  },
 };
 
 export default recipeRepository;

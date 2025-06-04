@@ -1,7 +1,7 @@
 import type { Recipe } from "@/model/recipe";
 import authService from "@/service/authService";
 
-export const recipeService = {
+const recipeService = {
     createRecipe: async (recipe: Recipe) => {
         try {
             const token = await authService.getJwtToken();
@@ -19,6 +19,7 @@ export const recipeService = {
             throw error;
         }
     },
+
     updateRecipe: async (id: string, recipe: Recipe) => {
         try {
             const token = await authService.getJwtToken();
@@ -36,6 +37,7 @@ export const recipeService = {
             throw error;
         }
     },
+
     getRecipeById: async (id: string): Promise<Recipe> => {
         try {
             const token = await authService.getJwtToken();
@@ -51,6 +53,7 @@ export const recipeService = {
             throw error;
         }
     },
+
     searchRecipes: async (name: string): Promise<Recipe[]> => {
         try {
             const token = await authService.getJwtToken();
@@ -87,7 +90,38 @@ export const recipeService = {
             console.error("Error getting recipes:", error);
             throw error;
         }
-    }
-}
+    },
+
+    fetchFilteredRecipes: async ({
+        portions,
+        prepTime,
+        cookingTime,
+    }: {
+        portions?: number;
+        prepTime?: number;
+        cookingTime?: number;
+    }): Promise<Recipe[]> => {
+        try {
+            const token = await authService.getJwtToken();
+            const params = new URLSearchParams();
+            if (portions) params.append("portions", portions.toString());
+            if (prepTime) params.append("prepTime", prepTime.toString());
+            if (cookingTime) params.append("cookingTime", cookingTime.toString());
+
+            const res = await fetch(`/api/recipes/filter?${params.toString()}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch filtered recipes");
+            return res.json();
+        } catch (error) {
+            console.error("Error fetching filtered recipes:", error);
+            throw error;
+        }
+    },
+};
 
 export default recipeService;

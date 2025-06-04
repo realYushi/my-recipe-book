@@ -15,14 +15,36 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 export function RecipeList() {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [filter, setFilter] = useState({ portions: "", prepTime: "", cookingTime: "" });
 
-    const fetchRecipes = () => {
-        recipeService.getAllRecipes()
-            .then(setRecipes)
-            .catch((error) => {
-                console.error("Error fetching recipes:", error);
-            });
+    const fetchRecipes = async () => {
+        try {
+            const hasFilters = filter.portions || filter.prepTime || filter.cookingTime;
+            if (hasFilters) {
+                const filtered = await recipeService.fetchFilteredRecipes({
+                    portions: filter.portions ? Number(filter.portions) : undefined,
+                    prepTime: filter.prepTime ? Number(filter.prepTime) : undefined,
+                    cookingTime: filter.cookingTime ? Number(filter.cookingTime) : undefined,
+                });
+                setRecipes(filtered);
+            } else {
+                const all = await recipeService.getAllRecipes();
+                setRecipes(all);
+            }
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+        }
     };
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilter({ ...filter, [e.target.name]: e.target.value });
+    };
+
+    const handleFilterSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        fetchRecipes(); // refetch with filters
+    };
+
     useEffect(() => {
         fetchRecipes();
     }, []);
@@ -95,6 +117,41 @@ export function RecipeList() {
                             </Card>
                         </Link>
                     ))}
+                    <div className="px-4 pb-4">
+                        <form onSubmit={handleFilterSubmit} className="flex gap-2 mb-4">
+                            <input
+                                type="number"
+                                name="portions"
+                                placeholder="Portions"
+                                min={1}
+                                value={filter.portions}
+                                onChange={handleFilterChange}
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                type="number"
+                                name="prepTime"
+                                placeholder="Prep Time (min)"
+                                min={1}
+                                value={filter.prepTime}
+                                onChange={handleFilterChange}
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                type="number"
+                                name="cookingTime"
+                                placeholder="Cooking Time (min)"
+                                min={1}
+                                value={filter.cookingTime}
+                                onChange={handleFilterChange}
+                                className="border rounded px-2 py-1"
+                            />
+                            <button type="submit" className="btn btn-primary">Filter</button>
+                        </form>
+                        <div className="relative">
+                            <SearchBar />
+                        </div>
+                    </div>
                 </div>
             </ScrollArea>
         </div>

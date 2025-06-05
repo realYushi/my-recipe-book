@@ -27,9 +27,7 @@ describe("ResetPasswordButton", () => {
         fireEvent.click(getByText("Reset Password"));
         await waitFor(() => {
             expect(authService.resetPassword).toHaveBeenCalledWith(email);
-            expect(window.alert).toHaveBeenCalledWith(
-                "Password reset email sent! Check your inbox."
-            );
+            expect(window.alert).toHaveBeenCalledWith("Password reset email sent! Check your inbox.");
         });
     });
 

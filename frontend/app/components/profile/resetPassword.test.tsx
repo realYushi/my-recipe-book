@@ -9,15 +9,8 @@ vi.mock("@/service/authService", () => ({
     },
 }));
 
-vi.mock("@/components/ui/button", () => ({
-    Button: ({ children, ...props }: any) => (
-        <button {...props}>{children}</button>
-    ),
-}));
-
 describe("ResetPasswordButton", () => {
-    const email = "test@example.com";
-
+    const email = "test@gmail.com";
     beforeEach(() => {
         vi.clearAllMocks();
     });

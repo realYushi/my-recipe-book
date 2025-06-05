@@ -20,14 +20,16 @@ describe("ResetPasswordButton", () => {
         expect(getByText("Reset Password")).toBeInTheDocument();
     });
 
-    it("calls resetPassword and shows success message and alert on success", async () => {
+    it("successfully resets the password and alert the user", async () => {
         (authService.resetPassword as ReturnType<typeof vi.fn>).mockResolvedValueOnce(undefined);
         window.alert = vi.fn();
         const { getByText } = render(<ResetPasswordButton email={email} />);
         fireEvent.click(getByText("Reset Password"));
         await waitFor(() => {
             expect(authService.resetPassword).toHaveBeenCalledWith(email);
-            expect(window.alert).toHaveBeenCalledWith("Password reset email sent! Check your inbox.");
+            expect(window.alert).toHaveBeenCalledWith(
+                "Password reset email sent! Check your inbox."
+            );
         });
     });
 

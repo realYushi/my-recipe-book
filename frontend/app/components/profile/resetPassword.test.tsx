@@ -30,6 +30,7 @@ describe("ResetPasswordButton", () => {
             expect(window.alert).toHaveBeenCalledWith(
                 "Password reset email sent! Check your inbox."
             );
+            expect(getByText("Reset Password")).toBeInTheDocument();
         });
     });
 

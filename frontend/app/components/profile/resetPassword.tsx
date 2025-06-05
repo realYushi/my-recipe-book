@@ -10,6 +10,7 @@ function ResetPasswordButton({ email }: { email: string }) {
         try {
             await authService.resetPassword(email);
             setMessage("Password reset email sent! Check your inbox.");
+            window.alert("Password reset email sent! Check your inbox.");
         } catch (error: any) {
             setMessage(error.message || "Failed to send reset email.");
         }
@@ -20,7 +21,6 @@ function ResetPasswordButton({ email }: { email: string }) {
             <Button variant="outline" className="ml-2" onClick={handleReset}>
                 Reset Password
             </Button>
-            {message && <div className="text-sm mt-2">{message}</div>}
         </div>
     );
 }

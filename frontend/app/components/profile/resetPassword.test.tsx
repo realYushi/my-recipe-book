@@ -1,0 +1,67 @@
+import { render, fireEvent, waitFor } from "@testing-library/react";
+import ResetPasswordButton from "./resetPassword";
+import { vi, describe, it, expect, beforeEach } from "vitest";
+import authService from "@/service/authService";
+
+vi.mock("@/service/authService", () => ({
+    default: {
+        resetPassword: vi.fn(),
+    },
+}));
+
+vi.mock("@/components/ui/button", () => ({
+    Button: ({ children, ...props }: any) => (
+        <button {...props}>{children}</button>
+    ),
+}));
+
+describe("ResetPasswordButton", () => {
+    const email = "test@example.com";
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("renders the button", () => {
+        const { getByText } = render(<ResetPasswordButton email={email} />);
+        expect(getByText("Reset Password")).toBeInTheDocument();
+    });
+
+    it("calls resetPassword and shows success message and alert on success", async () => {
+        (authService.resetPassword as ReturnType<typeof vi.fn>).mockResolvedValueOnce(undefined);
+        window.alert = vi.fn();
+        const { getByText } = render(<ResetPasswordButton email={email} />);
+        fireEvent.click(getByText("Reset Password"));
+        await waitFor(() => {
+            expect(authService.resetPassword).toHaveBeenCalledWith(email);
+            expect(window.alert).toHaveBeenCalledWith(
+                "Password reset email sent! Check your inbox."
+            );
+        });
+    });
+
+    it("shows error message on failure", async () => {
+        (authService.resetPassword as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error("Network error"));
+        window.alert = vi.fn();
+        const { getByText } = render(
+            <ResetPasswordButton email={email} />
+        );
+        fireEvent.click(getByText("Reset Password"));
+        await waitFor(async () => {
+            expect(authService.resetPassword).toHaveBeenCalledWith(email);
+            expect(window.alert).toHaveBeenCalledWith("Network error");
+        });
+    });
+
+    it("shows default error message if error has no message", async () => {
+        (authService.resetPassword as ReturnType<typeof vi.fn>).mockRejectedValueOnce({});
+        const { getByText } = render(
+            <ResetPasswordButton email={email} />
+        );
+        fireEvent.click(getByText("Reset Password"));
+        await waitFor(async () => {
+            expect(authService.resetPassword).toHaveBeenCalledWith(email);
+            expect(window.alert).toHaveBeenCalledWith("Failed to send reset email.");
+        });
+    });
+});

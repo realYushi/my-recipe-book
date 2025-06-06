@@ -68,21 +68,25 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to update recipe" });
     }
   },
-  async filterRecipes(req, res) {
+  async filterRecipes({ portions, prepTime, cookingTime, userId }) {
     try {
-      const { portions, prepTime, cookingTime } = req.query;
-      const userId = req.user.uid;
-      const recipes = await recipeService.filterRecipes({
-        portions: portions ? Number(portions) : undefined,
-        prepTime: prepTime ? Number(prepTime) : undefined,
-        cookingTime: cookingTime ? Number(cookingTime) : undefined,
-        userId,
-      });
-      res.status(200).json(recipes);
+      const query = {};
+      if (userId) query.user = userId;
+      if (portions) {
+        if (Number(portions) === 11) {
+          query.portions = { $gte: 10 };
+        } else {
+          query.portions = Number(portions);
+        }
+      }
+      if (prepTime) query.preparationTime = { $lte: prepTime };
+      if (cookingTime) query.cookingTime = { $lte: cookingTime };
+
+      return await Recipe.find(query);
     } catch (error) {
-      res.status(500).json({ error: "Failed to filter recipes" });
+      throw new Error("Failed to filter recipes");
     }
   },
-};
+}
 
 export default RecipeController;

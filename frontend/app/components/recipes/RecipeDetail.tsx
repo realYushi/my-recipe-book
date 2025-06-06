@@ -13,6 +13,7 @@ import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
 import html2canvas from "html2canvas";
 import { toJpeg } from "html-to-image";
+import { Link, useParams } from "react-router-dom"
 
 function RecipeDetail() {
   const { id } = useParams();
@@ -192,7 +193,7 @@ function RecipeDetail() {
           <div className="mt-8 flex justify-end">
             <Button
               onClick={() => {
-                console.log("Button clicked"); // Debugging
+                console.log("Button clicked");
                 handleScreenshot();
               }}
               className="text-black"

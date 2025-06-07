@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import authService from "@/service/authService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 function LogoutButton() {
     const navigate = useNavigate();

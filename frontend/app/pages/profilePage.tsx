@@ -8,6 +8,7 @@ import DeleteAccountButton from "@/components/profile/deleteAccountButton";
 
 import userService from "@/service/userService";
 import LogoutButton from "@/components/profile/logoutButton";
+import ResetPasswordButton from "@/components/profile/resetPassword";
 
 function ProfilePage() {
 
@@ -19,6 +20,7 @@ function ProfilePage() {
                 if (userData) {
                     const user = await userService.getUser(userData.uid);
                     if (user) {
+                        console.log("User data fetched:", user);
                         setUser({
                             id: user.id,
                             username: user.username || user.email?.split("@")[0] || '',
@@ -32,8 +34,6 @@ function ProfilePage() {
         };
         fetchUser();
     }, []);
-
-
 
     return (
         <div className="container mx-auto max-w-2xl ">
@@ -61,6 +61,7 @@ function ProfilePage() {
                     />
                     <DeleteAccountButton />
                     <LogoutButton />
+                     {user?.email && <ResetPasswordButton email={user.email} />}
                 </CardFooter>
             </Card>
         </div >

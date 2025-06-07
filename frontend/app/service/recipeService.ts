@@ -87,6 +87,22 @@ export const recipeService = {
             console.error("Error getting recipes:", error);
             throw error;
         }
+    },
+    deleteRecipe: async (id: string) => {
+        try {
+            const token = await authService.getJwtToken();
+            const response = await fetch(`/api/recipes/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+            return response.json();
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+            throw error;
+        }
     }
 }
 

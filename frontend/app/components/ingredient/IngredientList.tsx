@@ -50,19 +50,12 @@ export function IngredientList() {
             setIsScrapePage(true);
             const data = await scrapeService.scrapePaknSave(searchTerm);
 
-            const existingKeySet = new Set(
-                ingredients.map((i) => `${i.name.toLowerCase()}|${i.price}`)
-            );
-
-            const uniqueScrapedItems = data.data.filter(
-                (item: Ingredient) =>
-                    !existingKeySet.has(`${item.name.toLowerCase()}|${item.price}`)
-            ).map((item: Ingredient) => ({
+            const scrapedItems = data.data.map((item: Ingredient) => ({
                 ...item,
                 _id: item.name + item.price
             }));
 
-            setIngredients(uniqueScrapedItems);
+            setIngredients(scrapedItems);
         } catch (err) {
             console.error("Pak'nSave fetch error:", err);
             setError("Could not load Pak'nSave items. Try again.");

@@ -7,6 +7,8 @@ import type { User } from "@/model/user";
 import DeleteAccountButton from "@/components/profile/deleteAccountButton";
 import ResetPasswordButton from "@/components/profile/resetPassword";
 import userService from "@/service/userService";
+import LogoutButton from "@/components/profile/logoutButton";
+
 function ProfilePage() {
 
     const [user, setUser] = useState<User | null>(null);
@@ -64,6 +66,7 @@ function ProfilePage() {
                         email={user?.email || ''}
                     />
                     <DeleteAccountButton />
+                    <LogoutButton />
                     {user?.email && <ResetPasswordButton email={user.email} />}
                 </CardFooter>
             </Card>

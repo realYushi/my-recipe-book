@@ -98,6 +98,9 @@ export const recipeService = {
                     "Content-Type": "application/json"
                 },
             });
+            if (!response.ok) {
+                throw new Error(`Failed to delete recipe: ${response.status} ${response.statusText}`);
+            }
             return response.json();
         } catch (error) {
             console.error("Error deleting recipe:", error);

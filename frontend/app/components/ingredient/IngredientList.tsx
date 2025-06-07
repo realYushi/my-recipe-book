@@ -6,7 +6,7 @@ import type { Ingredient } from "@/model/ingredient";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import CreateIngredient from "@/components/ingredient/createIngredient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -236,15 +236,6 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
                                     </TableCell>
                                     <TableCell>{ingredient.unit}</TableCell>
                                     <TableCell>${ingredient.price.toFixed(2)}</TableCell>
-                                    <TableCell>
-                                        <Button
-                                            variant="destructive"
-                                            size="sm"
-                                            onClick={() => deleteIngredient(ingredient._id)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </TableCell>
                                 </TableRow>
                             ))
                         )}

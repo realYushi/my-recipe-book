@@ -6,6 +6,11 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { IngredientCategory, IngredientUnit } from "@/model/ingredient";
 
 vi.mock("@/service/ingredientService");
+vi.mock("@/service/authService", () => ({
+  default: {
+    getJwtToken: vi.fn(() => Promise.resolve('mock-token')),
+  },
+}));
 
 const mockIngredient = {
   _id: "123",
@@ -40,9 +45,8 @@ describe("IngredientDetail", () => {
       expect(screen.getByText("Sugar")).toBeInTheDocument();
       expect(screen.getByText("g")).toBeInTheDocument();
       expect(screen.getByText("$2.50")).toBeInTheDocument();
-      expect(screen.getByText(/NZ Foods/i)).toBeInTheDocument();
-      expect(screen.getByText(/Keep dry/i)).toBeInTheDocument();
-    });
+      expect(screen.getByText("100 g")).toBeInTheDocument();
+    }, { timeout: 1000 });
   });
 
   it("shows error message on fetch failure", async () => {

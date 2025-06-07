@@ -5,7 +5,7 @@ import type { Ingredient } from "@/model/ingredient";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, ArrowLeft } from "lucide-react";
 import CreateIngredient from "@/components/ingredient/createIngredient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -18,15 +18,16 @@ import {
 } from "@/components/ui/table";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import scrapeService from "@/service/scrapeService";
-
-
+import { useNavigate } from "react-router";
 
 export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isScrapePage, setIsScrapePage] = useState(false);
+    const [selectedIngredientForAdd, setSelectedIngredientForAdd] = useState<Ingredient | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchIngredients();
@@ -48,6 +49,7 @@ export function IngredientList() {
     const fetchPaknsaveIngredients = async () => {
         try {
             setLoading(true);
+            setIsScrapePage(true);
             const data = await scrapeService.scrapePaknSave(searchTerm);
 
             const existingKeySet = new Set(
@@ -62,7 +64,7 @@ export function IngredientList() {
                 _id: item.name + item.price
             }));
 
-            setIngredients((prev) => [...prev, ...uniqueScrapedItems]);
+            setIngredients(uniqueScrapedItems);
         } catch (err) {
             console.error("Pak'nSave fetch error:", err);
             setError("Could not load Pak'nSave items. Try again.");
@@ -71,40 +73,39 @@ export function IngredientList() {
         }
     };
 
-
-
-    const handleBulkDelete = async () => {
-        const confirm = window.confirm(
-            `Are you sure you want to delete ${selectedIds.length} ingredient(s)?`
-        );
-        if (!confirm) return;
-
-        try {
-            await Promise.all(selectedIds.map((id) => ingredientService.deleteIngredient(id)));
-            alert("Selected ingredients deleted.");
-            setIngredients((prev) => prev.filter((i) => !selectedIds.includes(i._id)));
-            setSelectedIds([]);
-        } catch (err) {
-            console.error("Bulk delete failed:", err);
-            alert("Failed to delete some ingredients. Please try again.");
-        }
+    const handleBackToIngredients = () => {
+        setIsScrapePage(false);
+        setSelectedIngredientForAdd(null);
+        fetchIngredients();
     };
 
     const handleIngredientAdded = () => {
-        fetchIngredients();
+        if (isScrapePage) {
+            setIsScrapePage(false);
+            setSelectedIngredientForAdd(null);
+            fetchIngredients();
+        } else {
+            fetchIngredients();
+        }
+        setSelectedIngredientForAdd(null);
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
     };
 
+    const handleAddIngredient = (ingredient?: Ingredient) => {
+        if (isScrapePage && ingredient) {
+            setSelectedIngredientForAdd(ingredient);
+        } else {
+            setSelectedIngredientForAdd(null);
+        }
+
+    };
+
     const filteredIngredients = ingredients.filter((ingredient) =>
         ingredient.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
     );
-
-    const allSelected =
-        filteredIngredients.length > 0 &&
-        filteredIngredients.every((i) => selectedIds.includes(i._id));
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -112,26 +113,34 @@ export function IngredientList() {
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4 gap-4 flex-wrap">
-                <h1 className="text-xl font-semibold">Ingredients</h1>
+                <div className="flex items-center gap-2">
+                    {isScrapePage && (
+                        <Button variant="outline" size="sm" onClick={handleBackToIngredients}>
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back
+                        </Button>
+                    )}
+                    <h1 className="text-xl font-semibold">{isScrapePage ? "Scrape" : "Ingredients"}</h1>
+                </div>
                 <div className="flex gap-2 flex-wrap">
-                    <Button onClick={fetchPaknsaveIngredients}>Load Pak'nSave</Button>
-                    <Button
-                        variant="destructive"
-                        onClick={handleBulkDelete}
-                        disabled={selectedIds.length === 0}
-                    >
-                        Delete Selected
-                    </Button>
+                    {!isScrapePage && (
+                        <Button onClick={fetchPaknsaveIngredients}>Load Pak'nSave</Button>
+                    )}
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button onClick={() => handleAddIngredient()}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Add Ingredient
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogTitle>Create Ingredient</DialogTitle>
-                            <CreateIngredient onSuccess={handleIngredientAdded} hideHeader={true} />
+                            <CreateIngredient
+                                onSuccess={handleIngredientAdded}
+                                hideHeader={true}
+                                ingredientData={selectedIngredientForAdd || undefined}
+                                isUpdate={false}
+                            />
                         </DialogContent>
                     </Dialog>
                 </div>
@@ -142,7 +151,7 @@ export function IngredientList() {
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="search"
-                        placeholder="Search ingredients..."
+                        placeholder={isScrapePage ? "Search scraped ingredients..." : "Search ingredients..."}
                         className="pl-8"
                         value={searchTerm}
                         onChange={handleSearchChange}
@@ -154,58 +163,55 @@ export function IngredientList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[40px]">
-                                <input
-                                    type="checkbox"
-                                    checked={allSelected}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelectedIds(filteredIngredients.map((i) => i._id));
-                                        } else {
-                                            setSelectedIds([]);
-                                        }
-                                    }}
-                                />
-                            </TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Unit</TableHead>
                             <TableHead>Price</TableHead>
+                            {isScrapePage && <TableHead>Action</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredIngredients.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                                <TableCell colSpan={isScrapePage ? 4 : 3} className="text-center text-muted-foreground">
                                     {ingredients.length === 0
-                                        ? "No ingredients available."
+                                        ? (isScrapePage ? "No scraped ingredients available." : "No ingredients available.")
                                         : "No results found for your search."}
                                 </TableCell>
                             </TableRow>
                         ) : (
                             filteredIngredients.map((ingredient) => (
                                 <TableRow key={ingredient._id} className="hover:bg-muted/50">
-                                    <TableCell>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedIds.includes(ingredient._id)}
-                                            onChange={(e) => {
-                                                if (e.target.checked) {
-                                                    setSelectedIds((prev) => [...prev, ingredient._id]);
-                                                } else {
-                                                    setSelectedIds((prev) =>
-                                                        prev.filter((id) => id !== ingredient._id)
-                                                    );
-                                                }
-                                            }}
-                                        />
-                                    </TableCell>
                                     <TableCell className="font-medium">
-                                        <Link to={`/app/ingredients/${ingredient._id}`}>
-                                            {ingredient.name}
-                                        </Link>
+                                        {isScrapePage ? (
+                                            ingredient.name
+                                        ) : (
+                                            <Link to={`/app/ingredients/${ingredient._id}`}>
+                                                {ingredient.name}
+                                            </Link>
+                                        )}
                                     </TableCell>
                                     <TableCell>{ingredient.unit}</TableCell>
                                     <TableCell>${ingredient.price.toFixed(2)}</TableCell>
+                                    {isScrapePage && (
+                                        <TableCell>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button size="sm" onClick={() => handleAddIngredient(ingredient)}>
+                                                        Add
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogTitle>Create Ingredient</DialogTitle>
+                                                    <CreateIngredient
+                                                        onSuccess={handleIngredientAdded}
+                                                        hideHeader={true}
+                                                        ingredientData={ingredient}
+                                                        isUpdate={false}
+                                                    />
+                                                </DialogContent>
+                                            </Dialog>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))
                         )}

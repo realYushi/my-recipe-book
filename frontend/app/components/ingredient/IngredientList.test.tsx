@@ -2,7 +2,7 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import IngredientList from "./IngredientList";
 import ingredientService from "@/service/ingredientService";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { IngredientCategory, IngredientUnit } from "@/model/ingredient";
 

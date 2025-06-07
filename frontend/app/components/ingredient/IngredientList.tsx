@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
 import { Button } from "@/components/ui/button";

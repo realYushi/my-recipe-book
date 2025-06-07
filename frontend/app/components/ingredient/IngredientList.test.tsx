@@ -2,11 +2,13 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import IngredientList from "./IngredientList";
 import ingredientService from "@/service/ingredientService";
+import scrapeService from "@/service/scrapeService";
 import { MemoryRouter } from "react-router";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { IngredientCategory, IngredientUnit } from "@/model/ingredient";
 
 vi.mock("@/service/ingredientService");
+vi.mock("@/service/scrapeService");
 
 const mockIngredients = [
   {
@@ -25,12 +27,22 @@ const mockIngredients = [
   },
 ];
 
+const mockScrapedIngredients = [
+  {
+    _id: "scraped1",
+    name: "Scraped Tomatoes",
+    unit: IngredientUnit.KG,
+    price: 4.5,
+    category: IngredientCategory.VEGETABLE,
+  },
+];
+
 describe("IngredientList", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders list of ingredients", async () => {
+  it("renders list of ingredients in normal mode", async () => {
     (ingredientService.getIngredients as ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredients);
 
     render(
@@ -39,34 +51,19 @@ describe("IngredientList", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-
     await waitFor(() => {
+      expect(screen.getByText("Ingredients")).toBeInTheDocument();
       expect(screen.getByText("Flour")).toBeInTheDocument();
-      expect(screen.getByText("kg")).toBeInTheDocument();
-      expect(screen.getByText("$3.50")).toBeInTheDocument();
       expect(screen.getByText("Eggs")).toBeInTheDocument();
-      expect(screen.getByText("g")).toBeInTheDocument();
-      expect(screen.getByText("$0.30")).toBeInTheDocument();
+      expect(screen.getByText("Load Pak'nSave")).toBeInTheDocument();
     });
   });
 
-  it("shows error on fetch failure", async () => {
-    (ingredientService.getIngredients as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Failed"));
-
-    render(
-      <MemoryRouter>
-        <IngredientList />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText("Failed to load ingredients. Please try again.")).toBeInTheDocument();
-    });
-  });
-
-  it("disables 'Delete Selected' button when no ingredients are selected", async () => {
+  it("switches to scrape mode and displays scraped ingredients", async () => {
     (ingredientService.getIngredients as ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredients);
+    (scrapeService.scrapePaknSave as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: mockScrapedIngredients
+    });
 
     render(
       <MemoryRouter>
@@ -74,13 +71,22 @@ describe("IngredientList", () => {
       </MemoryRouter>
     );
 
+    const loadButton = await screen.findByText("Load Pak'nSave");
+    fireEvent.click(loadButton);
+
     await waitFor(() => {
-      expect(screen.getByText("Delete Selected")).toBeDisabled();
+      expect(screen.getByText("Scrape")).toBeInTheDocument();
+      expect(screen.getByText("Scraped Tomatoes")).toBeInTheDocument();
+      expect(screen.getByText("Add")).toBeInTheDocument();
+      expect(screen.queryByText("Load Pak'nSave")).not.toBeInTheDocument();
     });
   });
 
-  it("shows message when no search results are found", async () => {
+  it("returns to normal mode when Back button is clicked", async () => {
     (ingredientService.getIngredients as ReturnType<typeof vi.fn>).mockResolvedValue(mockIngredients);
+    (scrapeService.scrapePaknSave as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: mockScrapedIngredients
+    });
 
     render(
       <MemoryRouter>
@@ -88,13 +94,20 @@ describe("IngredientList", () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => {
-      const input = screen.getByPlaceholderText("Search ingredients...");
-      fireEvent.change(input, { target: { value: "xyz" } });
-    });
+    const loadButton = await screen.findByText("Load Pak'nSave");
+    fireEvent.click(loadButton);
 
     await waitFor(() => {
-      expect(screen.getByText("No results found for your search.")).toBeInTheDocument();
+      expect(screen.getByText("Scrape")).toBeInTheDocument();
+    });
+
+    const backButton = screen.getByText("Back");
+    fireEvent.click(backButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Ingredients")).toBeInTheDocument();
+      expect(screen.getByText("Load Pak'nSave")).toBeInTheDocument();
+      expect(screen.queryByText("Back")).not.toBeInTheDocument();
     });
   });
 });

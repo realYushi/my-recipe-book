@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/table";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import scrapeService from "@/service/scrapeService";
-import { useNavigate } from "react-router";
 
 export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -27,7 +26,6 @@ export function IngredientList() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isScrapePage, setIsScrapePage] = useState(false);
     const [selectedIngredientForAdd, setSelectedIngredientForAdd] = useState<Ingredient | null>(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchIngredients();

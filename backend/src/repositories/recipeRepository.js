@@ -51,6 +51,13 @@ const recipeRepository = {
       throw new Error("Failed to search recipes");
     }
   },
+  async deleteRecipe(id) {
+    try {
+      return await Recipe.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error("Failed to delete recipe");
+    }
+  },
 };
 
 export default recipeRepository;

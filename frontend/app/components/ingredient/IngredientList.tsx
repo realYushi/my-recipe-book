@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getAuth } from "firebase/auth";
 import { Link } from "react-router";
 import ingredientService from "@/service/ingredientService";
 import type { Ingredient } from "@/model/ingredient";
@@ -18,12 +17,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import scrapeService from "@/service/scrapeService";
 
-interface IngredientListProps {
-    ingredientsProp?: Ingredient[];
-}
 
-export function IngredientList({ ingredientsProp }: IngredientListProps) {
+
+export function IngredientList() {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,13 +29,8 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     useEffect(() => {
-        if (!ingredientsProp) {
-            fetchIngredients();
-        } else {
-            setIngredients(ingredientsProp);
-            setLoading(false);
-        }
-    }, [ingredientsProp]);
+        fetchIngredients();
+    }, []);
 
     const fetchIngredients = async () => {
         try {
@@ -55,20 +48,8 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
     const fetchPaknsaveIngredients = async () => {
         try {
             setLoading(true);
-            const user = getAuth().currentUser;
-            if (!user) throw new Error("User not authenticated");
+            const data = await scrapeService.scrapePaknSave(searchTerm);
 
-            const token = await user.getIdToken();
-            const res = await fetch(`/api/scrape/paknsave?q=${encodeURIComponent(searchTerm)}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!res.ok) throw new Error("Failed to fetch Pak'nSave data");
-            const data = await res.json();
-
-            // Deduplication logic
             const existingKeySet = new Set(
                 ingredients.map((i) => `${i.name.toLowerCase()}|${i.price}`)
             );
@@ -76,9 +57,11 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
             const uniqueScrapedItems = data.data.filter(
                 (item: Ingredient) =>
                     !existingKeySet.has(`${item.name.toLowerCase()}|${item.price}`)
-            );
+            ).map((item: Ingredient) => ({
+                ...item,
+                _id: item.name + item.price
+            }));
 
-            // Add unique items to the list
             setIngredients((prev) => [...prev, ...uniqueScrapedItems]);
         } catch (err) {
             console.error("Pak'nSave fetch error:", err);
@@ -87,6 +70,7 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
             setLoading(false);
         }
     };
+
 
 
     const handleBulkDelete = async () => {

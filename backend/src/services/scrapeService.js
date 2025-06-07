@@ -73,12 +73,11 @@ export class ScrapeService {
                 });
             }
 
-            // Save to database
-            await Ingredient.insertMany(scrapedItems);
-
             return scrapedItems;
         } finally {
             await browser.close();
         }
     }
+
+
 }

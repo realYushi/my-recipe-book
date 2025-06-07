@@ -2,7 +2,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import LogoutButton from "./logoutButton";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import authService from "@/service/authService";
-import { MemoryRouter, useNavigate } from "react-router-dom";
+import { MemoryRouter, useNavigate } from "react-router";
 
 vi.mock("@/service/authService", () => ({
     default: {
@@ -10,7 +10,7 @@ vi.mock("@/service/authService", () => ({
     }
 }));
 
-vi.mock("react-router-dom", async (importOriginal) => {
+vi.mock("react-router", async (importOriginal) => {
     const actual = await importOriginal();
     return {
         ...(actual as Object),

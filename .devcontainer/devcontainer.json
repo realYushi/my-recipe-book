@@ -1,7 +1,7 @@
 {
   "name": "My Recipe Book",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "frontend",
+  "service": "backend",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
@@ -33,5 +33,6 @@
   "remoteUser": "root",
   "mounts": [
     "source=${localWorkspaceFolder}/.git,target=/workspace/.git,type=bind"
-  ]
+  ],
+  "overrideCommand": true
 }

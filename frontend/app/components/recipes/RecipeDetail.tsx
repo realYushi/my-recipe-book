@@ -13,7 +13,9 @@ import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useNavigate } from "react-router";
 function RecipeDetail() {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
@@ -72,6 +74,18 @@ function RecipeDetail() {
         return <p>Recipe not found.</p>;
     }
 
+    const handleDeleteRecipe = async () => {
+        try {
+            const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+            if (confirmed) {
+                await recipeService.deleteRecipe(id as string);
+                navigate("/app/recipes");
+            }
+        } catch (error) {
+            console.error("Error deleting recipe:", error);
+        }
+    };
+
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between p-4 border-b">
@@ -104,7 +118,7 @@ function RecipeDetail() {
                             </div>
                         </DialogContent>
                     </Dialog>
-                    <Button variant="outline" size="icon" className="text-destructive">
+                    <Button variant="outline" size="icon" className="text-destructive" onClick={handleDeleteRecipe}>
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Delete recipe</span>
                     </Button>

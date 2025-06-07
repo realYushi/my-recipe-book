@@ -1,8 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SearchBar from './RecipeSearchBar';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
-import { Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 // Mock authService
 vi.mock('@/service/authService', () => ({
@@ -37,8 +36,6 @@ global.fetch = vi.fn(() =>
         ok: true,
         json: () =>
             Promise.resolve([
-                { _id: '123', name: 'Spaghetti Bolognese' },
-                { _id: '456', name: 'Spaghetti Carbonara' },
                 { _id: '123', name: 'Spaghetti Bolognese' },
                 { _id: '456', name: 'Spaghetti Carbonara' },
             ]),

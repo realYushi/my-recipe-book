@@ -91,7 +91,7 @@ export function IngredientDetail() {
 
             <div className="flex-1 p-4 overflow-auto">
                 <div className="grid gap-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card>
                             <CardHeader className="py-2">
                                 <CardTitle className="text-sm font-medium">Unit</CardTitle>
@@ -108,7 +108,7 @@ export function IngredientDetail() {
                                 <p className="text-lg font-semibold">${ingredient.price.toFixed(2)}</p>
                             </CardContent>
                         </Card>
-                        <Card>
+                        {/* <Card>
                             <CardHeader className="py-2">
                                 <CardTitle className="text-sm font-medium">Current Stock</CardTitle>
                             </CardHeader>
@@ -117,7 +117,7 @@ export function IngredientDetail() {
                                     {ingredient.stock ? ingredient.stock : 0} {ingredient.unit}
                                 </p>
                             </CardContent>
-                        </Card>
+                        </Card> */}
                     </div>
 
                     <Separator />
@@ -127,7 +127,7 @@ export function IngredientDetail() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <p className="text-sm text-muted-foreground">Supplier</p>
-                                <p className="font-medium">{ingredient.supplier}</p>
+                                {/* <p className="font-medium">{ingredient.supplier}</p> */}
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,8 @@ export function IngredientDetail() {
 
                     <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Notes</h2>
-                        <p>{ingredient.notes}</p>
+                        <p className="text-sm text-muted-foreground">How to store</p>
+                        {/* <p>{ingredient.notes}</p> */}
                     </div>
 
                     {/* Optional future section

@@ -88,20 +88,6 @@ export function IngredientList({ ingredientsProp }: IngredientListProps) {
         }
     };
 
-    const deleteIngredient = async (id: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this ingredient?");
-        if (!confirmDelete) return;
-
-        try {
-            await ingredientService.deleteIngredient(id);
-            alert("Ingredient deleted successfully.");
-            setIngredients((prev) => prev.filter((ingredient) => ingredient._id !== id));
-            setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-        } catch (err) {
-            console.error("Error deleting ingredient:", err);
-            alert("Failed to delete ingredient");
-        }
-    };
 
     const handleBulkDelete = async () => {
         const confirm = window.confirm(

@@ -19,6 +19,7 @@ function ProfilePage() {
                 if (userData) {
                     const user = await userService.getUser(userData.uid);
                     if (user) {
+                        console.log("User data fetched:", user);
                         setUser({
                             id: user.id,
                             username: user.username || user.email?.split("@")[0] || '',
@@ -33,11 +34,9 @@ function ProfilePage() {
         fetchUser();
     }, []);
 
-
-
     return (
         <div className="flex flex-col items-center justify-center bg-white w-full">
-            <Card className="w-full">
+            <Card className="w-full max-w-xl mx-auto">
                 <CardHeader className="flex flex-col item-center gap-4">
                     {/*<ProfileCard
                         name={user.name}
@@ -59,7 +58,7 @@ function ProfilePage() {
                     </div>
                 </CardContent>
 
-                <CardFooter className="flex justify-end">
+                <CardFooter className="flex flex-wrap gap-2 justify-end">
                     <EditProfileButton
                         // onAvatarChange={handleAvatarChange}
                         username={user?.username || ''}

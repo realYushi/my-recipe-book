@@ -8,6 +8,7 @@ export default [
     route("/", "./pages/landingPage/page.tsx"),
     route("app/auth/login", "./pages/auth/login.tsx"),
     route("app/auth/register", "./pages/auth/register.tsx"),
+    route("app/auth/mfa-verify", "./components/auth/MfaVerifyForm.tsx"),
 
     layout("./components/ProtectedRoute.tsx", [
         layout("./pages/layout.tsx", [

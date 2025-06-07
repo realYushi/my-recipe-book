@@ -1,4 +1,4 @@
-import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword, multiFactor, EmailAuthProvider, PhoneAuthProvider, getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 
 import auth from "@/config/firebaseConfig";
 import type { UpdateUser } from "@/model/user";
@@ -90,6 +90,20 @@ export const authService = {
         } catch (error) {
             throw new Error("Failed to get JWT token");
         }
+    },
+    async sendMfaEmailLink(email: string){
+        const actionCodeSettings = {
+        url: window.location.origin + "/app/auth/mfa-verify", 
+        handleCodeInApp: true,
+    };
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+    },
+    async verifyMfaEmailLink(email: string, link: string) {
+        if (isSignInWithEmailLink(auth, link)) {
+            const result = await signInWithEmailLink(auth, email, link);
+            return result.user;
+        }
+        throw new Error("Invalid MFA link");
     }
 
 }

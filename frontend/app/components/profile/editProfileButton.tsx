@@ -21,19 +21,22 @@ interface EditProfileButtonProps {
     password?: string;
 }
 
-function EditProfileButton({ onAvatarChange, username, email }: EditProfileButtonProps) {
+function EditProfileButton({ onAvatarChange, username, email, password }: EditProfileButtonProps) {
     const [newUsername, setNewUsername] = useState(username || email.split("@")[0]);
     const [newEmail, setNewEmail] = useState(email);
+    const [newPassword, setNewPassword] = useState(password);
     const navigate = useNavigate();
     useEffect(() => {
         setNewUsername(username || email.split("@")[0]);
         setNewEmail(email);
-    }, [username, email]);
+        setNewPassword(password || "");
+    }, [username, email, password]);
 
     const handleSave = async () => {
         const updatedUser = {
             username: newUsername,
             email: newEmail,
+            password: newPassword,
         }
         try {
             await authService.updateUser(updatedUser);
@@ -76,6 +79,19 @@ function EditProfileButton({ onAvatarChange, username, email }: EditProfileButto
                         <Input id="email" value={newEmail}
                             onChange={(e) => setNewEmail(e.target.value)}
                             placeholder="Your New Email"
+                            className="col-span-3" />
+                    </div>
+                </div>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="password" className="text-right">
+                            Password
+                        </Label>
+                        <Input id="password"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Your New  Password"
                             className="col-span-3" />
                     </div>
                 </div>

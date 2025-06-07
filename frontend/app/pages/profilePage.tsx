@@ -8,6 +8,7 @@ import DeleteAccountButton from "@/components/profile/deleteAccountButton";
 
 import userService from "@/service/userService";
 import LogoutButton from "@/components/profile/logoutButton";
+import ResetPasswordButton from "@/components/profile/resetPassword";
 
 function ProfilePage() {
 
@@ -60,7 +61,7 @@ function ProfilePage() {
                     />
                     <DeleteAccountButton />
                     <LogoutButton />
-                    {user?.email && <ResetPasswordButton email={user.email} />}
+                     {user?.email && <ResetPasswordButton email={user.email} />}
                 </CardFooter>
             </Card>
         </div >

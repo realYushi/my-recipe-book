@@ -19,7 +19,7 @@ const ingredientSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ["kg", "g", "hundred_g", "ml", "hundred_ml", "l", "each", "unknown"],
+    enum: ["kg", "g", "100g", "ml", "100ml", "l", "each", "unknown"],
   },
   user: {
     type: String,
@@ -46,7 +46,7 @@ const recipeIngredientSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ["kg", "g", "hundred_g", "ml", "hundred_ml", "l", "each", "unknown"],
+    enum: ["kg", "g", "100g", "ml", "100ml", "l", "each", "unknown"],
   },
 });
 

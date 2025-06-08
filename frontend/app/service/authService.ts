@@ -90,21 +90,6 @@ export const authService = {
         } catch (error) {
             throw new Error("Failed to get JWT token");
         }
-    },
-    async sendMfaEmailLink(email: string){
-        const actionCodeSettings = {
-        url: window.location.origin + "/app/auth/mfa-verify", 
-        handleCodeInApp: true,
-    };
-    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    },
-    async verifyMfaEmailLink(email: string, link: string) {
-        if (isSignInWithEmailLink(auth, link)) {
-            const result = await signInWithEmailLink(auth, email, link);
-            return result.user;
-        }
-        throw new Error("Invalid MFA link");
     }
-
 }
 export default authService;

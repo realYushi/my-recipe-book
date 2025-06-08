@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import userService from "@/service/userService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 function DeleteAccountButton() {
     const navigate = useNavigate();

@@ -68,6 +68,15 @@ const RecipeController = {
       res.status(500).json({ error: "Failed to update recipe" });
     }
   },
+
+  async deleteRecipe(req, res) {
+    try {
+      await recipeService.deleteRecipe(req.params.id);
+      res.status(200).json({ message: "Recipe deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete recipe" });
+    }
+  },
 };
 
 export default RecipeController;

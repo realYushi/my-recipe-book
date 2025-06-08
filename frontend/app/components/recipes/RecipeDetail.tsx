@@ -13,15 +13,17 @@ import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
 import { toJpeg } from "html-to-image";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useNavigate } from "react-router";
 function RecipeDetail() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const recipeRef = useRef<HTMLDivElement>(null);
   // Editor state
   const editorRef = useRef(null);
   const [crepeInstance, setCrepeInstance] = useState<any>(null);
-  const recipeRef = useRef<HTMLDivElement>(null);
 
   // Separate useEffect for fetching recipe data
   useEffect(() => {
@@ -72,6 +74,18 @@ function RecipeDetail() {
   if (!recipe) {
     return <p>Recipe not found.</p>;
   }
+
+  const handleDeleteRecipe = async () => {
+    try {
+      const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+      if (confirmed) {
+        await recipeService.deleteRecipe(id as string);
+        navigate("/app/recipes");
+      }
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    }
+  };
 
   const handleScreenshot = async () => {
     if (recipeRef.current) {
@@ -137,7 +151,7 @@ function RecipeDetail() {
               </VisuallyHidden>
             </DialogContent>
           </Dialog>
-          <Button variant="outline" size="icon" className="text-destructive">
+          <Button variant="outline" size="icon" className="text-destructive" onClick={handleDeleteRecipe}>
             <Trash2 className="h-4 w-4" />
             <span className="sr-only">Delete recipe</span>
           </Button>

@@ -5,7 +5,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, } from "@/compone
 import { Label } from "@/components/ui/label";
 import type { User } from "@/model/user";
 import DeleteAccountButton from "@/components/profile/deleteAccountButton";
+
 import userService from "@/service/userService";
+import LogoutButton from "@/components/profile/logoutButton";
+import ResetPasswordButton from "@/components/profile/resetPassword";
+
 function ProfilePage() {
 
     const [user, setUser] = useState<User | null>(null);
@@ -16,6 +20,7 @@ function ProfilePage() {
                 if (userData) {
                     const user = await userService.getUser(userData.uid);
                     if (user) {
+                        console.log("User data fetched:", user);
                         setUser({
                             id: user.id,
                             username: user.username || user.email?.split("@")[0] || '',
@@ -30,42 +35,36 @@ function ProfilePage() {
         fetchUser();
     }, []);
 
-
-
     return (
-        <div className="flex flex-col items-center justify-center bg-white w-full">
-            <Card className="w-full">
-                <CardHeader className="flex flex-col item-center gap-4">
-                    {/*<ProfileCard
-                        name={user.name}
-                        email={user.email}
-                        avatar={user.avatar}
-                    /> */}
-                    <CardTitle className="text-2x1 font-bold">Profile</CardTitle>
+        <div className="container mx-auto max-w-2xl ">
+            <Card className="w-full shadow-lg">
+                <CardHeader className="text-center pb-6">
+                    <CardTitle className="text-3xl font-bold">Profile</CardTitle>
                 </CardHeader>
 
-                <CardContent className="grid w-full items-center gap-6">
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="name">Name</Label>
-                        <p className="text-lg font-semibold">{user?.username}</p>
+                <CardContent className="space-y-6 px-8">
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="name" className="text-sm font-medium text-gray-500">Name</Label>
+                        <p className="text-xl font-semibold text-gray-900">{user?.username}</p>
                     </div>
 
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="email">Email</Label>
-                        <p className="text-lg font-semibold">{user?.email}</p>
+                    <div className="flex flex-col space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium text-gray-500">Email</Label>
+                        <p className="text-xl font-semibold text-gray-900">{user?.email}</p>
                     </div>
                 </CardContent>
 
-                <CardFooter className="flex justify-end">
+                <CardFooter className="flex justify-end ">
                     <EditProfileButton
-                        // onAvatarChange={handleAvatarChange}
                         username={user?.username || ''}
                         email={user?.email || ''}
                     />
                     <DeleteAccountButton />
+                    <LogoutButton />
+                     {user?.email && <ResetPasswordButton email={user.email} />}
                 </CardFooter>
             </Card>
-        </div>
+        </div >
     );
 }
 

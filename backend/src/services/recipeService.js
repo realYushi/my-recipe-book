@@ -1,17 +1,7 @@
 import recipeRepository from "../repositories/recipeRepository.js";
 
 const recipeService = {
-  async deleteRecipe(id) {
-    try {
-      const recipe = await recipeRepository.deleteRecipe(id);
-      if (!recipe) {
-        throw new Error("Recipe not found");
-      }
-      return recipe;
-    } catch (error) {
-      throw new Error("Failed to delete recipe");
-    }
-  },
+
   async createRecipe(recipeData) {
     try {
       const recipe = await recipeRepository.createRecipe(recipeData);
@@ -51,7 +41,14 @@ const recipeService = {
     } catch (error) {
       throw new Error("Failed to update recipe");
     }
-  }
+  },
+  async deleteRecipe(id) {
+    try {
+      await recipeRepository.deleteRecipe(id);
+    } catch (error) {
+      throw new Error("Failed to delete recipe");
+    }
+  },
 };
 
 export default recipeService;

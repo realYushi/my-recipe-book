@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
 import RecipeDetail from './RecipeDetail';
 import '@testing-library/jest-dom';
+import recipeService from '@/service/recipeService';
 
 
 vi.mock('@milkdown/crepe', () => ({
@@ -16,6 +17,9 @@ vi.mock('@milkdown/crepe', () => ({
 vi.mock('@/service/recipeService', () => ({
 
     default: {
+        deleteRecipe: vi.fn().mockResolvedValue({
+            message: 'Recipe deleted successfully',
+        }),
         getRecipeById: vi.fn().mockResolvedValue({
             _id: '683547926ee8f00dbf15c9db',
             name: 'Pork Pie',
@@ -77,6 +81,15 @@ vi.mock('@/service/recipeService', () => ({
     },
 }));
 
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useNavigate: vi.fn(() => vi.fn()),
+        useParams: vi.fn(() => ({ id: '683547926ee8f00dbf15c9db' }))
+    };
+});
+
 const renderWithRouter = (component: React.ReactElement) => {
     return render(<BrowserRouter>{component}</BrowserRouter>);
 };
@@ -84,6 +97,10 @@ const renderWithRouter = (component: React.ReactElement) => {
 describe('RecipeDetail, testing the page structure', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        Object.defineProperty(window, 'confirm', {
+            value: vi.fn(() => true),
+            writable: true,
+        });
     });
 
     it('displays the prep title', async () => {
@@ -210,6 +227,46 @@ describe('RecipeDetail, testing the page structure', () => {
         }, { timeout: 1000 });
     });
 
+    //delete recipe
+    it('displays the delete recipe button', async () => {
+        renderWithRouter(<RecipeDetail />);
+        await waitFor(() => {
+            expect(screen.getByText('Delete recipe')).toBeInTheDocument();
+        }, { timeout: 1000 });
+    });
+    it('shows confirmation dialog when delete button is clicked', async () => {
+        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
+        renderWithRouter(<RecipeDetail />);
+
+        await waitFor(() => {
+            const deleteButton = screen.getByRole('button', { name: /delete recipe/i });
+            expect(deleteButton).toBeInTheDocument();
+        }, { timeout: 1000 });
+
+        const deleteButton = screen.getByRole('button', { name: /delete recipe/i });
+        fireEvent.click(deleteButton);
+
+        expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete this recipe?');
+    });
+    it('triggers the delete recipe function when the delete button is clicked', async () => {
+        const deleteSpy = vi.spyOn(recipeService, 'deleteRecipe');
+        const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+        renderWithRouter(<RecipeDetail />);
+
+        await waitFor(() => {
+            const deleteButton = screen.getByRole('button', { name: /delete recipe/i });
+            expect(deleteButton).toBeInTheDocument();
+        }, { timeout: 1000 });
+
+        const deleteButton = screen.getByRole('button', { name: /delete recipe/i });
+        fireEvent.click(deleteButton);
+
+        expect(confirmSpy).toHaveBeenCalledWith('Are you sure you want to delete this recipe?');
+
+        await waitFor(() => {
+            expect(deleteSpy).toHaveBeenCalledWith('683547926ee8f00dbf15c9db');
+        }, { timeout: 1000 });
+    });
 });
-

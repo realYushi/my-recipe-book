@@ -24,7 +24,7 @@ interface EditProfileButtonProps {
 function EditProfileButton({ onAvatarChange, username, email, password }: EditProfileButtonProps) {
     const [newUsername, setNewUsername] = useState(username || email.split("@")[0]);
     const [newEmail, setNewEmail] = useState(email);
-    const [newPassword, setNewPassword] = useState(password || "");
+    const [newPassword, setNewPassword] = useState(password);
     const navigate = useNavigate();
     useEffect(() => {
         setNewUsername(username || email.split("@")[0]);
@@ -36,7 +36,7 @@ function EditProfileButton({ onAvatarChange, username, email, password }: EditPr
         const updatedUser = {
             username: newUsername,
             email: newEmail,
-            password: newPassword
+            password: newPassword,
         }
         try {
             await authService.updateUser(updatedUser);

@@ -60,11 +60,11 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
         formState: { errors, isSubmitted }
     } = useForm<IngredientFormValues>({
         resolver: zodResolver(ingredientSchema),
-        defaultValues: isUpdate ? {
+        defaultValues: (isUpdate || ingredientData) ? {
             name: ingredientData?.name || "",
-            category: ingredientData?.category,
-            price: ingredientData?.price,
-            unit: ingredientData?.unit
+            category: ingredientData?.category || IngredientCategory.VEGETABLE,
+            price: ingredientData?.price || 0,
+            unit: ingredientData?.unit || IngredientUnit.G
         } : {
             name: "",
             category: undefined,
@@ -80,8 +80,8 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
         setShowValidationSummary(false);
 
         try {
-            if (isUpdate) {
-                await ingredientService.updateIngredient(ingredientData?._id as string, data as Ingredient);
+            if (isUpdate && ingredientData?._id) {
+                await ingredientService.updateIngredient(ingredientData._id, data as Ingredient);
             } else {
                 await ingredientService.createIngredient(data as Ingredient);
             }

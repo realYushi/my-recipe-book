@@ -1,8 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import SearchBar from './SearchBar';
+import SearchBar from './RecipeSearchBar';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
-import { Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 
 // Mock authService
 vi.mock('@/service/authService', () => ({
@@ -22,7 +21,16 @@ vi.mock('react-router', async () => {
 });
 
 
-// Mock global fetch
+
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useNavigate: () => vi.fn(),
+    };
+});
+
+
 global.fetch = vi.fn(() =>
     Promise.resolve({
         ok: true,
@@ -34,12 +42,15 @@ global.fetch = vi.fn(() =>
     })
 ) as unknown as typeof fetch;
 
+
 const renderWithRouter = (component: React.ReactElement) => {
     return render(<MemoryRouter>{component}</MemoryRouter>);
 };
 
+
 describe('SearchBar Component', () => {
     beforeEach(() => {
+        vi.clearAllMocks();
         vi.clearAllMocks();
     });
 
@@ -50,6 +61,7 @@ describe('SearchBar Component', () => {
 
     it('fetches and displays search results based on input', async () => {
         renderWithRouter(<SearchBar />);
+
         const input = screen.getByPlaceholderText('Search for recipes...');
         fireEvent.change(input, { target: { value: 'Spaghetti' } });
 
@@ -66,7 +78,7 @@ describe('SearchBar Component', () => {
         });
     });
 
-    it('navigates to recipe page on result click', async () => {
+    it('clears results when input is empty', async () => {
         renderWithRouter(<SearchBar />);
 
         const input = screen.getByPlaceholderText('Search for recipes...');
@@ -76,8 +88,11 @@ describe('SearchBar Component', () => {
             expect(screen.getByText('Spaghetti Bolognese')).toBeInTheDocument();
         });
 
-        const resultItem = screen.getByText('Spaghetti Bolognese');
-        fireEvent.click(resultItem);
+        fireEvent.change(input, { target: { value: '' } });
 
+        await waitFor(() => {
+            const resultsList = screen.queryByText('Spaghetti Bolognese');
+            expect(resultsList).not.toBeInTheDocument();
+        });
     });
 });

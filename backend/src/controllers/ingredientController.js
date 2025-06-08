@@ -1,4 +1,3 @@
-import { Ingredient } from "../models/ingredientModel.js";
 import ingredientService from "../services/ingredientService.js";
 
 const IngredientController = {
@@ -31,7 +30,6 @@ const IngredientController = {
     try {
 
       const ingredientId = req.params.id;
-      console.log("ingredientId:", ingredientId);
       const ingredientData = {
         name: req.body.name,
         category: req.body.category,
@@ -65,7 +63,6 @@ const IngredientController = {
   async deleteIngredient(req, res) {
     try {
       const { id } = req.params;
-      console.log("Deleting ingredient with ID:", id);
       const deletedIngredient = await ingredientService.deleteIngredient(id);
       if (!deletedIngredient) {
         return res.status(404).json({ message: "Ingredient not found" });

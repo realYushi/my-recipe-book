@@ -9,7 +9,7 @@ const ingredientSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ["Meat", "Vegetable"],
+    enum: ["Meat", "Vegetable", "Unknown"],
   },
   price: {
     type: Number,

@@ -50,12 +50,13 @@ export const ingredientService = {
             throw new Error("Failed to fetch ingredients: " + (error instanceof Error ? error.message : String(error)));
         }
     },
-    async getIngredientById(id: string) {
+    async getIngredientById(id: string): Promise<Ingredient> {
         try {
             const jwtToken = await authService.getJwtToken();
             const response = await fetch(`/api/ingredients/${id}`, {
                 headers: {
-                    "Authorization": `Bearer ${jwtToken}`
+                    "Authorization": `Bearer ${jwtToken}`,
+                    "Content-Type": "application/json",
                 }
             });
 
@@ -71,7 +72,6 @@ export const ingredientService = {
     },
     async deleteIngredient(id: string) {
         try {
-            console.log("Deleting ingredient with ID:", id);
             const jwtToken = await authService.getJwtToken();
             const response = await fetch(`/api/ingredients/${id}`, {
                 method: "DELETE",
@@ -112,3 +112,4 @@ export const ingredientService = {
     }
 }
 export default ingredientService;
+

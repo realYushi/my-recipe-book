@@ -136,7 +136,7 @@ export function IngredientDetail() {
 
                     <div className="space-y-2">
                         <h2 className="text-lg font-semibold">Notes</h2>
-                        <p className="text-sm text-muted-foreground">How to store</p>
+                        <p className="text-sm text-muted-foreground">How to use</p>
                         {/* <p>{ingredient.notes}</p> */}
                     </div>
 

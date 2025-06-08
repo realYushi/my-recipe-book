@@ -9,7 +9,7 @@ const ingredientSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ["Meat", "Vegetable", "Unknown"],
+    enum: ["Meat", "Vegetable", "Unknown", "Other"],
   },
   price: {
     type: Number,
@@ -19,7 +19,7 @@ const ingredientSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ["kg", "g", "ml", "l"],
+    enum: ["kg", "g", "100g", "ml", "100ml", "l", "each", "unknown"],
   },
   user: {
     type: String,
@@ -46,7 +46,7 @@ const recipeIngredientSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true,
-    enum: ["kg", "g", "ml", "l"],
+    enum: ["kg", "g", "100g", "ml", "100ml", "l", "each", "unknown"],
   },
 });
 

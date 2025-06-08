@@ -1,6 +1,5 @@
-import { AlertTriangle, ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
+import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -12,188 +11,234 @@ import type { Recipe } from "@/model/recipe"
 import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
+import { toJpeg } from "html-to-image";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useNavigate } from "react-router";
 function RecipeDetail() {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    // Editor state
-    const editorRef = useRef(null);
-    const [crepeInstance, setCrepeInstance] = useState<any>(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const recipeRef = useRef<HTMLDivElement>(null);
+  // Editor state
+  const editorRef = useRef(null);
+  const [crepeInstance, setCrepeInstance] = useState<any>(null);
 
-    // Separate useEffect for fetching recipe data
-    useEffect(() => {
-        const fetchRecipe = async () => {
-            try {
-                setLoading(true);
-                const fetchedRecipe = await recipeService.getRecipeById(id as string);
-                setRecipe(fetchedRecipe);
-            } catch (err) {
-                console.error("Error fetching recipe:", err);
-                setError("Failed to load recipe. Please try again.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchRecipe();
-    }, [id]);
-
-    // Separate useEffect for initializing the editor AFTER recipe is loaded
-    useEffect(() => {
-        if (!recipe || !editorRef.current) return;
-
-        const instance = new Crepe({
-            root: editorRef.current,
-            defaultValue: recipe.instructions || "",
-        });
-        instance.setReadonly(true);
-        instance.create();
-        setCrepeInstance(instance);
-
-        // Cleanup function
-        return () => {
-            if (instance) {
-                instance.destroy();
-            }
-        };
-    }, [recipe]); // This runs when recipe data is available
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p className="text-red-500">{error}</p>;
-    }
-
-    if (!recipe) {
-        return <p>Recipe not found.</p>;
-    }
-
-    const handleDeleteRecipe = async () => {
-        try {
-            const confirmed = window.confirm("Are you sure you want to delete this recipe?");
-            if (confirmed) {
-                await recipeService.deleteRecipe(id as string);
-                navigate("/app/recipes");
-            }
-        } catch (error) {
-            console.error("Error deleting recipe:", error);
-        }
+  // Separate useEffect for fetching recipe data
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      try {
+        setLoading(true);
+        const fetchedRecipe = await recipeService.getRecipeById(id as string);
+        setRecipe(fetchedRecipe);
+      } catch (err) {
+        console.error("Error fetching recipe:", err);
+        setError("Failed to load recipe. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between p-4 border-b">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link to="/app/recipes">
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="sr-only">Back to recipes</span>
-                        </Link>
-                    </Button>
-                    <h1 className="text-xl font-semibold">{recipe.name}</h1>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <Edit className="h-4 w-4" />
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent
-                            className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
-                            style={{ padding: 0 }}
-                        >
-                            <VisuallyHidden asChild>
-                                <DialogTitle>Update Recipe</DialogTitle>
-                            </VisuallyHidden>
+    fetchRecipe();
+  }, [id]);
 
-                            <div className="h-full overflow-y-auto">
-                                <UpdateRecipe id={id as string} />
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-                    <Button variant="outline" size="icon" className="text-destructive" onClick={handleDeleteRecipe}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete recipe</span>
-                    </Button>
-                </div>
-            </div>
+  // Separate useEffect for initializing the editor AFTER recipe is loaded
+  useEffect(() => {
+    if (!recipe || !editorRef.current) return;
 
-            <div className="flex-1 p-4 overflow-auto">
-                <div className="grid gap-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
-                                <CardTitle className="text-sm font-medium flex items-center">
-                                    <Clock className="mr-2 h-4 w-4" /> Preparation Time
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.preparationTime}</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
-                                <CardTitle className="text-sm font-medium flex items-center">
-                                    <Clock className="mr-2 h-4 w-4" /> Cooking Time
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.cookingTime}</p>
-                            </CardContent>
-                        </Card>
-                        <Card className="w-full md:w-auto">
-                            <CardHeader className="py-2">
-                                <CardTitle className="text-sm font-medium flex items-center">
-                                    <Users className="mr-2 h-4 w-4" /> Portions
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="py-2">
-                                <p className="text-lg font-semibold">{recipe.portions}</p>
-                            </CardContent>
-                        </Card>
-                    </div>
+    const instance = new Crepe({
+      root: editorRef.current,
+      defaultValue: recipe.instructions || "",
+    });
+    instance.setReadonly(true);
+    instance.create();
+    setCrepeInstance(instance);
 
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Ingredients</h2>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Amount</TableHead>
-                                    <TableHead>Unit</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {recipe.ingredients?.map((ingredient: RecipeIngredient, index: number) => (
-                                    <TableRow key={index}>
-                                        <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
-                                        <TableCell>{ingredient.quantity}</TableCell>
-                                        <TableCell>{ingredient.ingredient.unit}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+    // Cleanup function
+    return () => {
+      if (instance) {
+        instance.destroy();
+      }
+    };
+  }, [recipe]); // This runs when recipe data is available
 
-                    <Separator />
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-                    <div>
-                        <div className="text-lg font-medium">Cooking Instructions</div>
-                        <div
-                            ref={editorRef}
-                        ></div>
-                    </div>
-                </div>
-            </div>
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
+
+  if (!recipe) {
+    return <p>Recipe not found.</p>;
+  }
+
+  const handleDeleteRecipe = async () => {
+    try {
+      const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+      if (confirmed) {
+        await recipeService.deleteRecipe(id as string);
+        navigate("/app/recipes");
+      }
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    }
+  };
+
+  const handleScreenshot = async () => {
+    if (recipeRef.current) {
+      try {
+        const titleElement = document.createElement("h1");
+        titleElement.textContent = recipe?.name || "Recipe";
+        titleElement.className = "text-2xl font-bold text-center mb-4";
+
+        recipeRef.current.insertBefore(titleElement, recipeRef.current.firstChild);
+
+        const dataUrl = await toJpeg(recipeRef.current, {
+          backgroundColor: "#ffffff",
+          quality: 0.95,
+          skipFonts: true,
+        });
+
+        recipeRef.current.removeChild(titleElement);
+
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `${recipe?.name || "recipe"}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (err) {
+        console.error("Error saving image:", err);
+        const titleElement = recipeRef.current?.querySelector("h1");
+        if (titleElement && titleElement.textContent === recipe?.name) {
+          recipeRef.current?.removeChild(titleElement);
+        }
+      }
+    }
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/app/recipes">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Back to recipes</span>
+            </Link>
+          </Button>
+          <h1 className="text-xl font-semibold">{recipe.name}</h1>
         </div>
-    )
+        <div className="flex items-center gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Edit className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
+              style={{ padding: 0 }}
+            >
+              <div className="h-full overflow-y-auto">
+                <UpdateRecipe id={id as string} />
+              </div>
+              <VisuallyHidden asChild>
+                <DialogTitle>Update Recipe</DialogTitle>
+              </VisuallyHidden>
+            </DialogContent>
+          </Dialog>
+          <Button variant="outline" size="icon" className="text-destructive" onClick={handleDeleteRecipe}>
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Delete recipe</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex-1 p-4 overflow-auto">
+        <div ref={recipeRef} className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="w-full md:w-auto">
+              <CardHeader className="py-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Clock className="mr-2 h-4 w-4" /> Preparation Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-2">
+                <p className="text-lg font-semibold">{recipe.preparationTime}</p>
+              </CardContent>
+            </Card>
+            <Card className="w-full md:w-auto">
+              <CardHeader className="py-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Clock className="mr-2 h-4 w-4" /> Cooking Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-2">
+                <p className="text-lg font-semibold">{recipe.cookingTime}</p>
+              </CardContent>
+            </Card>
+            <Card className="w-full md:w-auto">
+              <CardHeader className="py-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Users className="mr-2 h-4 w-4" /> Portions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-2">
+                <p className="text-lg font-semibold">{recipe.portions}</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold mb-2">Ingredients</h2>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Unit</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recipe.ingredients?.map((ingredient: RecipeIngredient, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{ingredient.ingredient.name}</TableCell>
+                    <TableCell>{ingredient.quantity}</TableCell>
+                    <TableCell>{ingredient.ingredient.unit}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <Separator />
+
+          <div className="mt-8 flex justify-end">
+            <Button
+              onClick={() => {
+                handleScreenshot();
+              }}
+              className="text-black"
+              variant="outline"
+            >
+              Screen Shot
+            </Button>
+          </div>
+
+          <div>
+            <div className="text-lg font-medium">Cooking Instructions</div>
+            <div
+              ref={editorRef} className="flex h-full flex-col">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default RecipeDetail;

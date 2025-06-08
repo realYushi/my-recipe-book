@@ -62,7 +62,7 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
         resolver: zodResolver(ingredientSchema),
         defaultValues: (isUpdate || ingredientData) ? {
             name: ingredientData?.name || "",
-            category: ingredientData?.category || IngredientCategory.VEGETABLE,
+            category: ingredientData?.category || IngredientCategory.UNKNOWN,
             price: ingredientData?.price || 0,
             unit: ingredientData?.unit || IngredientUnit.G
         } : {
@@ -174,8 +174,11 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
                                             <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent position="popper">
-                                            <SelectItem value={IngredientCategory.VEGETABLE}>Vegetable</SelectItem>
-                                            <SelectItem value={IngredientCategory.MEAT}>Meat</SelectItem>
+                                            {Object.values(IngredientCategory).map((category) => (
+                                                <SelectItem key={category} value={category}>
+                                                    {category.charAt(0) + category.slice(1).toLowerCase()}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 )}
@@ -225,10 +228,11 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
                                             <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent position="popper">
-                                            <SelectItem value={IngredientUnit.KG}>kg</SelectItem>
-                                            <SelectItem value={IngredientUnit.G}>g</SelectItem>
-                                            <SelectItem value={IngredientUnit.ML}>ml</SelectItem>
-                                            <SelectItem value={IngredientUnit.L}>l</SelectItem>
+                                            {Object.values(IngredientUnit).map((unit) => (
+                                                <SelectItem key={unit} value={unit}>
+                                                    {unit.toLowerCase()}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 )}

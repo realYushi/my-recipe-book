@@ -10,7 +10,7 @@ import "./app.css";
 
 export default function App() {
     return (
-        <html lang="en">
+        <html lang="en" >
             <head>
                 <meta charSet="utf-8" />
                 <meta
@@ -23,8 +23,9 @@ export default function App() {
 
                 {/* All `link` exports on all routes will render here */}
                 <Links />
+
             </head>
-            <body>
+            <body >
                 {/* Child routes render here */}
                 <Outlet />
 

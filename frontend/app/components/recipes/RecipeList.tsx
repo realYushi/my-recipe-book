@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import recipeService from "@/service/recipeService";
 import type { Recipe } from "@/model/recipe";
 
@@ -36,7 +36,11 @@ export function RecipeList() {
         fetchRecipes();
     };
 
-    const filteredRecipes = recipes.filter(recipe => {
+    const handleSearchResults = (results: Recipe[]) => {
+        setRecipes(results);
+    };
+
+    const filteredRecipes = recipes.filter((recipe) => {
         const matchesCookingTime = cookingTime === "" || recipe.cookingTime <= Number(cookingTime);
         const matchesPortions = portions === "" || recipe.portions === Number(portions);
         return matchesCookingTime && matchesPortions;
@@ -71,7 +75,7 @@ export function RecipeList() {
                     <select
                         id="cookingTime"
                         value={cookingTime}
-                        onChange={e => setCookingTime(e.target.value === "" ? "" : Number(e.target.value))}
+                        onChange={(e) => setCookingTime(e.target.value === "" ? "" : Number(e.target.value))}
                         className="border rounded px-2 py-1"
                     >
                         <option value="">Any</option>
@@ -85,7 +89,7 @@ export function RecipeList() {
                     <select
                         id="portions"
                         value={portions}
-                        onChange={e => setPortions(e.target.value === "" ? "" : Number(e.target.value))}
+                        onChange={(e) => setPortions(e.target.value === "" ? "" : Number(e.target.value))}
                         className="border rounded px-2 py-1"
                     >
                         <option value="">Any</option>
@@ -98,7 +102,7 @@ export function RecipeList() {
 
             {/* Search Bar */}
             <div className="px-4 pb-4">
-                <SearchBar />
+                <SearchBar onSearchResults={handleSearchResults} />
             </div>
 
             {/* Recipe Cards */}

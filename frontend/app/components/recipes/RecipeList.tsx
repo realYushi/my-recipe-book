@@ -1,20 +1,23 @@
-import { Plus } from "lucide-react"
-import { Link } from "react-router"
+import { Plus } from "lucide-react";
+import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import recipeService from "@/service/recipeService";
+import type { Recipe } from "@/model/recipe";
 
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
-import { Dialog } from "@/components/ui/dialog"
-import CreateRecipe from "@/components/recipes/createRecipe"
-import SearchBar from "@/components/recipes/RecipeSearchBar"
-import { useEffect, useState } from "react"
-import recipeService from "@/service/recipeService"
-import type { Recipe } from "@/model/recipe"
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
+import CreateRecipe from "@/components/recipes/createRecipe";
+import SearchBar from "@/components/recipes/RecipeSearchBar";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 export function RecipeList() {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [cookingTime, setCookingTime] = useState<number | "">("");
+    const [portions, setPortions] = useState<number | "">("");
 
     const fetchRecipes = () => {
         recipeService.getAllRecipes()
@@ -23,6 +26,7 @@ export function RecipeList() {
                 console.error("Error fetching recipes:", error);
             });
     };
+
     useEffect(() => {
         fetchRecipes();
     }, []);
@@ -30,7 +34,13 @@ export function RecipeList() {
     const handleCreateSuccess = () => {
         setIsCreateOpen(false);
         fetchRecipes();
-    }
+    };
+
+    const filteredRecipes = recipes.filter(recipe => {
+        const matchesCookingTime = cookingTime === "" || recipe.cookingTime <= Number(cookingTime);
+        const matchesPortions = portions === "" || recipe.portions === Number(portions);
+        return matchesCookingTime && matchesPortions;
+    });
 
     return (
         <div className="flex h-full flex-col">
@@ -43,10 +53,7 @@ export function RecipeList() {
                             Add Recipe
                         </Button>
                     </DialogTrigger>
-                    <DialogContent
-                        className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto"
-                        style={{ padding: 0 }}
-                    >
+                    <DialogContent className="max-w-lg w-full max-h-[90vh] p-0 overflow-y-auto">
                         <VisuallyHidden asChild>
                             <DialogTitle>Create Recipe</DialogTitle>
                         </VisuallyHidden>
@@ -56,14 +63,48 @@ export function RecipeList() {
                     </DialogContent>
                 </Dialog>
             </div>
-            <div className="px-4 pb-4">
-                <div className="relative">
-                    <SearchBar />
+
+            {/* Filters */}
+            <div className="px-4 pb-4 flex gap-4 items-center">
+                <div>
+                    <label htmlFor="cookingTime" className="block text-sm font-medium">Max Cooking Time</label>
+                    <select
+                        id="cookingTime"
+                        value={cookingTime}
+                        onChange={e => setCookingTime(e.target.value === "" ? "" : Number(e.target.value))}
+                        className="border rounded px-2 py-1"
+                    >
+                        <option value="">Any</option>
+                        {[...Array(13)].map((_, i) => (
+                            <option key={i} value={i * 10}>{i * 10} min</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="portions" className="block text-sm font-medium">Portions</label>
+                    <select
+                        id="portions"
+                        value={portions}
+                        onChange={e => setPortions(e.target.value === "" ? "" : Number(e.target.value))}
+                        className="border rounded px-2 py-1"
+                    >
+                        <option value="">Any</option>
+                        {[...Array(10)].map((_, i) => (
+                            <option key={i + 1} value={i + 1}>{i + 1}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
+
+            {/* Search Bar */}
+            <div className="px-4 pb-4">
+                <SearchBar />
+            </div>
+
+            {/* Recipe Cards */}
             <ScrollArea className="flex-1 px-4">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {recipes.map((recipe: Recipe) => (
+                    {filteredRecipes.map((recipe: Recipe) => (
                         <Link to={`/app/recipes/${recipe._id}`} key={recipe._id}>
                             <Card className="h-full cursor-pointer hover:bg-muted/50 transition-colors">
                                 <CardHeader>
@@ -89,7 +130,6 @@ export function RecipeList() {
                                                 {recipe.ingredients.length}
                                             </div>
                                         </div>
-
                                     </div>
                                 </CardContent>
                             </Card>
@@ -98,7 +138,7 @@ export function RecipeList() {
                 </div>
             </ScrollArea>
         </div>
-    )
+    );
 }
 
 export default RecipeList;

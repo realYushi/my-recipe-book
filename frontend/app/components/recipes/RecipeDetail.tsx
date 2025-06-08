@@ -74,14 +74,22 @@ function RecipeDetail() {
   }
 
   const handleScreenshot = async () => {
-    console.log("handleScreenshot called");
     if (recipeRef.current) {
       try {
+        const titleElement = document.createElement("h1");
+        titleElement.textContent = recipe?.name || "Recipe";
+        titleElement.className = "text-2xl font-bold text-center mb-4";
+
+        recipeRef.current.insertBefore(titleElement, recipeRef.current.firstChild);
+
         const dataUrl = await toJpeg(recipeRef.current, {
           backgroundColor: "#ffffff",
           quality: 0.95,
           skipFonts: true,
         });
+
+        recipeRef.current.removeChild(titleElement);
+
         const link = document.createElement("a");
         link.href = dataUrl;
         link.download = `${recipe?.name || "recipe"}.jpg`;
@@ -90,6 +98,10 @@ function RecipeDetail() {
         document.body.removeChild(link);
       } catch (err) {
         console.error("Error saving image:", err);
+        const titleElement = recipeRef.current?.querySelector("h1");
+        if (titleElement && titleElement.textContent === recipe?.name) {
+          recipeRef.current?.removeChild(titleElement);
+        }
       }
     }
   }
@@ -191,7 +203,6 @@ function RecipeDetail() {
           <div className="mt-8 flex justify-end">
             <Button
               onClick={() => {
-                console.log("Button clicked");
                 handleScreenshot();
               }}
               className="text-black"

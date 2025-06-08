@@ -1,17 +1,33 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import { Ingredient } from "../models/ingredientModel.js";
 
 puppeteer.use(StealthPlugin());
 
-// Normalize units to match model enum
 const normalizeUnit = (rawUnit) => {
-    const u = rawUnit.toLowerCase();
-    if (u.includes("kg")) return "kg";
-    if (u.includes("g")) return "g";
-    if (u.includes("ml")) return "ml";
-    if (u.includes("l")) return "l";
-    return "g"; // fallback to 'g' for unknowns like 'ea'
+    if (!rawUnit || typeof rawUnit !== 'string') {
+        return "unknown";
+    }
+
+    const u = rawUnit.toLowerCase().trim();
+
+    if (u.includes("kg") || u.match(/\d+kg$/)) return "kg";
+    if (u.includes("l") && !u.includes("ml")) return "l";
+
+    if (u === "100ml" || u === "100 ml" || u.includes("100ml") || u.includes("100 ml") || u.includes("hundred ml")) return "100ml";
+
+    if (u.includes("ml") || u.match(/\d+ml$/)) return "ml";
+
+    if (u === "100g" || u === "100 g" || u.includes("100g") || u.includes("100 g") || u.includes("hundred g")) return "100g";
+
+    if (u.includes("g") || u.match(/\d+g$/)) return "g";
+
+    if (u === "ea" || u === "each") return "each";
+
+    if (u.includes("kilogram")) return "kg";
+    if (u.includes("litre") || u.includes("liter")) return "l";
+    if (u.includes("millilitre") || u.includes("milliliter")) return "ml";
+
+    return "unknown";
 };
 
 export class ScrapeService {
@@ -23,7 +39,13 @@ export class ScrapeService {
 
         const browser = await puppeteer.launch({
             headless: "new",
-            args: ["--no-sandbox"],
+            args: [
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-images",
+                "--disable-plugins",
+                "--disable-extensions",
+            ],
         });
 
         try {
@@ -39,21 +61,30 @@ export class ScrapeService {
                     const titleEl = el.querySelector('[data-testid="product-title"]');
                     const dollarsEl = el.querySelector('[data-testid="price-dollars"]');
                     const centsEl = el.querySelector('[data-testid="price-cents"]');
-                    const unitEl = el.querySelector('[data-testid="price-per"]');
+                    const unitPriceEl = el.querySelector('[data-testid="non-promo-unit-price"]');
 
                     const title = titleEl?.textContent?.trim() || "N/A";
                     const dollars = dollarsEl?.textContent?.trim() || "0";
                     const cents = centsEl?.textContent?.trim() || "00";
-                    const unit = unitEl?.textContent?.trim() || "";
+
+                    let unit = "";
+                    if (unitPriceEl) {
+                        const unitPriceText = unitPriceEl.textContent?.trim() || "";
+
+                        const unitMatch = unitPriceText.match(/\/(.+)$/);
+                        if (unitMatch) {
+                            unit = unitMatch[1];
+                        }
+                    }
 
                     const price = parseFloat(`${dollars}.${cents}`);
+
                     return { title, price, unit };
                 }, productHandle);
 
                 const normalizedTitle = productData.title.toLowerCase();
                 const normalizedQuery = searchQuery?.toLowerCase();
 
-                // Skip if title is bad, price is 0, or (if query exists) title doesn't include it
                 if (
                     productData.title === "N/A" ||
                     productData.price === 0 ||
@@ -72,7 +103,6 @@ export class ScrapeService {
                     user: userId,
                 });
             }
-
             return scrapedItems;
         } finally {
             await browser.close();

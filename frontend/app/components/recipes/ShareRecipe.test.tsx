@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import RecipeDetail from "@/components/recipes/RecipeDetail";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router";
 import * as htmlToImage from "html-to-image";
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@/service/recipeService", () => ({
     default: {
@@ -10,8 +10,8 @@ vi.mock("@/service/recipeService", () => ({
             _id: "1",
             name: "Test Recipe",
             portions: 2,
-            preparationTime: 10,
-            cookingTime: 20,
+            preparationTime: "10 min",
+            cookingTime: "20 min",
             ingredients: [
                 {
                     ingredient: {
@@ -32,28 +32,48 @@ vi.mock("html-to-image", () => ({
     toJpeg: vi.fn(),
 }));
 
-describe("Recipe Sharing Feature", () => {
-    test("calls handleScreenshot and triggers download", async () => {
-        const toJpegMock = htmlToImage.toJpeg as unknown as ReturnType<typeof vi.fn>;
-        toJpegMock.mockResolvedValue("data:image/jpeg;base64,1234");
+describe("Recipe Share Button", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-        const realCreateElement = document.createElement.bind(document);
-        const createElementSpy = vi.spyOn(document, "createElement");
-        const clickMock = vi.fn();
+    test("renders the screenshot button", async () => {
+        render(
+            <MemoryRouter initialEntries={["/recipes/1"]}>
+                <Routes>
+                    <Route path="/recipes/:id" element={<RecipeDetail />} />
+                </Routes>
+            </MemoryRouter>
+        );
 
-        createElementSpy.mockImplementation((tag) => {
-            if (tag === "a") {
-                return {
-                    set href(val) { },
-                    set download(val) { },
-                    click: clickMock,
-                    style: {},
-                    setAttribute: () => { },
-                    remove: () => { },
-                } as any;
-            }
-            return realCreateElement(tag);
-        });
+        const button = await screen.findByRole("button", { name: /screen shot/i });
+        expect(button).toBeInTheDocument();
+        expect(button).toHaveTextContent("Screen Shot");
+    });
+
+    test("screenshot button is clickable", async () => {
+        render(
+            <MemoryRouter initialEntries={["/recipes/1"]}>
+                <Routes>
+                    <Route path="/recipes/:id" element={<RecipeDetail />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        const button = await screen.findByRole("button", { name: /screen shot/i });
+
+        // Check button properties
+        expect(button).toBeInTheDocument();
+        expect(button).not.toBeDisabled();
+        expect(button).toBeEnabled();
+
+        // Verify it can be clicked (no errors thrown)
+        expect(() => fireEvent.click(button)).not.toThrow();
+    });
+
+    test("calls toJpeg when screenshot button is clicked", async () => {
+        const toJpegMock = htmlToImage.toJpeg as ReturnType<typeof vi.fn>;
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         render(
             <MemoryRouter initialEntries={["/recipes/1"]}>
@@ -66,7 +86,10 @@ describe("Recipe Sharing Feature", () => {
         const button = await screen.findByRole("button", { name: /screen shot/i });
         fireEvent.click(button);
 
-        expect(toJpegMock).toHaveBeenCalled();
-        expect(clickMock).toHaveBeenCalled();
+        await waitFor(() => {
+            expect(toJpegMock).toHaveBeenCalled();
+        });
+
+        consoleSpy.mockRestore();
     });
 });

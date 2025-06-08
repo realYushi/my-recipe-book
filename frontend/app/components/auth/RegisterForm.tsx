@@ -55,7 +55,7 @@ export function RegisterForm({
       // Create user in backend
       await userService.createUser({
         id: user.uid,
-        name: data.username,
+        username: data.username,
         email: data.email,
       });
 

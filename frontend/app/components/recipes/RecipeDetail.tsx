@@ -12,7 +12,7 @@ import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
 import { toJpeg } from "html-to-image";
-
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 function RecipeDetail() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -132,6 +132,9 @@ function RecipeDetail() {
               <div className="h-full overflow-y-auto">
                 <UpdateRecipe id={id as string} />
               </div>
+              <VisuallyHidden asChild>
+                <DialogTitle>Update Recipe</DialogTitle>
+              </VisuallyHidden>
             </DialogContent>
           </Dialog>
           <Button variant="outline" size="icon" className="text-destructive">

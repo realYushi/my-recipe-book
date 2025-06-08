@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
+import { ArrowLeft, Clock, Edit, Trash2, Users } from "lucide-react"
 import { Link, useParams } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,9 +11,7 @@ import type { Recipe } from "@/model/recipe"
 import recipeService from "@/service/recipeService"
 import type { RecipeIngredient } from "@/model/ingredient"
 import { Crepe } from "@milkdown/crepe";
-import html2canvas from "html2canvas";
 import { toJpeg } from "html-to-image";
-import { Link, useParams } from "react-router-dom"
 
 function RecipeDetail() {
   const { id } = useParams();

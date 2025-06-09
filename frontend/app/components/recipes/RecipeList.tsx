@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import recipeService from "@/service/recipeService";
 import type { Recipe } from "@/model/recipe";
 
-import { Button } from "@components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";

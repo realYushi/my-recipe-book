@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import recipeService from "@/service/recipeService";
 import type { Recipe } from "@/model/recipe";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
@@ -14,14 +14,15 @@ import SearchBar from "@/components/recipes/RecipeSearchBar";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export function RecipeList() {
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
+    const [searchResults, setSearchResults] = useState<Recipe[] | null>(null);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [cookingTime, setCookingTime] = useState<number | "">("");
     const [portions, setPortions] = useState<number | "">("");
 
     const fetchRecipes = () => {
         recipeService.getAllRecipes()
-            .then(setRecipes)
+            .then(setAllRecipes)
             .catch((error) => {
                 console.error("Error fetching recipes:", error);
             });
@@ -37,10 +38,10 @@ export function RecipeList() {
     };
 
     const handleSearchResults = (results: Recipe[]) => {
-        setRecipes(results);
+        setSearchResults(results);
     };
 
-    const filteredRecipes = recipes.filter((recipe) => {
+    const filteredRecipes = (searchResults ?? allRecipes).filter((recipe) => {
         const matchesCookingTime = cookingTime === "" || recipe.cookingTime <= Number(cookingTime);
         const matchesPortions = portions === "" || recipe.portions === Number(portions);
         return matchesCookingTime && matchesPortions;
@@ -144,5 +145,3 @@ export function RecipeList() {
         </div>
     );
 }
-
-export default RecipeList;

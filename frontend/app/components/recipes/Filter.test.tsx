@@ -1,10 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { RecipeList } from "./RecipeList";
+import RecipeList from "./RecipeList";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useEffect } from "react";
 
-// ✅ Mock recipe service
 vi.mock("@/service/recipeService", () => ({
     default: {
         getAllRecipes: vi.fn().mockResolvedValue([
@@ -12,7 +10,7 @@ vi.mock("@/service/recipeService", () => ({
                 _id: "1",
                 name: "Chicken Stir Fry",
                 portions: 4,
-                preparationTime: 20,
+                preparationTime: 10,
                 cookingTime: 30,
                 ingredients: [],
                 instructions: "Cook chicken and vegetables",
@@ -30,31 +28,6 @@ vi.mock("@/service/recipeService", () => ({
     },
 }));
 
-// ✅ Mock RecipeSearchBar component
-vi.mock("@/components/recipes/RecipeSearchBar", () => ({
-    default: ({ onSearchResults }: any) => {
-        return (
-            <input
-                placeholder="Search for recipes..."
-                aria-label="Search Input"
-                onChange={() =>
-                    onSearchResults([
-                        {
-                            _id: "1",
-                            name: "Chicken Stir Fry",
-                            portions: 4,
-                            preparationTime: 10,
-                            cookingTime: 20,
-                            ingredients: [],
-                            instructions: "Cook chicken and vegetables",
-                        },
-                    ])
-                }
-            />
-        );
-    },
-}));
-
 describe("RecipeList Filters", () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -67,8 +40,8 @@ describe("RecipeList Filters", () => {
             </MemoryRouter>
         );
 
-        const cookingTimeSelect = await screen.findByLabelText(/Cooking Time/i);
-        fireEvent.change(cookingTimeSelect, { target: { value: "20" } });
+        const cookingTimeSelect = await screen.findByLabelText(/Max Cooking Time/i);
+        fireEvent.change(cookingTimeSelect, { target: { value: "15" } });
 
         await waitFor(() => {
             expect(screen.getByText("Quick Pasta")).toBeInTheDocument();
@@ -83,7 +56,7 @@ describe("RecipeList Filters", () => {
             </MemoryRouter>
         );
 
-        const portionsSelect = await screen.findByLabelText(/Portions/i);
+        const portionsSelect = await screen.findByLabelText(/Minimum Portions/i);
         fireEvent.change(portionsSelect, { target: { value: "4" } });
 
         await waitFor(() => {
@@ -92,15 +65,15 @@ describe("RecipeList Filters", () => {
         });
     });
 
-    it("filters recipes by search term", async () => {
+    it("filters recipes by preparation time", async () => {
         render(
             <MemoryRouter>
                 <RecipeList />
             </MemoryRouter>
         );
 
-        const searchInput = await screen.findByPlaceholderText(/Search for recipes/i);
-        fireEvent.change(searchInput, { target: { value: "Chicken" } });
+        const preparationTimeSelect = await screen.findByLabelText(/Max Prep Time/i);
+        fireEvent.change(preparationTimeSelect, { target: { value: "15" } });
 
         await waitFor(() => {
             expect(screen.getByText("Chicken Stir Fry")).toBeInTheDocument();

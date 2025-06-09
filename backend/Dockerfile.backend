@@ -1,48 +1,38 @@
-## Stage Development
-FROM node:20-slim AS development
+## Base stage with common dependencies
+FROM node:20-slim AS base
 RUN apt-get update \
- && apt-get install -y chromium \
-    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-    --no-install-recommends
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
+ && apt-get install -y \
+    chromium \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    libxss1 \
+    --no-install-recommends \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 WORKDIR /app
 
+## Development stage
+FROM base AS development
 COPY backend/package.json ./
 RUN npm install
-
 COPY backend/ .
-
 CMD ["npm", "run", "dev"]
 
-## Stage Build
-FROM node:20-slim AS builder
-RUN apt-get update \
- && apt-get install -y chromium \
-    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-    --no-install-recommends
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
-WORKDIR /app
-
+## Build stage
+FROM base AS builder
 COPY backend/package.json ./
-RUN npm install
-
+RUN npm ci --only=production
 COPY backend/ .
 
-## Stage Deploy
-FROM node:20-slim AS deploy
-RUN apt-get update \
- && apt-get install -y chromium \
-    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-    --no-install-recommends
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
-WORKDIR /app
-
+## Production stage
+FROM base AS production
 COPY backend/package.json ./
-RUN npm install --omit=dev
-
+RUN npm ci --only=production && npm cache clean --force
 COPY backend/ .
-
 CMD ["npm", "run", "start"]

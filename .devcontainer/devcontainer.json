@@ -24,7 +24,25 @@
       }
     }
   },
-  "forwardPorts": [5000, 27017],
+  "forwardPorts": [3000, 5000, 5173, 27017],
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend (Production)",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Frontend (Development)", 
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    },
+    "27017": {
+      "label": "MongoDB",
+      "onAutoForward": "silent"
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },

@@ -24,7 +24,6 @@ import { useState } from "react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle } from "lucide-react"
 
-// Zod validation schema for ingredient
 const ingredientSchema = z.object({
     name: z.string().min(1, "Name is required"),
     category: z.nativeEnum(IngredientCategory, {
@@ -33,13 +32,14 @@ const ingredientSchema = z.object({
     price: z.number({
         required_error: "Price is required",
         invalid_type_error: "Price must be a number"
-    }).nonnegative("Price cannot be negative"),
+    })
+        .min(0, "Price cannot be negative")
+        .max(9999.99, "Price cannot exceed $9,999.99"),
     unit: z.nativeEnum(IngredientUnit, {
         errorMap: () => ({ message: "Unit is required" })
     })
 });
 
-// Type inference from the schema
 type CreateIngredientProps = {
     onSuccess?: () => void;
     hideHeader?: boolean;
@@ -63,7 +63,7 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
         defaultValues: (isUpdate || ingredientData) ? {
             name: ingredientData?.name || "",
             category: ingredientData?.category || IngredientCategory.UNKNOWN,
-            price: ingredientData?.price || 0,
+            price: ingredientData?.price ?? 0,
             unit: ingredientData?.unit || IngredientUnit.G
         } : {
             name: "",
@@ -191,12 +191,16 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
                             )}
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="price" className={errors.price ? "text-red-500 font-medium" : ""}>Price</Label>
+                            <Label htmlFor="price" className={errors.price ? "text-red-500 font-medium" : ""}>
+                                Price ($)
+                            </Label>
                             <Input
                                 id="price"
                                 type="number"
                                 step="0.01"
-                                placeholder="Enter price"
+                                min="0"
+                                max="9999.99"
+                                placeholder="0.00"
                                 {...register("price", {
                                     valueAsNumber: true
                                 })}
@@ -204,11 +208,17 @@ export function CreateIngredient({ onSuccess, hideHeader, isUpdate, ingredientDa
                                 aria-invalid={errors.price ? "true" : "false"}
                             />
                             {errors.price && (
-                                <p className="text-sm text-red-500 font-medium flex items-center mt-1">
+                                <p
+                                    id="price-error"
+                                    className="text-sm text-red-500 font-medium flex items-center mt-1"
+                                >
                                     <AlertTriangle className="h-3 w-3 mr-1" />
                                     {errors.price.message}
                                 </p>
                             )}
+                            <p className="text-xs text-gray-500">
+                                Enter a price between $0.00 and $9,999.99
+                            </p>
                         </div>
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="unit" className={errors.unit ? "text-red-500 font-medium" : ""}>Unit</Label>

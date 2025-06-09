@@ -1,6 +1,6 @@
 # Recipe Book Application Makefile
 
-.PHONY: help start stop restart build logs clean dev prod test shell-frontend shell-backend shell-db status fix-deps
+.PHONY: help start stop restart build logs clean dev prod test test-frontend test-backend shell-frontend shell-backend shell-db status fix-deps
 
 # Default target
 help: ## Show this help message
@@ -90,8 +90,13 @@ clean-all: ## Complete cleanup including images and volumes
 	@echo "🧹 Complete cleanup finished."
 
 # Testing Commands
+test: test-backend test-frontend ## Run all tests
+
 test-backend: ## Run backend tests
-	docker-compose exec backend npm test
+	docker-compose exec backend npm run test
+
+test-frontend: ## Run frontend tests
+	docker-compose exec frontend npm run test
 
 # Production Commands
 prod: ## Start services in production mode
@@ -107,4 +112,4 @@ db-reset: ## Reset database (removes all data)
 
 # Quick Commands
 up: start ## Alias for start
-down: stop ## Alias for stop 
+down: stop ## Alias for stop

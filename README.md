@@ -148,7 +148,9 @@ make test-frontend     # Run frontend tests only
 ### Environment Variables
 
 Create environment files for custom configuration. **Firebase authentication is required for the application to work properly.**
-see more detai from https://firebase.google.com/docs/cloud-messaging/auth-server
+
+See more detail from [here](https://firebase.google.com/docs/cloud-messaging/auth-server)
+
 **Backend** (`backend/.env`):
 ```env
 PRIVATE_KEY_ID="Your PRIVATE_KEY_ID"
@@ -156,8 +158,6 @@ PRIVATE_KEY="Your PRIVATE_KEY"
 CLIENT_EMAIL="Your CLIENT_EMAIL"
 ```
 
-
-📋 **See `env.example` for complete Firebase configuration templates**
 
 ## 🧪 Testing
 

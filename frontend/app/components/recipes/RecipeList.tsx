@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import recipeService from "@/service/recipeService";
 import type { Recipe } from "@/model/recipe";
 

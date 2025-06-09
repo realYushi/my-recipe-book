@@ -12,15 +12,15 @@ const recipeRepository = {
   },
   async getRecipeById(id) {
     try {
-      const recipe = await Recipe.findById(id);
+      const recipe = await Recipe.findById(id).populate("ingredients.ingredient");
       return recipe;
     } catch (error) {
       throw new Error("Failed to get recipe by ID");
     }
   },
-  async getAllRecipes() {
+  async getAllRecipes(userId) {
     try {
-      const recipes = await Recipe.find();
+      const recipes = await Recipe.find({ user: userId });
       return recipes;
     } catch (error) {
       throw new Error("Failed to get all recipes");
@@ -38,9 +38,24 @@ const recipeRepository = {
   },
   async deleteRecipesByUser(userId) {
     try {
-      return await Recipe.deleteMany({ user: userId }); 
+      return await Recipe.deleteMany({ user: userId });
     } catch (error) {
       throw new Error(`Failed to delete recipes for user ${userId}: ${error.message}`);
+    }
+  },
+  async searchRecipes(name, userId) {
+    try {
+      const recipes = await Recipe.find({ name: { $regex: name, $options: "i" }, user: userId });
+      return recipes;
+    } catch (error) {
+      throw new Error("Failed to search recipes");
+    }
+  },
+  async deleteRecipe(id) {
+    try {
+      return await Recipe.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error("Failed to delete recipe");
     }
   },
 };

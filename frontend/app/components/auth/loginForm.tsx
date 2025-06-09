@@ -26,7 +26,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState<string | null>(null);
-
+  const [resetLoading, setResetLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -51,15 +51,19 @@ export function LoginForm({
           });
 
           try {
-            await userService.getUser(user.uid);
-            navigate("/app/");
+            await userService.getOrCreateUser({
+              id: user.uid,
+              email: user.email || "",
+              username: user.email?.split('@')[0] || ""
+            });
+            navigate("/app/home");
           } catch (error) {
             await userService.createUser({
               id: user.uid,
               email: user.email || "",
-              name: user.email?.split('@')[0] || ""
+              username: user.email?.split('@')[0] || ""
             });
-            navigate("/app/");
+            navigate("/app/home");
           }
         } catch (error: any) {
           setServerError("Incorrect password. Please try again.");
@@ -145,6 +149,32 @@ export function LoginForm({
               <a href="/app/auth/register" className="underline underline-offset-4">
                 Register
               </a>
+            </div>
+            <div className="mt-2 text-center text-sm">
+              Forgot Password?{" "}
+              <button
+                type="button"
+                className="underline underline-offset-4 hover:text-blue-600"
+                disabled={resetLoading}
+                onClick={async () => {
+                  const emailInput = (document.getElementById("email") as HTMLInputElement)?.value;
+                  if (!emailInput || !/^\S+@\S+\.\S+$/.test(emailInput)) {
+                    window.alert("Please enter a valid email address above first.");
+                    return;
+                  }
+                  setResetLoading(true);
+                  try {
+                    await authService.resetPassword(emailInput);
+                    window.alert("Password reset email sent! Check your inbox.");
+                  } catch (error: any) {
+                    window.alert(error.message || "Failed to send reset email.");
+                  } finally {
+                    setResetLoading(false);
+                  }
+                }}
+              >
+                Reset Password
+              </button>
             </div>
           </form>
         </CardContent>

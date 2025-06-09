@@ -1,4 +1,4 @@
-import { Crepe, CrepeFeature } from "@milkdown/crepe";
+import { Crepe } from "@milkdown/crepe";
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
 import { useEffect, useRef, useState } from "react";
@@ -45,7 +45,7 @@ import type { Recipe } from "@/model/recipe";
 
 // Services
 import ingredientService from "@/service/ingredientService";
-import recipeService from "@/service/recipeSerive";
+import recipeService from "@/service/recipeService";
 
 // Zod validation schema for recipe
 const recipeIngredientSchema = z.object({
@@ -53,26 +53,45 @@ const recipeIngredientSchema = z.object({
     quantity: z.number({
         required_error: "Quantity is required",
         invalid_type_error: "Quantity must be a number"
-    }).positive("Quantity must be greater than 0"),
+    })
+        .min(0.01, "Quantity must be at least 0.01")
+        .max(10000, "Quantity cannot exceed 10,000"),
     unit: z.nativeEnum(IngredientUnit, {
         errorMap: () => ({ message: "Unit is required" })
     })
 });
 
 const recipeSchema = z.object({
-    name: z.string().min(1, "Recipe name is required"),
-    portions: z.number()
+    name: z.string()
+        .min(1, "Recipe name is required")
+        .max(100, "Recipe name cannot exceed 100 characters"),
+    portions: z.number({
+        required_error: "Portions is required",
+        invalid_type_error: "Portions must be a number"
+    })
         .int("Portions must be a whole number")
-        .positive("Portions must be greater than 0"),
-    preparationTime: z.number()
+        .min(1, "Portions must be at least 1")
+        .max(50, "Portions cannot exceed 50"),
+    preparationTime: z.number({
+        required_error: "Preparation time is required",
+        invalid_type_error: "Preparation time must be a number"
+    })
         .int("Preparation time must be a whole number")
-        .nonnegative("Preparation time cannot be negative"),
-    cookingTime: z.number()
+        .min(0, "Preparation time cannot be negative")
+        .max(1440, "Preparation time cannot exceed 24 hours (1440 minutes)"),
+    cookingTime: z.number({
+        required_error: "Cooking time is required",
+        invalid_type_error: "Cooking time must be a number"
+    })
         .int("Cooking time must be a whole number")
-        .nonnegative("Cooking time cannot be negative"),
+        .min(0, "Cooking time cannot be negative")
+        .max(1440, "Cooking time cannot exceed 24 hours (1440 minutes)"),
     ingredients: z.array(recipeIngredientSchema)
-        .min(1, "At least one ingredient is required"),
+        .min(1, "At least one ingredient is required")
+        .max(50, "Cannot add more than 50 ingredients"),
     instructions: z.string()
+        .min(10, "Instructions must be at least 10 characters")
+        .max(5000, "Instructions cannot exceed 5000 characters")
 });
 
 // Type inference from the schema
@@ -81,8 +100,9 @@ type CreateRecipeProps = {
     initialData?: Recipe;
     isEditing?: boolean;
     hideHeader?: boolean;
+    onSuccess?: () => void;
 }
-function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: CreateRecipeProps) {
+function CreateRecipe({ initialData, isEditing = false, hideHeader = false, onSuccess }: CreateRecipeProps) {
     // Editor state
     const editorRef = useRef(null);
     const [crepeInstance, setCrepeInstance] = useState<any>(null);
@@ -119,7 +139,11 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
             portions: initialData.portions,
             preparationTime: initialData.preparationTime,
             cookingTime: initialData.cookingTime,
-            ingredients: initialData.ingredients,
+            ingredients: initialData.ingredients.map((ingredient: RecipeIngredient) => ({
+                ingredient: ingredient.ingredient._id,
+                quantity: ingredient.quantity,
+                unit: ingredient.ingredient.unit
+            })),
             instructions: initialData.instructions
         } : {
             name: "",
@@ -162,22 +186,34 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
         if (crepeInstance) {
             const instructions = crepeInstance.getMarkdown();
             console.log(instructions);
-            if (instructions.trim() === "" || instructions == "<br />\n") {
-                setFormError("Cooking instructions are required");
+
+            // Clean up the instructions
+            const cleanInstructions = instructions.replace(/<br\s*\/?>/gi, '').trim();
+
+            if (cleanInstructions === "" || cleanInstructions.length < 10) {
+                setFormError("Cooking instructions must be at least 10 characters long");
                 setShowValidationSummary(true);
                 return;
             }
-            data.instructions = instructions;
+
+            if (cleanInstructions.length > 5000) {
+                setFormError("Instructions cannot exceed 5000 characters");
+                setShowValidationSummary(true);
+                return;
+            }
+
+            data.instructions = cleanInstructions;
         }
 
         try {
             if (isEditing && initialData?._id) {
-                await recipeService.updateRecipe(initialData._id, data as Recipe);
+                await recipeService.updateRecipe(initialData._id, data as unknown as Recipe);
                 setSuccessMessage("Recipe updated successfully!");
             } else {
-                await recipeService.createRecipe(data as Recipe);
+                await recipeService.createRecipe(data as unknown as Recipe);
                 setSuccessMessage("Recipe created successfully!");
             }
+            onSuccess?.();
         } catch (error) {
             console.error(`Error ${isEditing ? "updating" : "creating"} recipe:`, error);
             setFormError(`Failed to ${isEditing ? "update" : "create"} recipe. Please try again.`);
@@ -282,6 +318,7 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
                         <Input
                             id="name"
                             placeholder="Enter recipe name"
+                            maxLength={100}
                             {...register("name")}
                             className={errors.name ? "border-red-500 focus:ring-red-500" : ""}
                             aria-invalid={errors.name ? "true" : "false"}
@@ -301,6 +338,7 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
                                 id="portions"
                                 type="number"
                                 min="1"
+                                max="50"
                                 placeholder="Number of servings"
                                 {...register("portions", { valueAsNumber: true })}
                                 className={errors.portions ? "border-red-500 focus:ring-red-500" : ""}
@@ -314,12 +352,13 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
                             )}
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="preparationTime" className={errors.preparationTime ? "text-red-500 font-medium" : ""}>Preparation Time (min)</Label>
+                            <Label htmlFor="preparationTime" className={errors.preparationTime ? "text-red-500 font-medium" : ""}>Prep Time (min)</Label>
                             <Input
                                 id="preparationTime"
                                 type="number"
                                 min="0"
-                                placeholder="Prep time"
+                                max="1440"
+                                placeholder="Prep time (minutes)"
                                 {...register("preparationTime", { valueAsNumber: true })}
                                 className={errors.preparationTime ? "border-red-500 focus:ring-red-500" : ""}
                                 aria-invalid={errors.preparationTime ? "true" : "false"}
@@ -337,7 +376,8 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
                                 id="cookingTime"
                                 type="number"
                                 min="0"
-                                placeholder="Cook time"
+                                max="1440"
+                                placeholder="Cook time (minutes)"
                                 {...register("cookingTime", { valueAsNumber: true })}
                                 className={errors.cookingTime ? "border-red-500 focus:ring-red-500" : ""}
                                 aria-invalid={errors.cookingTime ? "true" : "false"}
@@ -416,7 +456,18 @@ function CreateRecipe({ initialData, isEditing = false, hideHeader = false }: Cr
                                     </Select>
                                 </div>
                                 <div className="col-span-3">
-                                    <Input type="number" min="0" placeholder="Quantity" value={currentQuantity} onChange={(e) => setCurrentQuantity(Number(e.target.value))} />
+                                    <Input
+                                        type="number"
+                                        min="0.01"
+                                        max="10000"
+                                        step="0.01"
+                                        placeholder="Quantity"
+                                        value={currentQuantity || ""}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setCurrentQuantity(value === "" ? 0 : Number(value));
+                                        }}
+                                    />
                                 </div>
                                 <div className="col-span-3">
                                     <Select onValueChange={(value) => setCurrentUnit(value as IngredientUnit)} value={currentUnit}>

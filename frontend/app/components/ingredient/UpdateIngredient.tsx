@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Ingredient } from "@/model/ingredient";
 import ingredientService from "@/service/ingredientService";
 import CreateIngredient from "@/components/ingredient/createIngredient";
+import { Link, useNavigate } from "react-router";
 
 interface UpdateIngredientProps {
     id: string;
@@ -27,11 +28,15 @@ function UpdateIngredient({ id }: UpdateIngredientProps) {
         };
         fetchIngredient();
     }, [id]);
+    let navigate = useNavigate();
+    const handleSuccess = () => {
+        navigate("/app/ingredients");
+    }
 
     return (
         <div>
             {isLoading && <div>Loading...</div>}
-            {ingredient && <CreateIngredient ingredientData={ingredient} isUpdate={true} />}
+            {ingredient && <CreateIngredient ingredientData={ingredient} isUpdate={true} onSuccess={handleSuccess} />}
         </div>
     )
 }

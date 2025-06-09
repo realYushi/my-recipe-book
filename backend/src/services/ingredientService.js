@@ -1,4 +1,5 @@
 import ingredientRepository from "../repositories/ingredientRepository.js";
+import Recipe from "../models/recipeModel.js";
 
 const IngredientService = {
   async createIngredient(ingredientData) {
@@ -46,5 +47,34 @@ const IngredientService = {
       });
     }
   },
+  async deleteIngredient(id) {
+    try {
+      console.log("Deleting ingredient with ID", id);
+
+      let unknownIngredient = await ingredientRepository.findUnknownIngredient();
+      if (!unknownIngredient) {
+        unknownIngredient = await ingredientRepository.createIngredient({
+          name: "Unknown Ingredient",
+          category: "Unknown",
+          price: 0,
+          unit: "g",
+          user: "system"
+        });
+      }
+
+      await Recipe.updateMany(
+        { "ingredients.ingredient": id },
+        { $set: { "ingredients.$.ingredient": unknownIngredient._id } }
+      );
+
+      const deletedIngredient = await ingredientRepository.deleteIngredient(id);
+      if (!deletedIngredient) {
+        throw new Error("Ingredient not found");
+      }
+      return deletedIngredient;
+    } catch (error) {
+      throw new Error(`Failed to delete ingredient: ${error.message}`);
+    }
+  }
 };
 export default IngredientService;

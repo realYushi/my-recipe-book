@@ -30,7 +30,6 @@ const IngredientController = {
     try {
 
       const ingredientId = req.params.id;
-      console.log("ingredientId:", ingredientId);
       const ingredientData = {
         name: req.body.name,
         category: req.body.category,
@@ -61,6 +60,20 @@ const IngredientController = {
       res.status(500).json({ error: error.message });
     }
   },
+  async deleteIngredient(req, res) {
+    try {
+      const { id } = req.params;
+      const deletedIngredient = await ingredientService.deleteIngredient(id);
+      if (!deletedIngredient) {
+        return res.status(404).json({ message: "Ingredient not found" });
+      }
+      res.status(204).send();
+    }
+    catch (error) {
+      console.error("Error deleting ingredient:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
 };
 
 export default IngredientController;

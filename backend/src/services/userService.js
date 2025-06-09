@@ -30,7 +30,8 @@ const UserService = {
       console.log("Successfully deleted recipes", userId);
       const deletedUser = await userRepository.deleteUser(userId);
       if (!deletedUser) {
-        throw new Error('User not found');
+        console.warn(`User with ID ${userId} not found in MongoDB`);
+        return null;
       }
       return deletedUser;
     } catch (error) {

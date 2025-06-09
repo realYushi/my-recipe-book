@@ -31,8 +31,13 @@ const UserRepository = {
   },
   async deleteUser(userId) {
     try {
+      const user = await User.findOne({ id: userId });
+      if (!user) {
+        console.log("User not found in MongoDB", userId);
+        return null;
+      }
       console.log("Deleting user from MongoDB", userId);
-      const deletedUser = await User.findOneAndDelete({ _id: userId });
+      const deletedUser = await User.findOneAndDelete({ id: userId });
       console.log("Deleted user:", deletedUser);
       return deletedUser;
     } catch (error) {

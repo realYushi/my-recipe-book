@@ -16,27 +16,27 @@ import { useNavigate } from 'react-router';
 
 interface EditProfileButtonProps {
     onAvatarChange?: (newAvatar: string) => void;
-    name: string;
+    username: string;
     email: string;
     password?: string;
 }
 
-function EditProfileButton({ onAvatarChange, name, email, password }: EditProfileButtonProps) {
-    const [newName, setNewName] = useState(name || email.split("@")[0]);
+function EditProfileButton({ onAvatarChange, username, email, password }: EditProfileButtonProps) {
+    const [newUsername, setNewUsername] = useState(username || email.split("@")[0]);
     const [newEmail, setNewEmail] = useState(email);
-    const [newPassword, setNewPassword] = useState(password || "");
+    const [newPassword, setNewPassword] = useState(password);
     const navigate = useNavigate();
     useEffect(() => {
-        setNewName(name || email.split("@")[0]);
+        setNewUsername(username || email.split("@")[0]);
         setNewEmail(email);
         setNewPassword(password || "");
-    }, [name, email, password]);
+    }, [username, email, password]);
 
     const handleSave = async () => {
         const updatedUser = {
-            name: newName,
+            username: newUsername,
             email: newEmail,
-            password: newPassword
+            password: newPassword,
         }
         try {
             await authService.updateUser(updatedUser);
@@ -65,9 +65,9 @@ function EditProfileButton({ onAvatarChange, name, email, password }: EditProfil
                         <Label htmlFor="name" className="text-right">
                             Name
                         </Label>
-                        <Input id="name" value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            placeholder="Your New Name"
+                        <Input id="username" value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value)}
+                            placeholder="Your New Username"
                             className="col-span-3" />
                     </div>
                 </div>

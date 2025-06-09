@@ -1,4 +1,4 @@
-import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User, onAuthStateChanged, updateProfile, updateEmail, updatePassword, sendPasswordResetEmail } from "firebase/auth";
 
 import auth from "@/config/firebaseConfig";
 import type { UpdateUser } from "@/model/user";
@@ -10,7 +10,6 @@ export interface AuthCredentials {
 export interface RegisterCredentials extends AuthCredentials {
     username: string;
 }
-
 
 export const authService = {
     async register(credentials: RegisterCredentials): Promise<User> {
@@ -30,23 +29,7 @@ export const authService = {
         }
     },
     async getCurrentUser(): Promise<User | null> {
-        return new Promise((resolve, reject) => {
-            try {
-                const unsubscribe = onAuthStateChanged(
-                    auth,
-                    (user) => {
-                        unsubscribe();
-                        resolve(user as User);
-                    },
-                    (error) => {
-                        unsubscribe();
-                        reject(error);
-                    }
-                );
-            } catch (error) {
-                reject(error);
-            }
-        });
+        return auth.currentUser as User | null;
     },
     async updateUser(updatedUser: UpdateUser): Promise<User> {
         try {
@@ -86,10 +69,6 @@ export const authService = {
         }
     },
 
-    async isAuthenticated(): Promise<boolean> {
-        const user = await this.getCurrentUser();
-        return user !== null;
-    },
     async logout() {
         await signOut(auth);
     },
@@ -110,6 +89,13 @@ export const authService = {
             return await user.getIdToken();
         } catch (error) {
             throw new Error("Failed to get JWT token");
+        }
+    },
+    async resetPassword(email: string): Promise<void> {
+        try {
+            await sendPasswordResetEmail(auth, email);
+        } catch (error) {
+            throw new Error("Failed to send password reset email");
         }
     }
 

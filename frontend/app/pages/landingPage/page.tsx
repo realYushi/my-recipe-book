@@ -38,13 +38,8 @@ function LandingPage() {
                 <section className="relative overflow-hidden">
                     <div className="absolute inset-0 z-0">
                         <div className="absolute inset-0 bg-gradient-to-r from-amber-900/70 to-green-900/70 mix-blend-multiply z-10"></div>
-                        <img
-                            src="/images/cooking-hero-bg.jpg"
-                            alt="Cooking background"
-                            className="object-cover object-center w-full h-full"
-                        />
+                        <div className="bg-gradient-to-br from-amber-500 to-green-600 w-full h-full"></div>
                     </div>
-                    <div className="absolute inset-0 bg-[url('/placeholder.svg?height=200&width=200')] opacity-10 z-10"></div>
                     <div className="container mx-auto max-w-7xl relative z-20 flex flex-col items-center justify-center px-4 md:px-6 py-24 text-center text-white md:py-32 lg:py-40">
                         <div className="animate-fade-in-up">
                             <div className="mb-6 inline-block rounded-full bg-white/10 px-4 py-1 backdrop-blur-sm">
@@ -207,8 +202,8 @@ function LandingPage() {
                                     favorites. The ingredient tracking feature has been a game-changer for my weekly meal planning."
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="h-14 w-14 overflow-hidden rounded-full bg-amber-100 ring-2 ring-amber-200">
-                                        <img src="https://fakeimg.pl/56x56" alt="User avatar" width={56} height={56} />
+                                    <div className="h-14 w-14 overflow-hidden rounded-full bg-amber-100 ring-2 ring-amber-200 flex items-center justify-center">
+                                        <span className="text-lg font-medium text-amber-600">SJ</span>
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-900">Sarah Johnson</p>
@@ -228,8 +223,8 @@ function LandingPage() {
                                     game-changer! I can easily plan my meals for the week and know exactly what I need to buy."
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="h-14 w-14 overflow-hidden rounded-full bg-green-100 ring-2 ring-green-200">
-                                        <img src="https://fakeimg.pl/56x56" alt="User avatar" width={56} height={56} />
+                                    <div className="h-14 w-14 overflow-hidden rounded-full bg-green-100 ring-2 ring-green-200 flex items-center justify-center">
+                                        <span className="text-lg font-medium text-green-600">MR</span>
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-900">Michael Chen</p>
@@ -305,7 +300,6 @@ function LandingPage() {
 
                 {/* CTA Section */}
                 <section className="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-600 py-20 md:py-28">
-                    <div className="absolute inset-0 bg-[url('/placeholder.svg?height=200&width=200')] opacity-10"></div>
                     <div className="container mx-auto max-w-7xl relative z-10 flex flex-col items-center px-4 text-center">
                         <div className="mb-3 inline-block rounded-full bg-white/20 px-4 py-1 backdrop-blur-sm">
                             <span className="text-sm font-medium text-white">Limited Time Offer</span>

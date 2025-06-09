@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router';
-import { RecipeList } from './RecipeList';
+import RecipeList from './RecipeList';
 import '@testing-library/jest-dom';
 
 
@@ -100,10 +100,10 @@ describe('Recipes List, testing the cards', () => {
         renderWithRouter(<RecipeList />);
         await waitFor(() => {
             expect(screen.getByText((content, element) => {
-                return element?.textContent === 'Prep: 15';
+                return element?.textContent === 'Prep: 15 min';
             })).toBeInTheDocument();
             expect(screen.getByText((content, element) => {
-                return element?.textContent === 'Prep: 5';
+                return element?.textContent === 'Prep: 5 min';
             })).toBeInTheDocument();
         }, { timeout: 1000 });
     });
@@ -112,10 +112,10 @@ describe('Recipes List, testing the cards', () => {
         renderWithRouter(<RecipeList />);
         await waitFor(() => {
             expect(screen.getByText((content, element) => {
-                return element?.textContent === 'Cook: 20';
+                return element?.textContent === 'Cook: 20 min';
             })).toBeInTheDocument();
             expect(screen.getByText((content, element) => {
-                return element?.textContent === 'Cook: 15';
+                return element?.textContent === 'Cook: 15 min';
             })).toBeInTheDocument();
         }, { timeout: 1000 });
     });

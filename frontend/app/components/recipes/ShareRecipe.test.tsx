@@ -3,6 +3,7 @@ import RecipeDetail from "@/components/recipes/RecipeDetail";
 import { MemoryRouter, Routes, Route } from "react-router";
 import * as htmlToImage from "html-to-image";
 import { describe, test, expect, vi, beforeEach } from "vitest";
+import React from "react";
 
 vi.mock("@/service/recipeService", () => ({
     default: {

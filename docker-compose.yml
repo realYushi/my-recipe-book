@@ -7,11 +7,13 @@ services:
     volumes:
       - .:/workspace:cached
       - frontend_node_modules:/workspace/frontend/node_modules
+    ports:
+      - "3000:5173"
     depends_on:
       - backend
     environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://backend:5000/api
+      NODE_ENV: development
+      REACT_APP_API_URL: http://backend:5000/api
     user: root
 
   backend:
@@ -27,26 +29,20 @@ services:
     depends_on:
       - database
     environment:
-      - NODE_ENV=development
-      - MONGODB_URI=mongodb://database:27017/recipe-book
+      NODE_ENV: development
+      MONGODB_URI: mongodb://database:27017/recipe-book
     user: root
-    command: ["npm", "run", "dev"]
 
   database:
-    image: mongo:latest
+    image: mongo:8.0
+    restart: unless-stopped
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     environment:
-      - MONGO_INITDB_DATABASE=recipe-book
-  prism-mock:
-    image: stoplight/prism:4
-    ports:
-      - "4010:4010"
-    volumes:
-      - ./doc/openapi.yaml:/usr/src/api.yaml
-    command: mock -h 0.0.0.0 /usr/src/api.yaml --errors
+      MONGO_INITDB_DATABASE: recipe-book
+
 volumes:
   mongodb_data:
   frontend_node_modules:

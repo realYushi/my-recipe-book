@@ -82,8 +82,7 @@ export default function RecipeList() {
                 </Dialog>
             </div>
             <div className="px-4 pb-4">
-                <SearchBar
-                />
+                <SearchBar />
             </div>
             <div className="px-4 pb-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

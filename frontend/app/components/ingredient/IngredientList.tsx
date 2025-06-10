@@ -73,12 +73,10 @@ export function IngredientList() {
     const handleIngredientAdded = () => {
         if (isScrapePage) {
             setIsScrapePage(false);
-            setSelectedIngredientForAdd(null);
-            fetchIngredients();
-        } else {
-            fetchIngredients();
         }
+        fetchIngredients();
         setSelectedIngredientForAdd(null);
+        setSearchTerm("");
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
